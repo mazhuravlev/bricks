@@ -38,7 +38,25 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: blue;
+  background-color: darkslategrey;
+  width: 95%;
+    height: 80%;
+    margin: auto auto;
+    display: inline-block;
+}
+
+.testbrick .hor {
+    width: 95%;
+    height: 80%;
+    margin: auto auto;
+    display: inline-block;
+}
+
+.testbrick .ver {
+  width: 80%;
+  height: 95%;
+  margin: auto auto;
+  display: inline-block;
 }
 
 .workArea {

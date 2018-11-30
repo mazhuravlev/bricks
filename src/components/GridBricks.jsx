@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
+import Brick from './Brick';
 
 const getGridPos = (x, y, step) => {
   const left = Math.floor(x / step);
@@ -42,6 +43,7 @@ export class GridBricks extends Component {
       id: uuid(),
       position: this.state.brickPosition,
       size: this.props.currentOperation.data,
+      color: this.props.color
     }
     this.setState({ bricks: [...this.state.bricks, newBrick] });
   }
@@ -53,12 +55,12 @@ export class GridBricks extends Component {
 
     return (
       <div className="bricks-grid" onMouseMove={this.calcBrickPosition} onClick={this.addBrick}>
-        {isActive && type === 'ADD_BRICK' 
-        ? <div className="testbrick" 
-          style={buildSyleObj({ ...this.props.currentOperation.data, ...brickPosition }, step)}></div>
-         : null}
-        {this.state.bricks.map(({ position, size, id }) => (
-          <div key={id} className="testbrick" style={buildSyleObj({ ...position, ...size }, step)}></div>
+        {isActive && type === 'ADD_BRICK'
+          ? <div className="testbrick"
+            style={buildSyleObj({ ...this.props.currentOperation.data, ...brickPosition }, step)}></div>
+          : null}
+        {this.state.bricks.map(({ position, size, id, color }) => (
+          <Brick key={id} className="testbrick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
         ))}
       </div>
     )
