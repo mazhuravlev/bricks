@@ -9,7 +9,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,6 +20,42 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.toolsPanel .btn {
+  min-width: 70px;
+}
+
+.bricks-grid {
+  width: 500px;
+  height: 500px;
+  position: relative;
+  background-color: gray;
+}
+
+.testbrick {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 400px;
+  height: 100px;
+  background-color: blue;
+}
+
+.grid-test-lebel {
+  display: block;
+  float: left;
+}
+
+.workArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.active {
+  background-color: aqua;
 }
 
 @keyframes App-logo-spin {
