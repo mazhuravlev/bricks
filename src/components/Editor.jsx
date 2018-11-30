@@ -2,27 +2,27 @@ import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 
 import GridBricks from './GridBricks';
-import { ADD_BRICK } from '../operations';
+import { ADD_BRICK, REMOVE_BRICK } from '../operations';
 
 export class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      operation: undefined
+      operation: {},
     };
-  }
-
-  changeSize = (selectBrick) => () => {
-    this.setState({ selectBrick: { ...selectBrick } });
   }
 
   setOperation(operation) {
     this.setState({ operation });
   }
 
-  setBrickOperation = (x, y) => () => this.setOperation({ type: ADD_BRICK, data: { x, y } })
+  setBrickOperation = (x, y) => () => this.setOperation({ type: ADD_BRICK, data: { x, y } });
+  setRemoveBrickOperation() {
+    this.setOperation({ type: REMOVE_BRICK });
+  }
 
   render() {
+    const { operation } = this.state
     return (
       <div>
         <div className="toolsPanel">
@@ -37,10 +37,13 @@ export class Editor extends Component {
             <button onClick={this.setBrickOperation(1, 3)}>1x3</button>
             <button onClick={this.setBrickOperation(1, 2)}>1x2</button>
           </div>
+          <div>
+            <button onClick={this.setRemoveBrickOperation}>Delete</button>
+          </div>
         </div>
         <div className="workArea">
           <ReactCursorPosition>
-            <GridBricks />
+            <GridBricks currentOperation={operation}/>
           </ReactCursorPosition>
         </div>
       </div>

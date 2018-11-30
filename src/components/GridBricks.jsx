@@ -1,46 +1,69 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import uuid from 'uuid/v4';
 
 const getGridPos = (x, y, step) => {
-  const posX = Math.floor(x / step);
-  const posY = Math.floor(y / step);
-  return { x: posX, y: posY, step };
+  const left = Math.floor(x / step);
+  const top = Math.floor(y / step);
+  return { left, top };
 };
 
-const buildMerkerStyle = ({ x, y, step }) => ({
-  left: x * step,
-  top: y * step,
-});
+const buildSyleObj = (styleObj, step) => Object.keys(styleObj)
+  .reduce((acc, key) => ({ ...acc, [key]: styleObj[key] * step }), {});
 
 export class GridBricks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 15,
+      step: 20,
+      brickSize: { width: 0, height: 0 },
+      brickPosition: { left: 0, top: 0 },
+      bricks: [],
     };
   }
 
+  calcBrickSize = () => {
+    const { data } = this.props.currentOperation;
+    if (data) {
+      const brickSize = {
+        width: data.x,
+        height: data.y,
+      };
+      this.setState({ brickSize });
+    }
+  };
+
+  calcBrickPosition = () => {
+    const { x, y } = this.props.position;
+    const currentCell = getGridPos(x, y, this.state.step);
+    this.setState({ brickPosition: currentCell });
+  };
+
+  addBrick = () => {
+    const newBrick = {
+      id: uuid(),
+      position: this.state.brickPosition,
+      size: this.state.brickSize,
+    }
+    this.setState({ bricks: [...this.state.bricks, newBrick] });
+  }
+
+  componentWillReceiveProps() {
+    this.calcBrickSize();
+  }
+
   render() {
-    const {
-      // isPositionOutside = false,
-      elementDimensions: {
-        width = 0,
-        height = 0
-      } = {},
-      position: {
-        x = 0,
-        y = 0
-      } = {}
-    } = this.props;
+    const { isActive, currentOperation: { type } } = this.props;
 
-    const gridPos = getGridPos(x, y, this.state.step);
+    const { brickSize, brickPosition, step } = this.state;
 
-    console.log(`Element width: ${width} height: ${height}`);
-    console.log(`Cursor position! X: ${x} Y: ${y}`);
-    console.log(`Grid position! X: ${gridPos.x} Y: ${gridPos.y}`);
+    const previewStyle = buildSyleObj({ ...brickSize, ...brickPosition }, step);
+
     return (
-      <div className="bricks-grid">
-        <div className='marker-grid-position' style={buildMerkerStyle(gridPos)}></div>
-        <div className="testbrick"></div>
+      <div className="bricks-grid" onMouseMove={this.calcBrickPosition} onClick={this.addBrick}>
+        {isActive && type === 'ADD_BRICK' ? <div className="testbrick" style={previewStyle}></div> : null}
+        {this.state.bricks.map(({ position, size, id }) => (
+          <div key={id} className="testbrick" style={buildSyleObj({ ...position, ...size }, step)}></div>
+        ))}
       </div>
     )
   }

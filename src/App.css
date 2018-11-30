@@ -31,14 +31,13 @@
   height: 400px;
   position: relative;
   background-color: gray;
+  overflow: hidden;
 }
 
 .testbrick {
   position: absolute;
-  top: 100px;
+  top: 0;
   left: 0;
-  width: 400px;
-  height: 100px;
   background-color: blue;
 }
 
