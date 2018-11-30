@@ -15,22 +15,21 @@ export class GridBricks extends Component {
     super(props);
     this.state = {
       step: 20,
-      brickSize: { width: 0, height: 0 },
       brickPosition: { left: 0, top: 0 },
       bricks: [],
     };
   }
 
-  calcBrickSize = () => {
-    const { data } = this.props.currentOperation;
-    if (data) {
-      const brickSize = {
-        width: data.x,
-        height: data.y,
-      };
-      this.setState({ brickSize });
-    }
-  };
+  // calcBrickSize = () => {
+  //   const { data } = this.props.currentOperation;
+  //   if (data) {
+  //     const brickSize = {
+  //       width: data.x,
+  //       height: data.y,
+  //     };
+  //     this.setState({ brickSize });
+  //   }
+  // };
 
   calcBrickPosition = () => {
     const { x, y } = this.props.position;
@@ -42,25 +41,22 @@ export class GridBricks extends Component {
     const newBrick = {
       id: uuid(),
       position: this.state.brickPosition,
-      size: this.state.brickSize,
+      size: this.props.currentOperation.data,
     }
     this.setState({ bricks: [...this.state.bricks, newBrick] });
   }
 
-  componentWillReceiveProps() {
-    this.calcBrickSize();
-  }
-
   render() {
-    const { isActive, currentOperation: { type } } = this.props;
+    const { isActive, currentOperation: { type, data } } = this.props;
 
-    const { brickSize, brickPosition, step } = this.state;
-
-    const previewStyle = buildSyleObj({ ...brickSize, ...brickPosition }, step);
+    const { brickPosition, step } = this.state;
 
     return (
       <div className="bricks-grid" onMouseMove={this.calcBrickPosition} onClick={this.addBrick}>
-        {isActive && type === 'ADD_BRICK' ? <div className="testbrick" style={previewStyle}></div> : null}
+        {isActive && type === 'ADD_BRICK' 
+        ? <div className="testbrick" 
+          style={buildSyleObj({ ...this.props.currentOperation.data, ...brickPosition }, step)}></div>
+         : null}
         {this.state.bricks.map(({ position, size, id }) => (
           <div key={id} className="testbrick" style={buildSyleObj({ ...position, ...size }, step)}></div>
         ))}

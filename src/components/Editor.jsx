@@ -16,10 +16,8 @@ export class Editor extends Component {
     this.setState({ operation });
   }
 
-  setBrickOperation = (x, y) => () => this.setOperation({ type: ADD_BRICK, data: { x, y } });
-  setRemoveBrickOperation() {
-    this.setOperation({ type: REMOVE_BRICK });
-  }
+  setBrickOperation = (width, height) => () => this.setOperation({ type: ADD_BRICK, data: { width, height } });
+  setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
 
   render() {
     const { operation } = this.state
