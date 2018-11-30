@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
+import _ from 'lodash';
 
 const getGridPos = (x, y, step) => {
   const left = Math.floor(x / step);
@@ -15,50 +16,52 @@ export class GridBricks extends Component {
     super(props);
     this.state = {
       step: 20,
-      brickPosition: { left: 0, top: 0 },
+      cursorPosition: { left: 0, top: 0 },
       bricks: [],
     };
   }
 
-  // calcBrickSize = () => {
-  //   const { data } = this.props.currentOperation;
-  //   if (data) {
-  //     const brickSize = {
-  //       width: data.x,
-  //       height: data.y,
-  //     };
-  //     this.setState({ brickSize });
-  //   }
-  // };
-
-  calcBrickPosition = () => {
+  cursorPosition = () => {
     const { x, y } = this.props.position;
     const currentCell = getGridPos(x, y, this.state.step);
-    this.setState({ brickPosition: currentCell });
+    this.setState({ cursorPosition: currentCell });
   };
 
   addBrick = () => {
     const newBrick = {
       id: uuid(),
-      position: this.state.brickPosition,
+      position: this.state.cursorPosition,
       size: this.props.currentOperation.data,
     }
     this.setState({ bricks: [...this.state.bricks, newBrick] });
   }
 
-  render() {
-    const { isActive, currentOperation: { type, data } } = this.props;
+  removeBrick = () => {
+    // const { bricks, cursorPosition } = this.state;
+    // bricks.filter(({ position }) => !_.isEqual(position, cursorPosition))
+  }
 
-    const { brickPosition, step } = this.state;
+  handleOperation = () => {
+    const { currentOperation: { type } } = this.props;
+    return {
+      ADD_BRICK: this.addBrick,
+      REMOVE_BRICK: this.removeBrick,
+    }[type]();
+  }
+
+  render() {
+    const { isActive, currentOperation: { type } } = this.props;
+
+    const { cursorPosition, step } = this.state;
 
     return (
-      <div className="bricks-grid" onMouseMove={this.calcBrickPosition} onClick={this.addBrick}>
-        {isActive && type === 'ADD_BRICK' 
-        ? <div className="testbrick" 
-          style={buildSyleObj({ ...this.props.currentOperation.data, ...brickPosition }, step)}></div>
-         : null}
+      <div className="bricks-grid" onMouseMove={this.cursorPosition} onClick={this.handleOperation}>
+        {isActive && type === 'ADD_BRICK' ? 
+          <div className="brick" style={buildSyleObj({ ...this.props.currentOperation.data, ...cursorPosition }, step)}></div>
+          : null
+        }
         {this.state.bricks.map(({ position, size, id }) => (
-          <div key={id} className="testbrick" style={buildSyleObj({ ...position, ...size }, step)}></div>
+          <div key={id} className="brick" style={buildSyleObj({ ...position, ...size }, step)}></div>
         ))}
       </div>
     )
