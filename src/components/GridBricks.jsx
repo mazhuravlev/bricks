@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 import _ from 'lodash';
+import Brick from './Brick';
 
 const getGridPos = (x, y, step) => {
   const left = Math.floor(x / step);
@@ -32,6 +33,7 @@ export class GridBricks extends Component {
       id: uuid(),
       position: this.state.cursorPosition,
       size: this.props.currentOperation.data,
+      color: this.props.color
     }
     this.setState({ bricks: [...this.state.bricks, newBrick] });
   }
@@ -60,8 +62,8 @@ export class GridBricks extends Component {
           <div className="brick" style={buildSyleObj({ ...this.props.currentOperation.data, ...cursorPosition }, step)}></div>
           : null
         }
-        {this.state.bricks.map(({ position, size, id }) => (
-          <div key={id} className="brick" style={buildSyleObj({ ...position, ...size }, step)}></div>
+        {this.state.bricks.map(({ position, size, id, color }) => (
+          <Brick key={id} className="brick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
         ))}
       </div>
     )

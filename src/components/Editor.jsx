@@ -4,11 +4,14 @@ import ReactCursorPosition from 'react-cursor-position';
 import GridBricks from './GridBricks';
 import { ADD_BRICK, REMOVE_BRICK } from '../operations';
 
+const colors = ["red", "yellow", "black", "blue"];
+
 export class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
       operation: {},
+      color: colors[0]
     };
   }
 
@@ -36,12 +39,15 @@ export class Editor extends Component {
             <button onClick={this.setBrickOperation(1, 2)}>1x2</button>
           </div>
           <div>
+            <select onChange={(e) => this.setState({ color: e.target.value })}>
+              {colors.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
             <button onClick={this.setRemoveBrickOperation}>Delete</button>
           </div>
         </div>
         <div className="workArea">
           <ReactCursorPosition>
-            <GridBricks currentOperation={operation}/>
+            <GridBricks color={this.state.color} currentOperation={operation} />
           </ReactCursorPosition>
         </div>
       </div>
