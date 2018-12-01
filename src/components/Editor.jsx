@@ -4,14 +4,14 @@ import ReactCursorPosition from 'react-cursor-position';
 import GridBricks from './GridBricks';
 import { ADD_BRICK, REMOVE_BRICK } from '../operations';
 
-const colors = ["red", "yellow", "black", "blue"];
+const colors = ['red', 'yellow', 'black', 'blue'];
 
-export class Editor extends Component {
+export default class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
       operation: {},
-      color: colors[0]
+      color: colors[0],
     };
   }
 
@@ -19,30 +19,32 @@ export class Editor extends Component {
     this.setState({ operation });
   }
 
-  setBrickOperation = (width, height) => () => this.setOperation({ type: ADD_BRICK, data: { width, height } });
+  setBrickOperation = (width, height) => (
+    () => this.setOperation({ type: ADD_BRICK, data: { width, height } }));
+
   setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
 
   render() {
-    const { operation } = this.state
+    const { operation } = this.state;
     return (
       <div>
         <div className="toolsPanel">
           <div className="btn-group bricks-horizontal-size">
-            <button onClick={this.setBrickOperation(4, 1)}>4x1</button>
-            <button onClick={this.setBrickOperation(3, 1)}>3x1</button>
-            <button onClick={this.setBrickOperation(2, 1)}>2x1</button>
-            <button onClick={this.setBrickOperation(1, 1)}>1x1</button>
+            <button onClick={this.setBrickOperation(4, 1)} type="button">4x1</button>
+            <button onClick={this.setBrickOperation(3, 1)} type="button">3x1</button>
+            <button onClick={this.setBrickOperation(2, 1)} type="button">2x1</button>
+            <button onClick={this.setBrickOperation(1, 1)} type="button">1x1</button>
           </div>
           <div className="btn-group bricks-vertical-size">
-            <button onClick={this.setBrickOperation(1, 4)}>1x4</button>
-            <button onClick={this.setBrickOperation(1, 3)}>1x3</button>
-            <button onClick={this.setBrickOperation(1, 2)}>1x2</button>
+            <button onClick={this.setBrickOperation(1, 4)} type="button">1x4</button>
+            <button onClick={this.setBrickOperation(1, 3)} type="button">1x3</button>
+            <button onClick={this.setBrickOperation(1, 2)} type="button">1x2</button>
           </div>
           <div>
-            <select onChange={(e) => this.setState({ color: e.target.value })}>
+            <select onChange={e => this.setState({ color: e.target.value })}>
               {colors.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            <button onClick={this.setRemoveBrickOperation}>Delete</button>
+            <button onClick={this.setRemoveBrickOperation} type="button">Delete</button>
           </div>
         </div>
         <div className="workArea">
@@ -51,8 +53,6 @@ export class Editor extends Component {
           </ReactCursorPosition>
         </div>
       </div>
-    )
+    );
   }
 }
-
-export default Editor
