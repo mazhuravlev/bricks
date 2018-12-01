@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 
-import Brick from './Brick.jsx';  //eslint-disable-line
+import Brick from './Brick';
 import * as operations from '../operations';
 import { getGridPos, buildSyleObj, isIntersection } from './gridHelpers';
 
