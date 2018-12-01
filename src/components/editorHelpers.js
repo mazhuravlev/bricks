@@ -37,3 +37,6 @@ export const isIntersection = (brick, currentCells) => {
     conditionsX2.every(item => item) && conditionsY2.every(item => item),
   ].some(item => item);
 };
+
+export const gridSizeValidate = (size, gridSizeLimit) => (
+  (size > 0) && (size <= gridSizeLimit) ? size : gridSizeLimit);

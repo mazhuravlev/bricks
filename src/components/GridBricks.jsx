@@ -3,21 +3,20 @@ import uuid from 'uuid/v4';
 
 import Brick from './Brick';
 import * as operations from '../operations';
-import { getGridPos, buildSyleObj, isIntersection } from './gridHelpers';
+import { getGridPos, buildSyleObj, isIntersection } from './editorHelpers';
 
 class GridBricks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 20,
       cursorPosition: { left: 0, top: 0 },
       bricks: [],
     };
   }
 
   cursorPosition = () => {
-    const { x, y } = this.props.position;
-    const { step } = this.state;
+    const { position: { x, y }, step } = this.props;
+
     const currentCell = getGridPos(x, y, step);
     this.setState({ cursorPosition: currentCell });
   };
@@ -51,22 +50,38 @@ class GridBricks extends Component {
     }[type]() : null;
   }
 
-  render() {
-    const { isActive, currentOperation: { type } } = this.props;
+  updateChanges = () => {
+    this.props.updateBricks(this.state.bricks);
+  }
 
-    const { cursorPosition, step } = this.state;
+  render() {
+    const {
+      isActive,
+      currentOperation: { type },
+      size,
+      step,
+    } = this.props;
+    const { cursorPosition } = this.state;
 
     return (
-      <div className="bricks-grid" onMouseMove={this.cursorPosition} onClick={this.handleOperation}>
-        {isActive && type === operations.ADD_BRICK ? (
-          <div className="brick" style={buildSyleObj({ ...this.props.currentOperation.data, ...cursorPosition }, step)} />
-        )
-          : null
-        }
-        {this.state.bricks.map(({ position, size, id, color }) => (  //eslint-disable-line
-          <Brick key={id} className="brick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
-        ))}
-      </div>
+      <>
+        <div
+          className="bricks-grid"
+          onMouseMove={this.cursorPosition}
+          onClick={this.handleOperation}
+          style={buildSyleObj(size, step)}
+        >
+          {isActive && type === operations.ADD_BRICK ? (
+            <div className="brick" style={buildSyleObj({ ...this.props.currentOperation.data, ...cursorPosition }, step)} />
+          )
+            : null
+          }
+          {this.state.bricks.map(({ position, size, id, color }) => (  //eslint-disable-line
+            <Brick key={id} className="brick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
+          ))}
+        </div>
+        <button onClick={this.updateChanges} type="button">Save</button>
+      </>
     );
   }
 }
