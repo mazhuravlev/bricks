@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
-import _ from 'lodash';
+
 import Brick from './Brick';
-
-const getGridPos = (x, y, step) => {
-  const left = Math.floor(x / step);
-  const top = Math.floor(y / step);
-  return { left, top };
-};
-
-const buildSyleObj = (styleObj, step) => Object.keys(styleObj)
-  .reduce((acc, key) => ({ ...acc, [key]: styleObj[key] * step }), {});
+import * as operations from '../operations';
+import { getGridPos, buildSyleObj, isIntersection  } from './gridHelpers';
 
 export class GridBricks extends Component {
   constructor(props) {
@@ -35,20 +28,25 @@ export class GridBricks extends Component {
       size: this.props.currentOperation.data,
       color: this.props.color
     }
-    this.setState({ bricks: [...this.state.bricks, newBrick] });
+    const result = this.state.bricks.map(brick => isIntersection(brick, newBrick));
+    if(result.every(item => !item)) {
+      this.setState({ bricks: [...this.state.bricks, newBrick] });
+    }
   }
 
   removeBrick = () => {
-    // const { bricks, cursorPosition } = this.state;
-    // bricks.filter(({ position }) => !_.isEqual(position, cursorPosition))
+    const restBricks = this.state.bricks.filter(brick => (
+      !isIntersection(brick, { position: this.state.cursorPosition })));
+    this.setState({ bricks: restBricks });
   }
 
   handleOperation = () => {
     const { currentOperation: { type } } = this.props;
-    return {
-      ADD_BRICK: this.addBrick,
-      REMOVE_BRICK: this.removeBrick,
-    }[type]();
+    return type ? 
+      {
+        [operations.ADD_BRICK]: this.addBrick,
+        [operations.REMOVE_BRICK]: this.removeBrick,
+      }[type]() : null;
   }
 
   render() {
@@ -58,7 +56,7 @@ export class GridBricks extends Component {
 
     return (
       <div className="bricks-grid" onMouseMove={this.cursorPosition} onClick={this.handleOperation}>
-        {isActive && type === 'ADD_BRICK' ? 
+        {isActive && type === operations.ADD_BRICK ? 
           <div className="brick" style={buildSyleObj({ ...this.props.currentOperation.data, ...cursorPosition }, step)}></div>
           : null
         }
