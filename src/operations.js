@@ -1,2 +1,3 @@
 export const ADD_BRICK = 'ADD_BRICK';
 export const REMOVE_BRICK = 'REMOVE_BRICK';
+export const CHANGE_COLOR_BRICK = 'CHANGE__COLOR_BRICK';

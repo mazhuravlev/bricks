@@ -33,26 +33,27 @@ class GridBricks extends Component {
     }
   }
 
-  removeBrick = () => {
-    const { bricks } = this.props;
-    const [brickSelected] = Object.values(bricks).filter(brick => (
-      isIntersection(brick, { position: this.state.cursorPosition })));
-    if (brickSelected) {
-      this.props.removeBrick({ id: brickSelected.id });
+  removeBrick = (id) => {
+    if (id) {
+      this.props.removeBrick({ id });
     }
   }
 
-  changeBrickColor = id => () => {
-    const { color } = this.props;
-    this.props.changeBrickColor({ id, color });
+  changeBrickColor = (id) => {
+    if (id) {
+      const { color } = this.props;
+      this.props.changeBrickColor({ id, color });
+    }
   }
 
-  handleOperation = () => {
+  handleOperation = id => (e) => {
+    e.stopPropagation();
     const { currentOperation: { type } } = this.props;
     return type ? {
       [operations.ADD_BRICK]: this.addBrick,
       [operations.REMOVE_BRICK]: this.removeBrick,
-    }[type]() : null;
+      [operations.CHANGE_COLOR_BRICK]: this.changeBrickColor,
+    }[type](id) : null;
   }
 
   updateChanges = () => {
@@ -75,7 +76,7 @@ class GridBricks extends Component {
         <div
           className="bricks-grid"
           onMouseMove={this.cursorPosition}
-          onClick={this.handleOperation}
+          onClick={this.handleOperation()}
           style={buildSyleObj(templateSize, step)}
         >
           {isActive && type === operations.ADD_BRICK ? (
@@ -90,7 +91,7 @@ class GridBricks extends Component {
               className="brick"
               color={color}
               style={buildSyleObj({ ...position, ...size }, step)}
-              changeBrickColor={this.changeBrickColor(id)}
+              handleOperation={this.handleOperation(id)}
             />
           ))}
         </div>

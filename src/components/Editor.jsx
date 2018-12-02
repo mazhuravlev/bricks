@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 import uuid from 'uuid/v4';
 
-import { ADD_BRICK, REMOVE_BRICK } from '../operations';
+import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
 import { buildSyleObj } from '../helpers';
 import Brick from './Brick';
 
@@ -28,6 +28,11 @@ export default class Editor extends Component {
   setBrickOperation = (width, height) => () => {
     this.props.changeBrickSize({ size: { width, height } });
     this.setOperation({ type: ADD_BRICK });
+  }
+
+  changeColor = ({ target: { value } }) => {
+    this.setOperation({ type: CHANGE_COLOR_BRICK });
+    this.setState({ color: value });
   }
 
   setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
@@ -113,7 +118,9 @@ export default class Editor extends Component {
             <button onClick={this.setBrickOperation(1, 2)} type="button">1x2</button>
           </div>
           <div>
-            <select onChange={e => this.setState({ color: e.target.value })}>
+            <select
+              onChange={this.changeColor}
+            >
               {colors.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
             <button onClick={this.setRemoveBrickOperation} type="button">Delete</button>
