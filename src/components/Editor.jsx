@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
-import uuid from 'uuid/v4';
 
 import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
 import { buildSyleObj } from '../helpers';
