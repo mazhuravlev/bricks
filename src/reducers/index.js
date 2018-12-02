@@ -11,8 +11,21 @@ const bricks = handleActions({
   [actions.removeBrick](state, { payload: { id } }) {
     return _.omit(state, id);
   },
+  [actions.changeBrickColor](state, { payload: { id, color } }) {
+    const selectBrick = state[id];
+    return { ...state, [id]: { ...selectBrick, color } };
+  },
 }, {});
 
+const initBrickSize = {
+  width: 4,
+  height: 1,
+};
+export const brickSize = handleActions({
+  [actions.changeBrickSize](state, { payload: { size } }) {
+    return size;
+  },
+}, initBrickSize);
 
 const initTemplateSize = {
   width: 4,
@@ -27,4 +40,5 @@ const templateSize = handleActions({
 export default combineReducers({
   bricks,
   templateSize,
+  brickSize,
 });

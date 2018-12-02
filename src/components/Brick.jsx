@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Brick({ style, color }) {
+export default function Brick({ style, color, changeBrickColor }) {  //eslint-disable-line
   const orientationClass = style.width > style.height ? 'hor' : 'ver';
   return (
-    <div className="brick" style={style}>
+    <div onClick={changeBrickColor} className="brick" style={style}>
       <div className={orientationClass} style={{ backgroundColor: color }} />
     </div>
   );

@@ -15,7 +15,6 @@ class GridBricks extends Component {
 
   cursorPosition = () => {
     const { position: { x, y }, step } = this.props;
-
     const currentCell = getGridPos(x, y, step);
     this.setState({ cursorPosition: currentCell });
   };
@@ -24,11 +23,11 @@ class GridBricks extends Component {
     const newBrick = {
       id: uuid(),
       position: this.state.cursorPosition,
-      size: this.props.currentOperation.data,
+      size: this.props.brickSize,
       color: this.props.color,
     };
     const { bricks } = this.props;
-    const result = bricks.map(brick => isIntersection(brick, newBrick));
+    const result = Object.values(bricks).map(brick => isIntersection(brick, newBrick));
     if (result.every(item => !item)) {
       this.props.addBrick({ brick: newBrick });
     }
@@ -36,11 +35,16 @@ class GridBricks extends Component {
 
   removeBrick = () => {
     const { bricks } = this.props;
-    const [brickSelected] = bricks.filter(brick => (
+    const [brickSelected] = Object.values(bricks).filter(brick => (
       isIntersection(brick, { position: this.state.cursorPosition })));
     if (brickSelected) {
       this.props.removeBrick({ id: brickSelected.id });
     }
+  }
+
+  changeBrickColor = id => () => {
+    const { color } = this.props;
+    this.props.changeBrickColor({ id, color });
   }
 
   handleOperation = () => {
@@ -75,12 +79,19 @@ class GridBricks extends Component {
           style={buildSyleObj(templateSize, step)}
         >
           {isActive && type === operations.ADD_BRICK ? (
-            <div className="brick" style={buildSyleObj({ ...this.props.currentOperation.data, ...cursorPosition }, step)} />
+            <div className="brick" style={buildSyleObj({ ...this.props.brickSize, ...cursorPosition }, step)} />
           )
             : null
           }
-          {bricks.map(({ position, size, id, color }) => (  //eslint-disable-line
-            <Brick key={id} className="brick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
+          {Object.values(bricks).map(({ position, size, id, color }) => (  //eslint-disable-line
+            <Brick
+              key={id}
+              id={id}
+              className="brick"
+              color={color}
+              style={buildSyleObj({ ...position, ...size }, step)}
+              changeBrickColor={this.changeBrickColor(id)}
+            />
           ))}
         </div>
       </>

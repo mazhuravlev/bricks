@@ -1,22 +1,17 @@
 import { connect } from 'react-redux';
 import GridBricks from '../components/GridBricks';
-import { addBrick, removeBrick } from '../actions';
+import * as actionCreators from '../actions';
 
-const mapStateToProps = ({ bricks, templateSize }) => {
-  const bricksValues = Object.values(bricks);
+const mapStateToProps = ({ bricks, templateSize, brickSize }) => {
   const props = {
-    bricks: bricksValues,
+    bricks,
     templateSize,
+    brickSize,
   };
   return props;
 };
 
-const mapDispatchToProps = dispatch => ({
-  addBrick: brick => dispatch(addBrick(brick)),
-  removeBrick: id => dispatch(removeBrick(id)),
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  actionCreators,
 )(GridBricks);

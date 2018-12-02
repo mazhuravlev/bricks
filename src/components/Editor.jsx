@@ -25,8 +25,10 @@ export default class Editor extends Component {
     this.setState({ operation });
   }
 
-  setBrickOperation = (width, height) => (
-    () => this.setOperation({ type: ADD_BRICK, data: { width, height } }));
+  setBrickOperation = (width, height) => () => {
+    this.props.changeBrickSize({ size: { width, height } });
+    this.setOperation({ type: ADD_BRICK });
+  }
 
   setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
 
