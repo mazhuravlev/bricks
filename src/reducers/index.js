@@ -28,8 +28,8 @@ export const brickSize = handleActions({
 }, initBrickSize);
 
 const initTemplateSize = {
-  width: 4,
-  height: 4,
+  width: 10,
+  height: 10,
 };
 const templateSize = handleActions({
   [actions.changeTemplateSize](state = initTemplateSize, { payload: { newSize } }) {

@@ -16,7 +16,7 @@ export default class Editor extends Component {
     this.state = {
       operation: {},
       color: colors[0],
-      step: 40,
+      step: 10,
       tileSize: 4,
     };
   }
@@ -51,8 +51,8 @@ export default class Editor extends Component {
     const { step, tileSize } = this.state;
     const { bricks, templateSize } = this.props;
     const tileArr = new Array(tileSize).fill(null);
-    const arr = tileArr.map(() => (
-      <div key={uuid()} className="tileItem" style={buildSyleObj(templateSize, step)}>
+    const arr = tileArr.map((_, i) => (
+      <div key={i} className="tileItem" style={buildSyleObj(templateSize, step)}>
         {bricks.map(({ position, size, id, color }) => (  //eslint-disable-line
           <Brick key={id} className="brick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
         ))}
@@ -72,7 +72,11 @@ export default class Editor extends Component {
       <div>
         <div className="toolsPanel">
           <div className="panel-grid-size">
-            <p className="panel-item">Рамзмер текстуры:</p>
+            <div>
+              шаг сетки 
+                <button onClick={() => this.setState({step: this.state.step + 1})}>+1</button> 
+                <button onClick={() => this.setState({step: this.state.step - 1})}>-1</button> 
+            </div>
             <div className="grid-size-options-panel">
               <div className="width">
                 <p>Ширина:</p>
@@ -135,8 +139,11 @@ export default class Editor extends Component {
             />
           </ReactCursorPosition>
         </div>
-        <div className="grid-area-preview">
+        <div>
+        <div className="grid-area-preview"
+         style={{gridTemplateColumns: [1,1].map(x => this.state.step * this.props.templateSize.width + 'px').join(' ')}}>
           {bricks.length > 0 ? this.renderTile() : null}
+        </div>
         </div>
       </div>
     );

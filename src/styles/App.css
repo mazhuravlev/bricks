@@ -59,15 +59,13 @@
 .brick .hor {
     width: 95%;
     height: 80%;
-    margin: auto auto;
-    display: inline-block;
+    margin: 2.5% auto;
 }
 
 .brick .ver {
   width: 80%;
   height: 95%;
-  margin: auto auto;
-  display: inline-block;
+  margin: 4.5% auto;
 }
 
 .workArea {
@@ -78,10 +76,9 @@
 }
 
 .grid-area-preview {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+    display: grid;
+    justify-content: center;
+    background-color: #808080;
 }
 
 .tileItem {
