@@ -2,4 +2,5 @@ node_modules
 dist
 flow-typed
 public
-App.js
+serviceWorker.js
+App.test.js

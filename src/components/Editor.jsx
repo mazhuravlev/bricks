@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 import uuid from 'uuid/v4';
 
-import GridBricks from './GridBricks';
 import { ADD_BRICK, REMOVE_BRICK } from '../operations';
-import { gridSizeValidate, buildSyleObj } from './editorHelpers';
+import { buildSyleObj } from '../helpers';
 import Brick from './Brick';
+
+import GridBricksContainer from '../containers/GridBricks';
 
 const colors = ['red', 'yellow', 'black', 'blue'];
 
@@ -15,15 +16,6 @@ export default class Editor extends Component {
     this.state = {
       operation: {},
       color: colors[0],
-      gridSize: {
-        width: 4,
-        height: 4,
-      },
-      gridSizeLimit: {
-        width: 10,
-        height: 10,
-      },
-      bricks: [],
       step: 40,
       tileSize: 4,
     };
@@ -36,38 +28,25 @@ export default class Editor extends Component {
   setBrickOperation = (width, height) => (
     () => this.setOperation({ type: ADD_BRICK, data: { width, height } }));
 
-  updateBricks = (bricks) => {
-    this.setState({ bricks });
-  }
-
   setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
 
-  changeGridSize = newSize => () => {
-    const { gridSize } = this.state;
-    this.setGridSizeToState({ ...gridSize, ...newSize });
-  }
-
-  handleGridSize = ({ target }) => {
-    const { gridSize } = this.state;
+  handleGridSize = newSize => ({ target }) => {
+    const { changeTemplateSize } = this.props;
     const { value, name } = target;
-    this.setGridSizeToState({ ...gridSize, [name]: value });
+    if (newSize) {
+      changeTemplateSize({ newSize });
+    } else {
+      changeTemplateSize({ newSize: { [name]: value } });
+    }
   };
 
-  setGridSizeToState = ({ width, height }) => {
-    const { gridSizeLimit } = this.state;
-    const newSize = {
-      width: gridSizeValidate(width, gridSizeLimit.width),
-      height: gridSizeValidate(height, gridSizeLimit.height),
-    };
-    this.setState({ gridSize: { ...newSize } });
-  }
-
   renderTile = () => {
-    const { gridSize, step, tileSize } = this.state;
+    const { step, tileSize } = this.state;
+    const { bricks, templateSize } = this.props;
     const tileArr = new Array(tileSize).fill(null);
     const arr = tileArr.map(() => (
-      <div key={uuid()} className="tileItem" style={buildSyleObj(gridSize, step)}>
-        {this.state.bricks.map(({ position, size, id, color }) => (  //eslint-disable-line
+      <div key={uuid()} className="tileItem" style={buildSyleObj(templateSize, step)}>
+        {bricks.map(({ position, size, id, color }) => (  //eslint-disable-line
           <Brick key={id} className="brick" color={color} style={buildSyleObj({ ...position, ...size }, step)} />
         ))}
       </div>
@@ -76,7 +55,12 @@ export default class Editor extends Component {
   }
 
   render() {
-    const { operation, gridSize } = this.state;
+    const { operation } = this.state;
+    const {
+      bricks,
+      templateSize: { width, height },
+    } = this.props;
+
     return (
       <div>
         <div className="toolsPanel">
@@ -85,33 +69,33 @@ export default class Editor extends Component {
             <div className="grid-size-options-panel">
               <div className="width">
                 <p>Ширина:</p>
-                <button type="button" onClick={this.changeGridSize({ width: gridSize.width - 1 })}>-1</button>
+                <button type="button" onClick={this.handleGridSize({ width: width - 1 })}>-1</button>
                 <label htmlFor="grid-width">
                   <input
                     type="text"
                     className="input-grid-size"
                     name="width"
                     id="grid-width"
-                    value={this.state.gridSize.width}
-                    onChange={this.handleGridSize}
+                    value={width}
+                    onChange={this.handleGridSize()}
                   />
                 </label>
-                <button type="button" onClick={this.changeGridSize({ width: gridSize.width + 1 })}>+1</button>
+                <button type="button" onClick={this.handleGridSize({ width: width + 1 })}>+1</button>
               </div>
               <div className="height">
                 <p>Высота:</p>
-                <button type="button" onClick={this.changeGridSize({ height: gridSize.height - 1 })}>-1</button>
+                <button type="button" onClick={this.handleGridSize({ height: height - 1 })}>-1</button>
                 <label htmlFor="grid-height">
                   <input
                     type="text"
                     className="input-grid-size"
                     name="height"
                     id="grid-height"
-                    value={this.state.gridSize.height}
-                    onChange={this.handleGridSize}
+                    value={height}
+                    onChange={this.handleGridSize()}
                   />
                 </label>
-                <button type="button" onClick={this.changeGridSize({ height: gridSize.height + 1 })}>+1</button>
+                <button type="button" onClick={this.handleGridSize({ height: height + 1 })}>+1</button>
               </div>
             </div>
           </div>
@@ -135,17 +119,15 @@ export default class Editor extends Component {
         </div>
         <div className="workArea">
           <ReactCursorPosition>
-            <GridBricks
-              size={gridSize}
+            <GridBricksContainer
               color={this.state.color}
               currentOperation={operation}
-              updateBricks={this.updateBricks}
               step={this.state.step}
             />
           </ReactCursorPosition>
         </div>
         <div className="grid-area-preview">
-          {this.state.bricks.length > 0 ? this.renderTile() : null}
+          {bricks.length > 0 ? this.renderTile() : null}
         </div>
       </div>
     );
