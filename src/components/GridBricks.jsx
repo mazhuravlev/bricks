@@ -49,15 +49,31 @@ class GridBricks extends Component {
   handleOperation = id => (e) => {
     e.stopPropagation();
     const { currentOperation: { type } } = this.props;
-    return type ? {
-      [operations.ADD_BRICK]: this.addBrick,
-      [operations.REMOVE_BRICK]: this.removeBrick,
-      [operations.CHANGE_COLOR_BRICK]: this.changeBrickColor,
-    }[type](id) : null;
+    if (type) {
+      const method = {
+        [operations.ADD_BRICK]: this.addBrick,
+        [operations.REMOVE_BRICK]: this.removeBrick,
+        [operations.CHANGE_COLOR_BRICK]: this.changeBrickColor,
+      };
+      method[type](id);
+    }
+    setTimeout(() => this.updateBrickSector());
   }
 
-  updateChanges = () => {
-    this.props.updateBricks(this.state.bricks);
+  updateBrickSector = () => {
+    const { sector, bricks, buildBrickSector } = this.props;
+    const intersectionBricks = Object.values(bricks).filter(brick => isIntersection(brick, sector));
+    const tileBricks = intersectionBricks.map((brick) => {
+      const { position } = brick;
+      const left = position.left - sector.position.left;
+      const top = position.top - sector.position.top;
+      return { ...brick, position: { left, top } };
+    });
+    if (tileBricks.length > 0) {
+      buildBrickSector({ selectedBricks: tileBricks });
+    } else {
+      buildBrickSector({ selectedBricks: [] });
+    }
   }
 
   render() {
@@ -67,6 +83,8 @@ class GridBricks extends Component {
       templateSize,
       step,
       bricks,
+      sector,
+      bricksColors,
     } = this.props;
 
     const { cursorPosition } = this.state;
@@ -84,16 +102,20 @@ class GridBricks extends Component {
           )
             : null
           }
-          {Object.values(bricks).map(({ position, size, id, color }) => (  //eslint-disable-line
-            <Brick
-              key={id}
-              id={id}
-              className="brick"
-              color={color}
-              style={buildSyleObj({ ...position, ...size }, step)}
-              handleOperation={this.handleOperation(id)}
-            />
-          ))}
+          <div className="templateSector" style={buildSyleObj({ ...sector.position, ...sector.size }, step)} />
+          {Object.values(bricks).map(({ position, size, id }) => {
+            const colorId = `${id}-${bricksColors.name}`;
+            const { color } = bricksColors.data[colorId] || 'gray';
+            return (
+              <Brick
+                key={id}
+                id={id}
+                className="brick"
+                color={color}
+                style={buildSyleObj({ ...position, ...size }, step)}
+                handleOperation={this.handleOperation(id)}
+              />);
+          })}
         </div>
       </>
     );

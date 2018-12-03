@@ -2,11 +2,13 @@ import { connect } from 'react-redux';
 import Editor from '../components/Editor';
 import * as actionCreators from '../actions';
 
-const mapStateToProps = ({ bricks, templateSize }) => {
-  const bricksValues = Object.values(bricks);
+const mapStateToProps = (state) => {
   const props = {
-    bricks: bricksValues,
-    templateSize,
+    bricks: state.bricks,
+    templateSize: state.templateSize,
+    sector: state.sector,
+    brickSector: state.brickSector,
+    bricksColors: state.bricksColors,
   };
   return props;
 };

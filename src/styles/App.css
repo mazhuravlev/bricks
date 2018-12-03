@@ -30,11 +30,17 @@
   position: relative;
   background-color: gray;
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
-.grid-size-options-panel {
-  margin-bottom: 10px;
+.templateSector {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid black;
+}
+
+.control-panel  {
+  /* margin-bottom: 10px; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,6 +49,11 @@
 .grid-size-options-panel .input-grid-size {
   text-align: center;
   max-width: 100px;
+}
+
+.grid-sector-options-panel .input-sector-size {
+  text-align: center;
+  max-width: 40px;
 }
 
 .brick {
@@ -82,6 +93,12 @@
 }
 
 .tileItem {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.sectorItem {
   display: block;
   position: relative;
   overflow: hidden;

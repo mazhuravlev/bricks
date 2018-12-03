@@ -28,17 +28,74 @@ export const brickSize = handleActions({
 }, initBrickSize);
 
 const initTemplateSize = {
-  width: 10,
-  height: 10,
+  width: 6,
+  height: 6,
 };
 const templateSize = handleActions({
-  [actions.changeTemplateSize](state = initTemplateSize, { payload: { newSize } }) {
+  [actions.changeTemplateSize](state, { payload: { newSize } }) {
     return { ...state, ...newSize };
   },
 }, initTemplateSize);
+
+const initSectorSize = {
+  position: {
+    left: 1,
+    top: 1,
+  },
+  size: {
+    width: 4,
+    height: 4,
+  },
+};
+const sector = handleActions({
+  [actions.changeSectorSize](state, { payload: { size } }) {
+    const newSize = { ...state.size, ...size };
+    return { ...state, size: newSize };
+  },
+  [actions.changeSectorPosition](state, { payload: { position } }) {
+    const newPosition = { ...state.position, ...position };
+    return { ...state, position: newPosition };
+  },
+}, initSectorSize);
+
+const brickSector = handleActions({
+  [actions.buildBrickSector](state, { payload: { selectedBricks } }) {
+    return selectedBricks;
+  },
+}, []);
+
+const initColorsPreset = {
+  name: '',
+  data: {},
+};
+const bricksColors = handleActions({
+  [actions.addBrick](state, { payload: { brick: { id, color } } }) {
+    const { name, data } = state;
+    const presetId = `${id}-${name}`;
+    const newData = { ...data, [presetId]: { name, brickId: id, color } };
+    return { ...state, data: { ...newData } };
+  },
+  [actions.changeBrickColor](state, { payload: { id, color } }) {
+    const { name, data } = state;
+    const presetId = `${id}-${name}`;
+    const newData = { ...data, [presetId]: { name, brickId: id, color } };
+    return { ...state, data: { ...newData } };
+  },
+  [actions.changePresetName](state, { payload: { name } }) {
+    return { ...state, name };
+  },
+  [actions.removeBrick](state, { payload: { id } }) {
+    const { data } = state;
+    const newColors = _.omitBy(data, ({ brickId }) => brickId === id);
+    return { ...state, data: newColors };
+  },
+}, initColorsPreset);
 
 export default combineReducers({
   bricks,
   templateSize,
   brickSize,
+  sector,
+  brickSector,
+  bricksColors,
 });
