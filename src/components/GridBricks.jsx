@@ -76,6 +76,49 @@ class GridBricks extends Component {
     }
   }
 
+  renderSector() {
+    const { position, size } = this.props.sector;
+    const lineH1 = {
+      position: { left: position.left, top: position.top },
+      size: { width: size.width, height: 0 },
+    };
+    const lineH2 = {
+      position: { left: position.left, top: position.top + size.height },
+      size: {
+        width: size.width,
+        height: 0,
+      },
+    };
+    const lineV1 = {
+      position: {
+        left: position.left + size.width,
+        top: position.top,
+      },
+      size: {
+        width: 0,
+        height: size.height,
+      },
+    };
+    const lineV2 = {
+      position: {
+        left: position.left,
+        top: position.top,
+      },
+      size: {
+        width: 0,
+        height: size.height,
+      },
+    };
+    return (
+      <>
+        <div className="sectorLine" style={buildSyleObj({ ...lineH1.position, ...lineH1.size }, this.props.step)} />
+        <div className="sectorLine" style={buildSyleObj({ ...lineH2.position, ...lineH2.size }, this.props.step)} />
+        <div className="sectorLine" style={buildSyleObj({ ...lineV1.position, ...lineV1.size }, this.props.step)} />
+        <div className="sectorLine" style={buildSyleObj({ ...lineV2.position, ...lineV2.size }, this.props.step)} />
+      </>
+    );
+  }
+
   render() {
     const {
       isActive,
@@ -116,6 +159,7 @@ class GridBricks extends Component {
                 handleOperation={this.handleOperation(id)}
               />);
           })}
+          {this.renderSector()}
         </div>
       </>
     );

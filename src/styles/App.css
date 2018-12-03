@@ -104,6 +104,12 @@
   overflow: hidden;
 }
 
+.sectorLine {
+  position: absolute;
+  background-color: black;
+  border: 2px solid black;
+}
+
 .active {
   background-color: aqua;
 }
