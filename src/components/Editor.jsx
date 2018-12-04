@@ -1,12 +1,13 @@
+/* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 
 import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
-import { isIntersection } from '../helpers';
 
 import GridBricksContainer from '../containers/GridBricks';
 import Tools from './Tools';
 import Preview from './Preview';
+import { generateBricksMatrix } from '../helpers';
 
 const colors = ['red', 'yellow', 'black', 'blue'];
 const initPresetsColl = [1];
@@ -18,12 +19,13 @@ export default class Editor extends Component {
       operation: { type: ADD_BRICK, data: { size: 1 } },
       color: colors[0],
       presetsColl: initPresetsColl,
-      step: 30,
+      step: 15,
     };
     this.setBrickOperation = this.setBrickOperation.bind(this);
     this.setRemoveBrickOperation = this.setRemoveBrickOperation.bind(this);
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
+    this.updateBrickSector = this.updateBrickSector.bind(this);
   }
 
   componentWillMount() {
@@ -72,14 +74,23 @@ export default class Editor extends Component {
 
   updateBrickSector = () => {
     const { sector, bricks, buildBrickSector } = this.props;
-    const intersectionBricks = Object.values(bricks).filter(brick => isIntersection(brick, sector));
-    const tileBricks = intersectionBricks.map((brick) => {
+    const brickMatrix = generateBricksMatrix(bricks);
+    const bricksInSector = [];
+    for (let x = 0; x < sector.size.width; x++) {
+      for (let y = 0; y < sector.size.height; y++) {
+        const brick = brickMatrix[`${x + sector.size.left};${y + sector.size.top}`];
+        if (brick) {
+          bricksInSector.push(brick);
+        }
+      }
+    }
+    const tileBricks = bricksInSector.map((brick) => {
       const { position } = brick;
       const left = position.left - sector.size.left;
       const top = position.top - sector.size.top;
       return { ...brick, position: { left, top } };
     });
-    if (intersectionBricks.length > 0) {
+    if (bricksInSector.length > 0) {
       buildBrickSector({ selectedBricks: tileBricks });
     } else {
       buildBrickSector({ selectedBricks: [] });
@@ -114,6 +125,7 @@ export default class Editor extends Component {
               color={this.state.color}
               currentOperation={this.state.operation}
               step={this.state.step}
+              updateBrickSector={this.updateBrickSector}
             />
           </ReactCursorPosition>
         </div>
@@ -125,6 +137,10 @@ export default class Editor extends Component {
             width={size.width}
             step={this.state.step}
           />
+        </div>
+        <div>
+          <p>PNG</p>
+          <img id="preview" alt="preview" />
         </div>
       </div>
     );

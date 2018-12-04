@@ -1,9 +1,10 @@
+/* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 
 import Brick from './Brick';
 import * as operations from '../operations';
-import { getGridPos, buildSyleObj, isIntersection } from '../helpers';
+import { getGridPos, buildSyleObj, generateBricksMatrix } from '../helpers';
 
 class GridBricks extends Component {
   constructor(props) {
@@ -27,10 +28,15 @@ class GridBricks extends Component {
       color: this.props.color,
     };
     const { bricks } = this.props;
-    const result = Object.values(bricks).map(brick => isIntersection(brick, newBrick));
-    if (result.every(item => !item)) {
-      this.props.addBrick({ brick: newBrick });
+    const brickMatrix = generateBricksMatrix(bricks);
+    for (let x = 0; x < newBrick.size.width; x++) {
+      for (let y = 0; y < newBrick.size.height; y++) {
+        if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
+          return;
+        }
+      }
     }
+    this.props.addBrick({ brick: newBrick });
   }
 
   removeBrick = (id) => {
@@ -57,23 +63,7 @@ class GridBricks extends Component {
       };
       method[type](id);
     }
-    setTimeout(() => this.updateBrickSector());
-  }
-
-  updateBrickSector = () => {
-    const { sector, bricks, buildBrickSector } = this.props;
-    const intersectionBricks = Object.values(bricks).filter(brick => isIntersection(brick, sector));
-    const tileBricks = intersectionBricks.map((brick) => {
-      const { position } = brick;
-      const left = position.left - sector.size.left;
-      const top = position.top - sector.size.top;
-      return { ...brick, position: { left, top } };
-    });
-    if (tileBricks.length > 0) {
-      buildBrickSector({ selectedBricks: tileBricks });
-    } else {
-      buildBrickSector({ selectedBricks: [] });
-    }
+    setTimeout(() => this.props.updateBrickSector());
   }
 
   renderSector() {

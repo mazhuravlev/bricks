@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 export const getGridPos = (x, y, step) => {
   const left = Math.floor(x / step);
   const top = Math.floor(y / step);
@@ -7,36 +8,17 @@ export const getGridPos = (x, y, step) => {
 export const buildSyleObj = (styleObj, step) => Object.keys(styleObj)
   .reduce((acc, key) => ({ ...acc, [key]: styleObj[key] * step }), {});
 
-export const isIntersection = (brick, currentCells) => {
-  const sector = {
-    size: currentCells.size || { width: 1, height: 1 },
-    position: currentCells.position,
-  };
-
-  const { position, size } = brick;
-  const conditionsX1 = [
-    sector.size.left <= position.left,
-    (sector.size.left + sector.size.width - 1) >= position.left,
-  ];
-  const conditionsX2 = [
-    sector.size.left > position.left,
-    sector.size.left <= (position.left + size.width - 1),
-  ];
-  const conditionsY1 = [
-    sector.size.top <= position.top,
-    (sector.size.top + sector.size.height - 1) >= position.top,
-  ];
-  const conditionsY2 = [
-    sector.size.top > position.top,
-    sector.size.top <= (position.top + size.height - 1),
-  ];
-  return [
-    conditionsX1.every(item => item) && conditionsY1.every(item => item),
-    conditionsX1.every(item => item) && conditionsY2.every(item => item),
-    conditionsX2.every(item => item) && conditionsY1.every(item => item),
-    conditionsX2.every(item => item) && conditionsY2.every(item => item),
-  ].some(item => item);
-};
-
 export const gridSizeValidate = (size, gridSizeLimit) => (
   (size > 0) && (size <= gridSizeLimit) ? size : gridSizeLimit);
+
+export function generateBricksMatrix(bricks) {
+  const brickMatrix = {};
+  Object.values(bricks).forEach((brick) => {
+    for (let x = 0; x < brick.size.width; x++) {
+      for (let y = 0; y < brick.size.height; y++) {
+        brickMatrix[`${x + brick.position.left};${y + brick.position.top}`] = brick;
+      }
+    }
+  });
+  return brickMatrix;
+}

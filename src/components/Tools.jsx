@@ -1,5 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import domtoimage from 'dom-to-image';
 
 export default class Tools extends Component {
   constructor(props) {
@@ -7,15 +8,28 @@ export default class Tools extends Component {
     this.handleSector = this.handleSector.bind(this);
   }
 
+  componentDidMount() {
+    setInterval(() => this.save(), 2000);
+  }
+
   handleSector(e) {
     const newSize = { ...this.props.sectorSize, [e.target.name]: e.target.value };
     this.props.setSectorSize(newSize);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async save() {
+    const img = await domtoimage.toPng(document.querySelector('.sectorItem'));
+    document.querySelector('#preview').src = img;
   }
 
   render() {
     const { sectorSize } = this.props;
     return (
       <div style={{ padding: 8 }}>
+        <div>
+          <button onClick={this.save} type="button">save</button>
+        </div>
         <div>
           <button onClick={this.props.setBrickOperation(4, 1)} type="button">H 4</button>
           <button onClick={this.props.setBrickOperation(3, 1)} type="button">H 3</button>
