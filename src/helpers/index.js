@@ -15,20 +15,20 @@ export const isIntersection = (brick, currentCells) => {
 
   const { position, size } = brick;
   const conditionsX1 = [
-    sector.position.left <= position.left,
-    (sector.position.left + sector.size.width - 1) >= position.left,
+    sector.size.left <= position.left,
+    (sector.size.left + sector.size.width - 1) >= position.left,
   ];
   const conditionsX2 = [
-    sector.position.left > position.left,
-    sector.position.left <= (position.left + size.width - 1),
+    sector.size.left > position.left,
+    sector.size.left <= (position.left + size.width - 1),
   ];
   const conditionsY1 = [
-    sector.position.top <= position.top,
-    (sector.position.top + sector.size.height - 1) >= position.top,
+    sector.size.top <= position.top,
+    (sector.size.top + sector.size.height - 1) >= position.top,
   ];
   const conditionsY2 = [
-    sector.position.top > position.top,
-    sector.position.top <= (position.top + size.height - 1),
+    sector.size.top > position.top,
+    sector.size.top <= (position.top + size.height - 1),
   ];
   return [
     conditionsX1.every(item => item) && conditionsY1.every(item => item),

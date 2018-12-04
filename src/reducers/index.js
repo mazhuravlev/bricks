@@ -28,8 +28,8 @@ export const brickSize = handleActions({
 }, initBrickSize);
 
 const initTemplateSize = {
-  width: 6,
-  height: 6,
+  width: 10,
+  height: 10,
 };
 const templateSize = handleActions({
   [actions.changeTemplateSize](state, { payload: { newSize } }) {
@@ -38,23 +38,16 @@ const templateSize = handleActions({
 }, initTemplateSize);
 
 const initSectorSize = {
-  position: {
-    left: 1,
-    top: 1,
-  },
   size: {
+    left: 3,
+    top: 3,
     width: 4,
     height: 4,
   },
 };
 const sector = handleActions({
-  [actions.changeSectorSize](state, { payload: { size } }) {
-    const newSize = { ...state.size, ...size };
-    return { ...state, size: newSize };
-  },
-  [actions.changeSectorPosition](state, { payload: { position } }) {
-    const newPosition = { ...state.position, ...position };
-    return { ...state, position: newPosition };
+  [actions.setSectorSize](state, { payload }) {
+    return { ...state, size: payload };
   },
 }, initSectorSize);
 

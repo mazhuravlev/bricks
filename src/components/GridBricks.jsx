@@ -65,8 +65,8 @@ class GridBricks extends Component {
     const intersectionBricks = Object.values(bricks).filter(brick => isIntersection(brick, sector));
     const tileBricks = intersectionBricks.map((brick) => {
       const { position } = brick;
-      const left = position.left - sector.position.left;
-      const top = position.top - sector.position.top;
+      const left = position.left - sector.size.left;
+      const top = position.top - sector.size.top;
       return { ...brick, position: { left, top } };
     });
     if (tileBricks.length > 0) {
@@ -77,45 +77,40 @@ class GridBricks extends Component {
   }
 
   renderSector() {
-    const { position, size } = this.props.sector;
+    const { size } = this.props.sector;
+    const { step } = this.props;
+    const lineThickness = 2;
     const lineH1 = {
-      position: { left: position.left, top: position.top },
-      size: { width: size.width, height: 0 },
+      left: 0,
+      top: 0,
+      width: size.width * step,
+      height: lineThickness,
     };
     const lineH2 = {
-      position: { left: position.left, top: position.top + size.height },
-      size: {
-        width: size.width,
-        height: 0,
-      },
+      left: 0,
+      top: size.height * step,
+      width: size.width * step,
+      height: lineThickness,
     };
     const lineV1 = {
-      position: {
-        left: position.left + size.width,
-        top: position.top,
-      },
-      size: {
-        width: 0,
-        height: size.height,
-      },
+      left: 0,
+      top: 0,
+      width: lineThickness,
+      height: size.height * step,
     };
     const lineV2 = {
-      position: {
-        left: position.left,
-        top: position.top,
-      },
-      size: {
-        width: 0,
-        height: size.height,
-      },
+      left: size.width * step,
+      top: 0,
+      width: lineThickness,
+      height: size.height * step + lineThickness,
     };
     return (
-      <>
-        <div className="sectorLine" style={buildSyleObj({ ...lineH1.position, ...lineH1.size }, this.props.step)} />
-        <div className="sectorLine" style={buildSyleObj({ ...lineH2.position, ...lineH2.size }, this.props.step)} />
-        <div className="sectorLine" style={buildSyleObj({ ...lineV1.position, ...lineV1.size }, this.props.step)} />
-        <div className="sectorLine" style={buildSyleObj({ ...lineV2.position, ...lineV2.size }, this.props.step)} />
-      </>
+      <div className="templateSector" style={{ ...buildSyleObj(size, this.props.step), width: 0, height: 0 }}>
+        <div className="sectorLine" style={lineH1} />
+        <div className="sectorLine" style={lineH2} />
+        <div className="sectorLine" style={lineV1} />
+        <div className="sectorLine" style={lineV2} />
+      </div>
     );
   }
 
@@ -126,7 +121,6 @@ class GridBricks extends Component {
       templateSize,
       step,
       bricks,
-      sector,
       bricksColors,
     } = this.props;
 
@@ -145,7 +139,6 @@ class GridBricks extends Component {
           )
             : null
           }
-          <div className="templateSector" style={buildSyleObj({ ...sector.position, ...sector.size }, step)} />
           {Object.values(bricks).map(({ position, size, id }) => {
             const colorId = `${id}-${bricksColors.name}`;
             const { color } = bricksColors.data[colorId] || 'gray';

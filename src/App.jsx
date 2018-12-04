@@ -15,13 +15,9 @@ const store = createStore(
 /* eslint-enable */
 
 const App = () => (
-  <div className="App">
-    <div className="appContainer">
-      <Provider store={store}>
-        <EditorContainer />
-      </Provider>
-    </div>
-  </div>
+  <Provider store={store}>
+    <EditorContainer />
+  </Provider>
 );
 
 export default App;

@@ -1,26 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
 
 .toolsPanel .btn {
   min-width: 70px;
@@ -35,8 +12,6 @@
 
 .templateSector {
   position: absolute;
-  box-sizing: border-box;
-  border: 2px solid black;
 }
 
 .control-panel  {
@@ -58,25 +33,13 @@
 
 .brick {
   position: absolute;
+  box-sizing: border-box;
   top: 0;
   left: 0;
-  background-color: darkslategrey;
-  width: 95%;
-    height: 80%;
-    margin: auto auto;
-    display: inline-block;
-}
-
-.brick .hor {
-    width: 95%;
-    height: 80%;
-    margin: 2.5% auto;
-}
-
-.brick .ver {
-  width: 80%;
-  height: 95%;
-  margin: 4.5% auto;
+  border-color: darkslategrey;
+  background-color: darkgray;
+  border-style: solid;
+  display: inline-block;
 }
 
 .workArea {
@@ -87,9 +50,7 @@
 }
 
 .grid-area-preview {
-    display: grid;
-    justify-content: center;
-    background-color: #808080;
+    display: inline-grid;
 }
 
 .tileItem {
@@ -102,12 +63,12 @@
   display: block;
   position: relative;
   overflow: hidden;
+  background-color: #808080;
 }
 
 .sectorLine {
   position: absolute;
   background-color: black;
-  border: 2px solid black;
 }
 
 .active {

@@ -11,8 +11,7 @@ export const changeBrickColor = createAction('CHANGE_BRICK_COLOR');
 
 export const changeTemplateSize = createAction('CHANGE_TEMPLATE_SIZE');
 
-export const changeSectorPosition = createAction('CHANGE_SECTOR_POSITION');
-export const changeSectorSize = createAction('CHANGE_SECTOR_SIZE');
+export const setSectorSize = createAction('SET_SECTOR_SIZE');
 
 export const buildBrickSector = createAction('BUILD_BRICK_SECTOR');
 
