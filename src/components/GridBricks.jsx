@@ -4,7 +4,9 @@ import uuid from 'uuid/v4';
 
 import Brick from './Brick';
 import * as operations from '../operations';
-import { getGridPos, buildSyleObj, generateBricksMatrix } from '../helpers';
+import {
+  getGridPos, buildSyleObj, generateBricksMatrix, getBrickPosition,
+} from '../helpers';
 
 class GridBricks extends Component {
   constructor(props) {
@@ -23,7 +25,7 @@ class GridBricks extends Component {
   addBrick = () => {
     const newBrick = {
       id: uuid(),
-      position: this.state.cursorPosition,
+      position: getBrickPosition(this.state.cursorPosition, this.props.brickSize),
       size: this.props.brickSize,
       color: this.props.color,
     };
@@ -104,47 +106,51 @@ class GridBricks extends Component {
     );
   }
 
+  renderBrickPreview(cursorPosition) {
+    const position = getBrickPosition(cursorPosition, this.props.brickSize);
+    const style = buildSyleObj({ ...this.props.brickSize, ...position }, this.props.step);
+    return (
+      <div
+        className="brick"
+        style={style}
+      />
+    );
+  }
+
   render() {
     const {
       isActive,
-      currentOperation: { type },
+      currentOperation,
       templateSize,
       step,
       bricks,
       bricksColors,
     } = this.props;
 
-    const { cursorPosition } = this.state;
-
     return (
-      <>
-        <div
-          className="bricks-grid"
-          onMouseMove={this.cursorPosition}
-          onClick={this.handleOperation()}
-          style={buildSyleObj(templateSize, step)}
-        >
-          {isActive && type === operations.ADD_BRICK ? (
-            <div className="brick" style={buildSyleObj({ ...this.props.brickSize, ...cursorPosition }, step)} />
-          )
-            : null
-          }
-          {Object.values(bricks).map(({ position, size, id }) => {
-            const colorId = `${id}-${bricksColors.name}`;
-            const { color } = bricksColors.data[colorId] || 'gray';
-            return (
-              <Brick
-                key={id}
-                id={id}
-                className="brick"
-                color={color}
-                style={buildSyleObj({ ...position, ...size }, step)}
-                handleOperation={this.handleOperation(id)}
-              />);
-          })}
-          {this.renderSector()}
-        </div>
-      </>
+      <div
+        className="bricks-grid"
+        onMouseMove={this.cursorPosition}
+        onClick={this.handleOperation()}
+        style={buildSyleObj(templateSize, step)}
+      >
+        {isActive && currentOperation.type === operations.ADD_BRICK
+          ? this.renderBrickPreview(this.state.cursorPosition) : null}
+        {Object.values(bricks).map(({ position, size, id }) => {
+          const colorId = `${id}-${bricksColors.name}`;
+          const { color } = bricksColors.data[colorId] || 'gray';
+          return (
+            <Brick
+              key={id}
+              id={id}
+              className="brick"
+              color={color}
+              style={buildSyleObj({ ...position, ...size }, step)}
+              handleOperation={this.handleOperation(id)}
+            />);
+        })}
+        {this.renderSector()}
+      </div>
     );
   }
 }

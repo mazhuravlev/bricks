@@ -22,3 +22,10 @@ export function generateBricksMatrix(bricks) {
   });
   return brickMatrix;
 }
+
+export function getBrickPosition(cursorPosition, { width, height }) {
+  if (width === 1 && height === 1) return cursorPosition;
+  return width > height
+    ? { top: cursorPosition.top, left: cursorPosition.left - Math.round(width / 2) }
+    : { left: cursorPosition.left, top: cursorPosition.top - Math.round(height / 2) };
+}

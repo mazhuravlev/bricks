@@ -75,16 +75,17 @@ export default class Editor extends Component {
   updateBrickSector = () => {
     const { sector, bricks, buildBrickSector } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
-    const bricksInSector = [];
+    const bricksInSectorMap = {};
     for (let x = 0; x < sector.size.width; x++) {
       for (let y = 0; y < sector.size.height; y++) {
         const brick = brickMatrix[`${x + sector.size.left};${y + sector.size.top}`];
-        if (brick) {
-          bricksInSector.push(brick);
+        if (brick && !bricksInSectorMap[brick.id]) {
+          bricksInSectorMap[brick.id] = brick;
         }
       }
     }
-    const tileBricks = bricksInSector.map((brick) => {
+    const bricksInSector = Object.values(bricksInSectorMap);
+    const tileBricks = Object.values(bricksInSector).map((brick) => {
       const { position } = brick;
       const left = position.left - sector.size.left;
       const top = position.top - sector.size.top;
