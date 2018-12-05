@@ -1,6 +1,5 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import domtoimage from 'dom-to-image';
 
 export default class Tools extends Component {
   constructor(props) {
