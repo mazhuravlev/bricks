@@ -1,6 +1,9 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 
+import ColorPalette from './ColorPalette';
+import PaintingPanel from './PaintingPanel';
+
 export default class Tools extends Component {
   constructor(props) {
     super(props);
@@ -32,11 +35,15 @@ export default class Tools extends Component {
           <button onClick={this.props.setPaintOperation} type="button">color</button>
         </div>
         <div>
-          <select onChange={e => this.props.changeColor(e.target.value)}>
+          {/* <select onChange={e => this.props.changeColor(e.target.value)}>
             {this.props.colors.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          </select> */}
           <button onClick={this.props.setRemoveBrickOperation} type="button">Delete</button>
         </div>
+        <ColorPalette
+          changeColor={this.props.changeColor}
+        />
+        <PaintingPanel />
         <div className="grid-sector-options-panel">
           <label htmlFor="sector-left">
                 x:
