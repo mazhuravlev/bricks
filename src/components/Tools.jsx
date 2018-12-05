@@ -13,7 +13,7 @@ export default class Tools extends Component {
   }
 
   handleSector(e) {
-    const newSize = { ...this.props.sectorSize, [e.target.name]: e.target.value };
+    const newSize = { ...this.props.sectorSize, [e.target.name]: Number(e.target.value) };
     this.props.setSectorSize(newSize);
   }
 
