@@ -8,19 +8,9 @@ export default class Tools extends Component {
     this.handleSector = this.handleSector.bind(this);
   }
 
-  componentDidMount() {
-    setInterval(() => this.save(), 2000);
-  }
-
   handleSector(e) {
     const newSize = { ...this.props.sectorSize, [e.target.name]: Number(e.target.value) };
     this.props.setSectorSize(newSize);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  async save() {
-    const img = await domtoimage.toPng(document.querySelector('.sectorItem'));
-    document.querySelector('#preview').src = img;
   }
 
   render() {

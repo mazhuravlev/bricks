@@ -2,12 +2,14 @@
 import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 
+import domtoimage from 'dom-to-image';
 import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
 
 import GridBricksContainer from '../containers/GridBricks';
 import Tools from './Tools';
 import Preview from './Preview';
 import { generateBricksMatrix } from '../helpers';
+
 
 const colors = ['red', 'yellow', 'black', 'blue'];
 const initPresetsColl = [1];
@@ -20,6 +22,7 @@ export default class Editor extends Component {
       color: colors[0],
       presetsColl: initPresetsColl,
       step: 15,
+      fillBackground: false,
     };
     this.setBrickOperation = this.setBrickOperation.bind(this);
     this.setRemoveBrickOperation = this.setRemoveBrickOperation.bind(this);
@@ -30,6 +33,10 @@ export default class Editor extends Component {
 
   componentWillMount() {
     this.props.changePresetName({ name: initPresetsColl[0] });
+  }
+
+  componentDidMount() {
+    setInterval(() => this.save(), 1000);
   }
 
   setOperation(operation) {
@@ -98,6 +105,16 @@ export default class Editor extends Component {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  async save() {
+    const img = await domtoimage.toPng(document.querySelector('.sectorItem'), {
+      width: this.props.sector.size.width * 15,
+      height: this.props.sector.size.height * 15,
+    });
+    document.querySelector('#preview').src = img;
+    document.body.background = this.state.fillBackground ? img : 'none';
+  }
+
   render() {
     const {
       brickSector,
@@ -112,6 +129,12 @@ export default class Editor extends Component {
       }}
       >
         <div>
+          <input
+            type="checkbox"
+            checked={this.state.fillBackground}
+            onChange={() => this.setState(state => ({ fillBackground: !state.fillBackground }))}
+          />
+          fill background
           <Tools
             setRemoveBrickOperation={this.setRemoveBrickOperation}
             setBrickOperation={this.setBrickOperation}
@@ -141,7 +164,7 @@ export default class Editor extends Component {
         </div>
         <div>
           <p>PNG</p>
-          <img id="preview" alt="preview" />
+          <img id="preview" alt="preview" src="https://via.placeholder.com/1" />
         </div>
       </div>
     );
