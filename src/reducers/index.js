@@ -84,6 +84,12 @@ const bricksColors = handleActions({
   },
 }, initColorsPreset);
 
+const color = handleActions({
+  [actions.setColor](state, { payload: { currentColor } }) {
+    return currentColor;
+  },
+}, {});
+
 export default combineReducers({
   bricks,
   templateSize,
@@ -91,4 +97,5 @@ export default combineReducers({
   sector,
   brickSector,
   bricksColors,
+  color,
 });

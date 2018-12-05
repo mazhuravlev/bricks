@@ -4,25 +4,25 @@ import { makeRgbStyleProp } from '../helpers';
 
 class ColorPalette extends Component {
   state = {
-    currentColor: colors[1000],
+    currentColor: Object.values(colors)[0],
   }
 
   componentWillMount() {
     const code = Object.keys(colors)[0];
-    this.props.changeColor(makeRgbStyleProp(colors[code].rgb));
+    this.props.changeColor(colors[code]);
   }
 
   changeColor = ({ target: { value } }) => {
     this.setState({ currentColor: colors[value] });
-    this.props.changeColor(makeRgbStyleProp(colors[value].rgb));
+    this.props.changeColor(colors[value]);
   }
 
   render() {
     const { currentColor } = this.state;
     return (
-      <select onChange={this.changeColor} style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '18px' }}>
+      <select onChange={this.changeColor} style={{ backgroundColor: makeRgbStyleProp(currentColor), fontSize: '18px' }}>
         {Object.values(colors).map(({ code, rgb }) => (
-          <option style={{ backgroundColor: makeRgbStyleProp(rgb), fontSize: '18px' }} key={code} value={code}>
+          <option style={{ backgroundColor: makeRgbStyleProp({ rgb }), fontSize: '18px' }} key={code} value={code}>
             {`RAL - ${code}`}
           </option>))}
       </select>

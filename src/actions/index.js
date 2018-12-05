@@ -17,4 +17,6 @@ export const buildBrickSector = createAction('BUILD_BRICK_SECTOR');
 
 export const changePresetName = createAction('CHANGE_PRESET_NAME');
 
+export const setColor = createAction('SET_COLOR');
+
 export const changeCurrentPreset = createAction('CHANGE_CURRENT_PRESET');

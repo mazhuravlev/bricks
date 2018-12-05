@@ -4,7 +4,7 @@ import { buildSyleObj } from '../helpers';
 
 function getColor(colors, brickId) {
   const color = colors.data[`${brickId}-${colors.name}`];
-  return color ? color.color : 'gray';
+  return color ? color.color : null;
 }
 
 export default function Preview({

@@ -5,34 +5,26 @@ import ReactCursorPosition from 'react-cursor-position';
 import domtoimage from 'dom-to-image';
 import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
 
-import GridBricksContainer from '../containers/GridBricks';
+import GridBricksContainer from '../containers/GridBricksContainer';
 import Tools from './Tools';
 import Preview from './Preview';
 import { generateBricksMatrix } from '../helpers';
-
-
-const colors = ['red', 'yellow', 'black', 'blue'];
-const initPresetsColl = [1];
+import colors from '../data/colors.json';
 
 export default class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      operation: { type: ADD_BRICK, data: { size: 1 } },
-      color: colors[0],
-      presetsColl: initPresetsColl,
+      operation: { type: ADD_BRICK },
       step: 15,
       fillBackground: false,
+      color: Object.values(colors)[0],
     };
     this.setBrickOperation = this.setBrickOperation.bind(this);
     this.setRemoveBrickOperation = this.setRemoveBrickOperation.bind(this);
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
     this.updateBrickSector = this.updateBrickSector.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.changePresetName({ name: initPresetsColl[0] });
   }
 
   componentDidMount() {
@@ -51,16 +43,6 @@ export default class Editor extends Component {
   changeColor = color => this.setState({ color });
 
   setPaintOperation = () => this.setOperation({ type: CHANGE_COLOR_BRICK })
-
-  changeColorPreset = ({ target: { value } }) => {
-    this.props.changePresetName({ name: value });
-  }
-
-  addNewColorPreset = () => {
-    const { presetsColl } = this.state;
-    const newPreset = presetsColl.length + 1;
-    this.setState({ presetsColl: [...presetsColl, newPreset] });
-  }
 
   setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
 
@@ -142,7 +124,7 @@ export default class Editor extends Component {
             sectorSize={size}
             setSectorSize={this.setSectorSize}
             changeColor={this.changeColor}
-            colors={colors}
+            color={this.state.color}
           />
           <ReactCursorPosition>
             <GridBricksContainer

@@ -138,7 +138,7 @@ class GridBricks extends Component {
           ? this.renderBrickPreview(this.state.cursorPosition) : null}
         {Object.values(bricks).map(({ position, size, id }) => {
           const colorId = `${id}-${bricksColors.name}`;
-          const { color } = bricksColors.data[colorId] || 'gray';
+          const color = bricksColors.data[colorId] ? bricksColors.data[colorId].color : null;
           return (
             <Brick
               key={id}

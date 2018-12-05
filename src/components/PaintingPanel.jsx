@@ -1,36 +1,83 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+import { makeRgbStyleProp, colorToString } from '../helpers';
 
 class PaintingPanel extends Component {
   state = {
     mode: 'manual',
+    colorList: {},
   }
 
   changeMode = ({ target: { value } }) => {
     this.setState({ mode: value });
   }
 
-  renderRandomPaintingPanel() {
+  addNewColor = () => {
+    const { color } = this.props;
+    const { colorList } = this.state;
+    this.setState({
+      colorList: {
+        ...colorList,
+        [color.code]: color,
+      },
+    });
+  }
+
+  removeColor = code => () => {
+    const { colorList } = this.state;
+    this.setState({ colorList: _.omit(colorList, code) });
+  }
+
+  makeRundomPainting = () => {
+    const { colorList } = this.state;
+    const { brickSector } = this.props;
+    const colors = Object.values(colorList);
+    const maxRandom = colors.length - 1;
+    Object.values(brickSector).forEach(({ id }) => {
+      this.props.changeBrickColor({ id, color: colors[_.random(0, maxRandom)] });
+    });
+  }
+
+  renderColorList() {
+    const { colorList } = this.state;
     return (
       <div>
-        <p>
-          Режим:
-          {this.state.mode}
-        </p>
-        <p>Здесь будет панель для рандомной раскраски</p>
+        {Object.values(colorList).map(color => (
+          <div
+            className="color-preview"
+            key={color.code}
+            style={{ backgroundColor: makeRgbStyleProp(color) }}
+            onClick={this.removeColor(color.code)}
+          >
+            <p>{colorToString(color)}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderRandomPaintingPanel() {
+    const { colorList } = this.state;
+    return (
+      <div>
+        <button onClick={this.addNewColor} type="button">Добавить выбранный цвет в список</button>
+        {Object.values(colorList).length > 0 ? this.renderColorList() : null}
+        <button onClick={this.makeRundomPainting} style={{ marginBottom: '5px' }} type="button">Применить расскраску</button>
       </div>
     );
   }
 
   render() {
+    const { mode } = this.state;
     return (
       <div>
         <div>
           <label htmlFor="manual">
-            <input onChange={this.changeMode} type="radio" id="manual" name="mode" value="manual" />
+            <input onChange={this.changeMode} checked={mode === 'manual'} type="radio" id="manual" name="mode" value="manual" />
             Ручная покраска
           </label>
           <label htmlFor="rundom">
-            <input onChange={this.changeMode} type="radio" id="rundom" name="mode" value="rundom" />
+            <input onChange={this.changeMode} checked={mode === 'rundom'} type="radio" id="rundom" name="mode" value="rundom" />
             Случайная покраска
           </label>
         </div>

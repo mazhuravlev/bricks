@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 
 import ColorPalette from './ColorPalette';
-import PaintingPanel from './PaintingPanel';
+import PaintingPanelContainer from '../containers/PaintingPanelContainer';
+import PresetPanelContainer from '../containers/PresetPanelContainer';
 
 export default class Tools extends Component {
   constructor(props) {
@@ -43,7 +44,10 @@ export default class Tools extends Component {
         <ColorPalette
           changeColor={this.props.changeColor}
         />
-        <PaintingPanel />
+        <PresetPanelContainer />
+        <PaintingPanelContainer
+          color={this.props.color}
+        />
         <div className="grid-sector-options-panel">
           <label htmlFor="sector-left">
                 x:

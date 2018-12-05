@@ -30,4 +30,6 @@ export function getBrickPosition(cursorPosition, { width, height }) {
     : { left: cursorPosition.left, top: cursorPosition.top - Math.round(height / 2) };
 }
 
-export const makeRgbStyleProp = colorCode => `rgb(${colorCode})`;
+
+export const colorToString = color => `RAL - ${color.code}`;
+export const makeRgbStyleProp = ({ rgb }) => (rgb ? `rgb(${rgb})` : 'rgb(214,199,148)');

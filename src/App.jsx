@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 
 import './styles/App.css';
 import reducers from './reducers';
-import EditorContainer from './containers/Editor';
+import EditorContainer from './containers/EditorContainer';
 
 
 /* eslint-disable no-underscore-dangle */
