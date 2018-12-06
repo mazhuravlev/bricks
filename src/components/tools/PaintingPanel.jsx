@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { makeRgbStyleProp, colorToString } from '../../helpers';
+import { makeRgbStyleProp } from '../../helpers';
 
 class PaintingPanel extends Component {
   state = {
@@ -46,10 +46,10 @@ class PaintingPanel extends Component {
           <div
             className="color-preview"
             key={color.code}
-            style={{ backgroundColor: makeRgbStyleProp(color) }}
+            style={{ backgroundColor: makeRgbStyleProp(color.rgb) }}
             onClick={this.removeColor(color.code)}
           >
-            <p>{colorToString(color)}</p>
+            <p>{color.code}</p>
           </div>
         ))}
       </div>

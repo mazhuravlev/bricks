@@ -20,10 +20,10 @@ class ColorPalette extends Component {
   render() {
     const { currentColor } = this.state;
     return (
-      <select onChange={this.changeColor} style={{ backgroundColor: makeRgbStyleProp(currentColor), fontSize: '18px' }}>
+      <select onChange={this.changeColor} style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '14px' }}>
         {Object.values(colors).map(({ code, rgb }) => (
-          <option style={{ backgroundColor: makeRgbStyleProp({ rgb }), fontSize: '18px' }} key={code} value={code}>
-            {`RAL - ${code}`}
+          <option style={{ backgroundColor: makeRgbStyleProp(rgb) }} key={code} value={code}>
+            {code}
           </option>))}
       </select>
     );

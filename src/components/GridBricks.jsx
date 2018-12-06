@@ -110,9 +110,9 @@ class GridBricks extends Component {
     const position = getBrickPosition(cursorPosition, this.props.brickSize);
     const style = buildSyleObj({ ...this.props.brickSize, ...position }, this.props.step);
     return (
-      <div
-        className="brick"
+      <Brick
         style={style}
+        color={this.props.color.rgb}
       />
     );
   }
@@ -134,8 +134,6 @@ class GridBricks extends Component {
         onClick={this.handleOperation()}
         style={buildSyleObj(templateSize, step)}
       >
-        {isActive && currentOperation.type === operations.ADD_BRICK
-          ? this.renderBrickPreview(this.state.cursorPosition) : null}
         {Object.values(bricks).map(({ position, size, id }) => {
           const colorId = `${id}-${bricksColors.name}`;
           const color = bricksColors.data[colorId] ? bricksColors.data[colorId].color : null;
@@ -144,11 +142,13 @@ class GridBricks extends Component {
               key={id}
               id={id}
               className="brick"
-              color={color}
+              color={color.rgb}
               style={buildSyleObj({ ...position, ...size }, step)}
               handleOperation={this.handleOperation(id)}
             />);
         })}
+        {isActive && currentOperation.type === operations.ADD_BRICK
+          ? this.renderBrickPreview(this.state.cursorPosition) : null}
         {this.renderSector()}
       </div>
     );
