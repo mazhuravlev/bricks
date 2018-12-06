@@ -34,7 +34,8 @@ class GridBricks extends Component {
     for (let x = 0; x < newBrick.size.width; x++) {
       for (let y = 0; y < newBrick.size.height; y++) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
-          return;
+          const { id } = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
+          this.props.removeBrick({ id });
         }
       }
     }
