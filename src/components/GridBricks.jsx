@@ -1,6 +1,7 @@
 /* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
+// import { has } from 'lodash';
 
 import Brick from './Brick';
 import * as operations from '../operations';
@@ -137,13 +138,16 @@ class GridBricks extends Component {
       >
         {Object.values(bricks).map(({ position, size, id }) => {
           const colorId = `${id}-${bricksColors.name}`;
-          const color = bricksColors.data[colorId] ? bricksColors.data[colorId].color : null;
+          const color = bricksColors.data[colorId]
+            ? bricksColors.data[colorId].color.rgb
+            : null;
+
           return (
             <Brick
               key={id}
               id={id}
               className="brick"
-              color={color.rgb}
+              color={color}
               style={buildSyleObj({ ...position, ...size }, step)}
               handleOperation={this.handleOperation(id)}
             />);
