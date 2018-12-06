@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import PresetPanel from '../components/PresetPanel';
+import PresetPanel from '../components/tools/PresetPanel';
 import * as actionCreators from '../actions';
 
 const mapStateToProps = (state) => {

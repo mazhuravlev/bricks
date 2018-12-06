@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import colors from '../data/colors.json';
-import { makeRgbStyleProp } from '../helpers';
+import colors from '../../data/colors.json';
+import { makeRgbStyleProp } from '../../helpers';
 
 class ColorPalette extends Component {
   state = {

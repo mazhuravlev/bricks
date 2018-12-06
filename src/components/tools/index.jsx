@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 
 import ColorPalette from './ColorPalette';
-import PaintingPanelContainer from '../containers/PaintingPanelContainer';
-import PresetPanelContainer from '../containers/PresetPanelContainer';
+import PaintingPanelContainer from '../../containers/PaintingPanelContainer';
+import PresetPanelContainer from '../../containers/PresetPanelContainer';
 
 export default class Tools extends Component {
   constructor(props) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { makeRgbStyleProp, colorToString } from '../helpers';
+import { makeRgbStyleProp, colorToString } from '../../helpers';
 
 class PaintingPanel extends Component {
   state = {

@@ -6,7 +6,7 @@ import domtoimage from 'dom-to-image';
 import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
 
 import GridBricksContainer from '../containers/GridBricksContainer';
-import Tools from './Tools';
+import Tools from './tools';
 import Preview from './Preview';
 import { generateBricksMatrix } from '../helpers';
 import colors from '../data/colors.json';

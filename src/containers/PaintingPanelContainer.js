@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import PaintingPanel from '../components/PaintingPanel';
+import PaintingPanel from '../components/tools/PaintingPanel';
 import * as actionCreators from '../actions';
 
 const mapStateToProps = (state) => {
