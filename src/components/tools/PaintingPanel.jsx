@@ -30,11 +30,15 @@ class PaintingPanel extends Component {
 
   makeRundomPainting = () => {
     const { colorList } = this.state;
-    const { brickSector } = this.props;
+    const { brickSector, colorPresetName } = this.props;
     const colors = Object.values(colorList);
     const maxRandom = colors.length - 1;
     Object.values(brickSector).forEach(({ id }) => {
-      this.props.changeBrickColor({ id, color: colors[_.random(0, maxRandom)] });
+      this.props.changeBrickColor({
+        brickId: id,
+        color: colors[_.random(0, maxRandom)],
+        colorPresetName,
+      });
     });
   }
 

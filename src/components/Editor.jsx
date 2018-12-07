@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 
 import domtoimage from 'dom-to-image';
-import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
+import * as operations from '../operations';
 
 import GridBricksContainer from '../containers/GridBricksContainer';
 import Tools from './tools';
@@ -15,7 +15,7 @@ export default class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      operation: { type: ADD_BRICK },
+      operation: { type: operations.ADD_BRICK },
       step: 15,
       fillBackground: false,
       color: Object.values(colors)[0],
@@ -37,14 +37,14 @@ export default class Editor extends Component {
 
   setBrickOperation = (width, height) => () => {
     this.props.changeBrickSize({ size: { width, height } });
-    this.setOperation({ type: ADD_BRICK });
+    this.setOperation({ type: operations.ADD_BRICK });
   }
 
   changeColor = color => this.setState({ color });
 
-  setPaintOperation = () => this.setOperation({ type: CHANGE_COLOR_BRICK })
+  setPaintOperation = () => this.setOperation({ type: operations.CHANGE_COLOR_BRICK })
 
-  setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
+  setRemoveBrickOperation = () => this.setOperation({ type: operations.REMOVE_BRICK });
 
   handleGridSize = newSize => ({ target }) => {
     const { changeTemplateSize } = this.props;
@@ -58,11 +58,10 @@ export default class Editor extends Component {
 
   setSectorSize = (size) => {
     this.props.setSectorSize(size);
-    setTimeout(() => this.updateBrickSector());
   };
 
   updateBrickSector = () => {
-    const { sector, bricks, buildBrickSector } = this.props;
+    const { sector, bricks } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
     const bricksInSectorMap = {};
     for (let x = 0; x < sector.size.width; x++) {
@@ -81,9 +80,19 @@ export default class Editor extends Component {
       return { ...brick, position: { left, top } };
     });
     if (bricksInSector.length > 0) {
-      buildBrickSector({ selectedBricks: tileBricks });
-    } else {
-      buildBrickSector({ selectedBricks: [] });
+      return tileBricks;
+    }
+    return [];
+  }
+
+  cancelOperations = () => {
+    const { history, removeBrick } = this.props;
+    if (history.length > 0) {
+      const lastEvent = history[history.length - 1];
+      const eventMapping = {
+        ADD_BRICK: brick => removeBrick({ brick }),
+      }[lastEvent.action.type];
+      eventMapping(lastEvent.data);
     }
   }
 
@@ -98,11 +107,7 @@ export default class Editor extends Component {
   }
 
   render() {
-    const {
-      brickSector,
-      sector: { size },
-      bricksColors,
-    } = this.props;
+    const { sector: { size }, bricksColors } = this.props;
 
     return (
       <div style={{
@@ -117,6 +122,7 @@ export default class Editor extends Component {
             onChange={() => this.setState(state => ({ fillBackground: !state.fillBackground }))}
           />
           fill background
+          <button onClick={this.cancelOperations} type="button">Back</button>
           <Tools
             setRemoveBrickOperation={this.setRemoveBrickOperation}
             setBrickOperation={this.setBrickOperation}
@@ -125,6 +131,7 @@ export default class Editor extends Component {
             setSectorSize={this.setSectorSize}
             changeColor={this.changeColor}
             color={this.state.color}
+            brickSector={this.updateBrickSector()}
           />
           <ReactCursorPosition>
             <GridBricksContainer
@@ -137,11 +144,12 @@ export default class Editor extends Component {
         </div>
         <div>
           <Preview
-            bricks={brickSector}
+            bricks={this.updateBrickSector()}
             sectorSize={size}
-            colors={bricksColors}
+            bricksColors={bricksColors}
             width={size.width}
             step={this.state.step}
+            colorPresetName={this.props.colorPresetName}
           />
         </div>
         <div>

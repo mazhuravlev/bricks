@@ -13,10 +13,11 @@ export const changeTemplateSize = createAction('CHANGE_TEMPLATE_SIZE');
 
 export const setSectorSize = createAction('SET_SECTOR_SIZE');
 
-export const buildBrickSector = createAction('BUILD_BRICK_SECTOR');
-
 export const changePresetName = createAction('CHANGE_PRESET_NAME');
 
 export const setColor = createAction('SET_COLOR');
 
 export const changeCurrentPreset = createAction('CHANGE_CURRENT_PRESET');
+
+export const hisoryForward = createAction('FORWARD');
+export const hisoryBackward = createAction('BACKWARD');

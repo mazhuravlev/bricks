@@ -4,7 +4,7 @@ import * as actionCreators from '../actions';
 
 const mapStateToProps = (state) => {
   const props = {
-    brickSector: state.brickSector,
+    colorPresetName: state.colorPresetName,
   };
   return props;
 };

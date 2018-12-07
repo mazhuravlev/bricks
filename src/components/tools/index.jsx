@@ -36,9 +36,6 @@ export default class Tools extends Component {
           <button onClick={this.props.setPaintOperation} type="button">color</button>
         </div>
         <div>
-          {/* <select onChange={e => this.props.changeColor(e.target.value)}>
-            {this.props.colors.map(c => <option key={c} value={c}>{c}</option>)}
-          </select> */}
           <button onClick={this.props.setRemoveBrickOperation} type="button">Delete</button>
         </div>
         <ColorPalette
@@ -47,6 +44,7 @@ export default class Tools extends Component {
         <PresetPanelContainer />
         <PaintingPanelContainer
           color={this.props.color}
+          brickSector={this.props.brickSector}
         />
         <div className="grid-sector-options-panel">
           <label htmlFor="sector-left">
