@@ -1,4 +1,4 @@
 export const ADD_BRICK = 'ADD_BRICK';
 export const REMOVE_BRICK = 'REMOVE_BRICK';
-export const CHANGE_COLOR_BRICK = 'CHANGE__COLOR_BRICK';
+export const CHANGE_COLOR_BRICK = 'CHANGE_COLOR_BRICK';
 export const CANCEL_EVENT = 'CANCEL_EVENT';

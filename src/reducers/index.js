@@ -1,8 +1,9 @@
 import { handleActions } from 'redux-actions';
+import { combineReducers } from 'redux';
 import _ from 'lodash';
 
 import * as actions from '../actions';
-import combineReducers from './combineReducers';
+// import combineReducers from './combineReducers';
 
 const bricks = handleActions({
   [actions.addBrick](state, { payload: { brick } }) {
@@ -81,36 +82,36 @@ const bricksColors = handleActions({
 //   },
 // }, []);
 
-const history = (partialState = [], action, state) => {
-  const { payload, type } = action;
-  switch (type) {
-    case 'ADD_BRICK': {
-      const newAction = { action, data: payload.brick };
-      return [...partialState, newAction];
-    }
-    case 'REMOVE_BRICK': {
-      console.log('REMOVE_BRICK');
-      const { brick } = payload;
-      const { colorPresetName }
-      const newAction = { action, data: payload.brick };
-      return [...partialState, newAction];
-    }
-    case 'CHANGE_BRICK_COLOR': {
-      console.log('CHANGE_BRICK_COLOR');
-      return partialState;
-    }
-    case 'FORWARD': {
-      console.log('CHANGE_BRICK_COLOR');
-      return partialState;
-    }
-    case 'BACKWARD': {
-      console.log('CHANGE_BRICK_COLOR');
-      return partialState;
-    }
-    default:
-      return partialState;
-  }
-};
+// const history = (partialState = [], action, state) => {
+//   const { payload, type } = action;
+//   switch (type) {
+//     case 'ADD_BRICK': {
+//       const newAction = { action, data: payload.brick };
+//       return [...partialState, newAction];
+//     }
+//     case 'REMOVE_BRICK': {
+//       console.log('REMOVE_BRICK');
+//       const { brick } = payload;
+//       const { colorPresetName }
+//       const newAction = { action, data: payload.brick };
+//       return [...partialState, newAction];
+//     }
+//     case 'CHANGE_BRICK_COLOR': {
+//       console.log('CHANGE_BRICK_COLOR');
+//       return partialState;
+//     }
+//     case 'FORWARD': {
+//       console.log('CHANGE_BRICK_COLOR');
+//       return partialState;
+//     }
+//     case 'BACKWARD': {
+//       console.log('CHANGE_BRICK_COLOR');
+//       return partialState;
+//     }
+//     default:
+//       return partialState;
+//   }
+// };
 
 const colorPresetName = handleActions({
   [actions.changePresetName](state, { payload: { name } }) {
@@ -124,6 +125,6 @@ export default combineReducers({
   brickSize,
   sector,
   bricksColors,
-  history,
+  // history,
   colorPresetName,
 });

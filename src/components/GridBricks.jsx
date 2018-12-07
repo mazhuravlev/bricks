@@ -31,27 +31,51 @@ class GridBricks extends Component {
     };
     const { bricks, colorPresetName, color } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
+    const actionArr = [];
     for (let x = 0; x < newBrick.size.width; x++) {
       for (let y = 0; y < newBrick.size.height; y++) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
           const brick = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
           this.props.removeBrick({ brick });
+          actionArr.push({
+            type: operations.REMOVE_BRICK,
+            data: { brick, color, colorPresetName },
+          });
         }
       }
     }
     this.props.addBrick({ brick: newBrick, color, colorPresetName });
+    actionArr.push({
+      type: this.props.currentOperation.type,
+      data: { brick: newBrick, color, colorPresetName },
+    });
+    this.props.addToHistory(actionArr);
   }
 
   removeBrick = (brick) => {
+    const { colorPresetName, color } = this.props;
     if (brick) {
       this.props.removeBrick({ brick });
+      this.props.addToHistory([{
+        type: this.props.currentOperation.type,
+        data: { brick, color, colorPresetName },
+      }]);
     }
   }
 
   changeBrickColor = ({ id }) => {
     if (id) {
-      const { color, colorPresetName } = this.props;
+      const { color, colorPresetName, bricksColors } = this.props;
+      const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
       this.props.changeBrickColor({ brickId: id, color, colorPresetName });
+      this.props.addToHistory([{
+        type: this.props.currentOperation.type,
+        data: {
+          brickId: id,
+          color: { old: oldColor, new: color },
+          colorPresetName,
+        },
+      }]);
     }
   }
 
