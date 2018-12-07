@@ -21,7 +21,7 @@ export default class Tools extends Component {
     return (
       <div style={{ padding: 8 }}>
         <div>
-          <button onClick={this.save} type="button">save</button>
+          <button onClick={this.props.save} type="button">save</button>
         </div>
         <div>
           <button onClick={this.props.setBrickOperation(4, 1)} type="button">H 4</button>
