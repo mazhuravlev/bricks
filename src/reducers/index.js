@@ -34,16 +34,14 @@ const templateSize = handleActions({
 }, initTemplateSize);
 
 const initSectorSize = {
-  size: {
-    left: 3,
-    top: 3,
-    width: 4,
-    height: 4,
-  },
+  left: 3,
+  top: 3,
+  width: 4,
+  height: 4,
 };
 const sector = handleActions({
   [actions.setSectorSize](state, { payload }) {
-    return { ...state, size: payload };
+    return { ...state, ...payload };
   },
 }, initSectorSize);
 

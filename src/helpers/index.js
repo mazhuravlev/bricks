@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 export const getGridPos = (x, y, step) => {
   const left = Math.floor(x / step);
   const top = Math.floor(y / step);
@@ -14,8 +13,8 @@ export const gridSizeValidate = (size, gridSizeLimit) => (
 export function generateBricksMatrix(bricks) {
   const brickMatrix = {};
   Object.values(bricks).forEach((brick) => {
-    for (let x = 0; x < brick.size.width; x++) {
-      for (let y = 0; y < brick.size.height; y++) {
+    for (let x = 0; x < brick.size.width; x += 1) {
+      for (let y = 0; y < brick.size.height; y += 1) {
         brickMatrix[`${x + brick.position.left};${y + brick.position.top}`] = brick;
       }
     }

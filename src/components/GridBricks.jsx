@@ -39,10 +39,11 @@ class GridBricks extends Component {
       for (let y = 0; y < newBrick.size.height; y++) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
           const brick = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
+          const oldColor = this.props.bricksColors[`${brick.id}-${colorPresetName}`].color;
           this.props.removeBrick({ brick });
           actions.push({
             type: operations.REMOVE_BRICK,
-            data: { brick, color, colorPresetName },
+            data: { brick, color: oldColor, colorPresetName },
           });
         }
       }
@@ -100,35 +101,34 @@ class GridBricks extends Component {
   }
 
   renderSector() {
-    const { size } = this.props.sector;
-    const { step } = this.props;
+    const { step, sector } = this.props;
     const lineThickness = 2;
     const lineH1 = {
       left: 0,
       top: 0,
-      width: size.width * step,
+      width: sector.width * step,
       height: lineThickness,
     };
     const lineH2 = {
       left: 0,
-      top: size.height * step,
-      width: size.width * step,
+      top: sector.height * step,
+      width: sector.width * step,
       height: lineThickness,
     };
     const lineV1 = {
       left: 0,
       top: 0,
       width: lineThickness,
-      height: size.height * step,
+      height: sector.height * step,
     };
     const lineV2 = {
-      left: size.width * step,
+      left: sector.width * step,
       top: 0,
       width: lineThickness,
-      height: size.height * step + lineThickness,
+      height: sector.height * step + lineThickness,
     };
     return (
-      <div className="templateSector" style={{ ...buildSyleObj(size, this.props.step), width: 0, height: 0 }}>
+      <div className="templateSector" style={{ ...buildSyleObj(sector, this.props.step), width: 0, height: 0 }}>
         <div className="sectorLine" style={lineH1} />
         <div className="sectorLine" style={lineH2} />
         <div className="sectorLine" style={lineV1} />

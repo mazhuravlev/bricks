@@ -4,14 +4,18 @@ import ReactCursorPosition from 'react-cursor-position';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import domtoimage from 'dom-to-image';
+import _ from 'lodash';
 
 import GridBricksContainer from '../containers/GridBricksContainer';
 import Tools from './tools';
 import Preview from './Preview';
+import HotKeyPanel from './HotKeyPanel';
 
 import { generateBricksMatrix } from '../helpers';
 import colors from '../data/colors.json';
 import * as operations from '../operations';
+
+const keyList = ['left', 'up', 'right', 'down', 'alt', 'shift', 'ctrl+z', 'ctrl+y', '+', '-'];
 
 export default class Editor extends Component {
   constructor(props) {
@@ -42,14 +46,26 @@ export default class Editor extends Component {
   }
 
   handleKyeDown = (key) => {
-    const operationMapping = {
-      ctrl: operations.CHANGE_COLOR_BRICK,
+    const { sector, setSectorSize } = this.props;
+    const keyMapping = {
+      alt: operations.CHANGE_COLOR_BRICK,
       shift: operations.REMOVE_BRICK,
+      'ctrl+z': this.undoredo.bind(this, 'undo'),
+      'ctrl+y': this.undoredo.bind(this, 'redo'),
+      left: setSectorSize.bind(this, { left: sector.left - 1 }),
+      up: setSectorSize.bind(this, { top: sector.top - 1 }),
+      right: setSectorSize.bind(this, { left: sector.left + 1 }),
+      down: setSectorSize.bind(this, { top: sector.top + 1 }),
     }[key];
-    this.setState({
-      isDisabledHandleKey: true,
-      operation: { type: operationMapping },
-    });
+
+    if (_.isFunction(keyMapping)) {
+      keyMapping();
+    } else {
+      this.setState({
+        isDisabledHandleKey: true,
+        operation: { type: keyMapping },
+      });
+    }
   }
 
   handleKyeUp = () => {
@@ -57,6 +73,52 @@ export default class Editor extends Component {
       isDisabledHandleKey: false,
       operation: { type: operations.ADD_BRICK },
     });
+  }
+
+  undoredo = (type) => {
+    const {
+      history,
+      addBrick,
+      removeBrick,
+      changeBrickColor,
+    } = this.props;
+
+    const historyLength = history[type].length;
+
+    if (historyLength === 0) {
+      return;
+    }
+
+    const operationMapping = {
+      [operations.ADD_BRICK]: ({ brick, color, colorPresetName }) => {
+        if (type === 'redo') {
+          return addBrick({ brick, color, colorPresetName });
+        }
+        return removeBrick({ brick });
+      },
+      [operations.REMOVE_BRICK]: ({ brick, color, colorPresetName }) => {
+        if (type === 'undo') {
+          return addBrick({ brick, color, colorPresetName });
+        }
+        return removeBrick({ brick });
+      },
+      [operations.CHANGE_COLOR_BRICK]: ({ brickId, color, colorPresetName }) => (
+        changeBrickColor({
+          brickId,
+          color: type === 'redo' ? color.new : color.old,
+          colorPresetName,
+        })
+      ),
+    };
+    const lastOperations = _.last(history[type]);
+    if (_.isArray(lastOperations)) {
+      lastOperations.forEach((operation) => {
+        operationMapping[operation.type](operation.data);
+      });
+    } else {
+      operationMapping[lastOperations.type](lastOperations.data);
+    }
+    this.props.historySwap({ type });
   }
 
   setBrickOperation = (width, height) => () => {
@@ -88,9 +150,9 @@ export default class Editor extends Component {
     const { sector, bricks } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
     const bricksInSectorMap = {};
-    for (let x = 0; x < sector.size.width; x++) {
-      for (let y = 0; y < sector.size.height; y++) {
-        const brick = brickMatrix[`${x + sector.size.left};${y + sector.size.top}`];
+    for (let x = 0; x < sector.width; x++) {
+      for (let y = 0; y < sector.height; y++) {
+        const brick = brickMatrix[`${x + sector.left};${y + sector.top}`];
         if (brick && !bricksInSectorMap[brick.id]) {
           bricksInSectorMap[brick.id] = brick;
         }
@@ -99,8 +161,8 @@ export default class Editor extends Component {
     const bricksInSector = Object.values(bricksInSectorMap);
     const tileBricks = Object.values(bricksInSector).map((brick) => {
       const { position } = brick;
-      const left = position.left - sector.size.left;
-      const top = position.top - sector.size.top;
+      const left = position.left - sector.left;
+      const top = position.top - sector.top;
       return { ...brick, position: { left, top } };
     });
     if (bricksInSector.length > 0) {
@@ -112,8 +174,8 @@ export default class Editor extends Component {
   // eslint-disable-next-line class-methods-use-this
   async save() {
     const img = await domtoimage.toPng(document.querySelector('.sectorItem'), {
-      width: this.props.sector.size.width * 15,
-      height: this.props.sector.size.height * 15,
+      width: this.props.sector.width * 15,
+      height: this.props.sector.height * 15,
     });
     document.querySelector('#preview').src = img;
     document.body.background = this.state.fillBackground ? img : 'none';
@@ -123,7 +185,7 @@ export default class Editor extends Component {
   }
 
   render() {
-    const { sector: { size }, bricksColors } = this.props;
+    const { sector, bricksColors } = this.props;
 
     return (
       <div
@@ -135,14 +197,14 @@ export default class Editor extends Component {
       }
       >
         <KeyboardEventHandler
-          handleKeys={['ctrl', 'shift']}
+          handleKeys={keyList}
           isDisabled={this.state.isDisabledHandleKey}
           handleEventType="keydown"
           onKeyEvent={this.handleKyeDown}
           handleFocusableElements
         />
         <KeyboardEventHandler
-          handleKeys={['ctrl', 'shift']}
+          handleKeys={keyList}
           handleEventType="keyup"
           onKeyEvent={this.handleKyeUp}
           handleFocusableElements
@@ -158,7 +220,7 @@ export default class Editor extends Component {
             setRemoveBrickOperation={this.setRemoveBrickOperation}
             setBrickOperation={this.setBrickOperation}
             setPaintOperation={this.setPaintOperation}
-            sectorSize={size}
+            sectorSize={sector}
             setSectorSize={this.setSectorSize}
             changeColor={this.changeColor}
             color={this.state.color}
@@ -179,9 +241,9 @@ export default class Editor extends Component {
         <div>
           <Preview
             bricks={this.updateBrickSector()}
-            sectorSize={size}
+            sectorSize={sector}
             bricksColors={bricksColors}
-            width={size.width}
+            width={sector.width}
             step={this.state.step}
             colorPresetName={this.props.colorPresetName}
           />
@@ -189,6 +251,7 @@ export default class Editor extends Component {
         <div>
           <img id="preview" style={window.CefSharp ? { position: 'absolute', left: -1000 } : {}} alt="preview" src="https://via.placeholder.com/1" />
         </div>
+        <HotKeyPanel />
       </div>
     );
   }

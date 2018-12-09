@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import ColorPalette from './ColorPalette';
 import PaintingPanelContainer from '../../containers/PaintingPanelContainer';
 import PresetPanelContainer from '../../containers/PresetPanelContainer';
-import HistoryContainer from '../../containers/HistoryContainer';
+import History from './History';
 
 export default class Tools extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ export default class Tools extends Component {
   }
 
   handleSector(e) {
-    const newSize = { ...this.props.sectorSize, [e.target.name]: Number(e.target.value) };
+    const newSize = { [e.target.name]: Number(e.target.value) };
     this.props.setSectorSize(newSize);
   }
 
@@ -24,7 +24,7 @@ export default class Tools extends Component {
         <div>
           <button onClick={this.props.save} type="button">save</button>
         </div>
-        <HistoryContainer
+        <History
           undoredo={this.props.undoredo}
         />
         <div>
