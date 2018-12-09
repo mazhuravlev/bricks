@@ -19,10 +19,6 @@ export default class Editor extends Component {
       step: 15,
       fillBackground: false,
       color: Object.values(colors)[0],
-      history: [],
-      cancelHistory: [],
-      historyState: 0,
-      cancelHistoryState: 0,
     };
     this.setBrickOperation = this.setBrickOperation.bind(this);
     this.setRemoveBrickOperation = this.setRemoveBrickOperation.bind(this);
@@ -89,74 +85,6 @@ export default class Editor extends Component {
     return [];
   }
 
-  addToHistory = (operationArr) => {
-    const { history, historyState } = this.state;
-    this.setState({
-      history: [...history, ...operationArr],
-      historyState: historyState + operationArr.length,
-      cancelHistory: [],
-      cancelHistoryState: 0,
-    });
-  }
-
-  makeAction = action => () => {
-    const {
-      history,
-      historyState,
-      cancelHistory,
-      cancelHistoryState,
-    } = this.state;
-
-    if (historyState === 0 && action === 'backward') {
-      return;
-    }
-    if (cancelHistoryState === 0 && action === 'forward') {
-      return;
-    }
-    const { addBrick, removeBrick, changeBrickColor } = this.props;
-    const operationMapping = {
-      [operations.ADD_BRICK]: ({ brick, color, colorPresetName }) => {
-        if (action === 'forward') {
-          return addBrick({ brick, color, colorPresetName });
-        }
-        return removeBrick({ brick });
-      },
-      [operations.REMOVE_BRICK]: ({ brick, color, colorPresetName }) => {
-        if (action === 'backward') {
-          return addBrick({ brick, color, colorPresetName });
-        }
-        return removeBrick({ brick });
-      },
-      [operations.CHANGE_COLOR_BRICK]: ({ brickId, color, colorPresetName }) => (
-        changeBrickColor({
-          brickId,
-          color: action === 'forward' ? color.new : color.old,
-          colorPresetName,
-        })
-      ),
-    };
-    const lastOperation = (action === 'forward')
-      ? cancelHistory[cancelHistoryState - 1]
-      : history[historyState - 1];
-
-    operationMapping[lastOperation.type](lastOperation.data);
-    if (action === 'forward') {
-      this.setState({
-        history: [...history, cancelHistory[cancelHistoryState - 1]],
-        historyState: historyState + 1,
-        cancelHistoryState: cancelHistoryState - 1,
-        cancelHistory: cancelHistory.slice(0, cancelHistory.length - 1),
-      });
-    } else {
-      this.setState({
-        history: history.slice(0, history.length - 1),
-        historyState: historyState - 1,
-        cancelHistoryState: cancelHistoryState + 1,
-        cancelHistory: [...cancelHistory, history[historyState - 1]],
-      });
-    }
-  }
-
   // eslint-disable-next-line class-methods-use-this
   async save() {
     const img = await domtoimage.toPng(document.querySelector('.sectorItem'), {
@@ -183,8 +111,6 @@ export default class Editor extends Component {
             onChange={() => this.setState(state => ({ fillBackground: !state.fillBackground }))}
           />
           fill background
-          <button onClick={this.makeAction('backward')} type="button">backward</button>
-          <button onClick={this.makeAction('forward')} type="button">forward</button>
           <Tools
             setRemoveBrickOperation={this.setRemoveBrickOperation}
             setBrickOperation={this.setBrickOperation}

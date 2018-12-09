@@ -31,13 +31,13 @@ class GridBricks extends Component {
     };
     const { bricks, colorPresetName, color } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
-    const actionArr = [];
+    const actions = [];
     for (let x = 0; x < newBrick.size.width; x++) {
       for (let y = 0; y < newBrick.size.height; y++) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
           const brick = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
           this.props.removeBrick({ brick });
-          actionArr.push({
+          actions.push({
             type: operations.REMOVE_BRICK,
             data: { brick, color, colorPresetName },
           });
@@ -45,21 +45,24 @@ class GridBricks extends Component {
       }
     }
     this.props.addBrick({ brick: newBrick, color, colorPresetName });
-    actionArr.push({
+
+    const lastAction = ({
       type: this.props.currentOperation.type,
       data: { brick: newBrick, color, colorPresetName },
     });
-    this.props.addToHistory(actionArr);
+    const resultAction = actions.length > 0 ? [...actions, lastAction] : lastAction;
+    this.props.historyPush({ operations: resultAction });
   }
 
   removeBrick = (brick) => {
     const { colorPresetName, color } = this.props;
     if (brick) {
       this.props.removeBrick({ brick });
-      this.props.addToHistory([{
+      const action = {
         type: this.props.currentOperation.type,
         data: { brick, color, colorPresetName },
-      }]);
+      };
+      this.props.historyPush({ operations: action });
     }
   }
 
@@ -68,14 +71,15 @@ class GridBricks extends Component {
       const { color, colorPresetName, bricksColors } = this.props;
       const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
       this.props.changeBrickColor({ brickId: id, color, colorPresetName });
-      this.props.addToHistory([{
+      const action = {
         type: this.props.currentOperation.type,
         data: {
           brickId: id,
           color: { old: oldColor, new: color },
           colorPresetName,
         },
-      }]);
+      };
+      this.props.historyPush({ operations: action });
     }
   }
 

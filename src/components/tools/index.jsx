@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ColorPalette from './ColorPalette';
 import PaintingPanelContainer from '../../containers/PaintingPanelContainer';
 import PresetPanelContainer from '../../containers/PresetPanelContainer';
+import HistoryContainer from '../../containers/HistoryContainer';
 
 export default class Tools extends Component {
   constructor(props) {
@@ -23,6 +24,7 @@ export default class Tools extends Component {
         <div>
           <button onClick={this.save} type="button">save</button>
         </div>
+        <HistoryContainer />
         <div>
           <button onClick={this.props.setBrickOperation(4, 1)} type="button">H 4</button>
           <button onClick={this.props.setBrickOperation(3, 1)} type="button">H 3</button>

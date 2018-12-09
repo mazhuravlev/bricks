@@ -3,7 +3,6 @@ import { combineReducers } from 'redux';
 import _ from 'lodash';
 
 import * as actions from '../actions';
-// import combineReducers from './combineReducers';
 
 const bricks = handleActions({
   [actions.addBrick](state, { payload: { brick } }) {
@@ -62,56 +61,25 @@ const bricksColors = handleActions({
   },
 }, {});
 
-// const history = handleActions({
-//   [actions.addBrick](state, { payload: { brick } }, _state) {
-//     console.log(_state);
-//     return [...state, { type: 'addBrick', action: actions.removeBrick(), data: { brick } }];
-//   },
-//   // [actions.removeBrick](state, { payload: { brick } }) {
-//   //   return _.omitBy(state, ({ brickId }) => brickId === id);
-//   // },
-//   // [actions.changeBrickColor](state, { payload: { brickId, color, colorPresetName } }) {
-//   //   const presetId = `${brickId}-${colorPresetName}`;
-//   //   return { ...state, [presetId]: { colorPresetName, brickId, color } };
-//   // },
-//   [actions.removeActionFromHistory](state) {
-//     if (state.length > 0) {
-//       return state.slice(0, state.length - 1);
-//     }
-//     return [];
-//   },
-// }, []);
-
-// const history = (partialState = [], action, state) => {
-//   const { payload, type } = action;
-//   switch (type) {
-//     case 'ADD_BRICK': {
-//       const newAction = { action, data: payload.brick };
-//       return [...partialState, newAction];
-//     }
-//     case 'REMOVE_BRICK': {
-//       console.log('REMOVE_BRICK');
-//       const { brick } = payload;
-//       const { colorPresetName }
-//       const newAction = { action, data: payload.brick };
-//       return [...partialState, newAction];
-//     }
-//     case 'CHANGE_BRICK_COLOR': {
-//       console.log('CHANGE_BRICK_COLOR');
-//       return partialState;
-//     }
-//     case 'FORWARD': {
-//       console.log('CHANGE_BRICK_COLOR');
-//       return partialState;
-//     }
-//     case 'BACKWARD': {
-//       console.log('CHANGE_BRICK_COLOR');
-//       return partialState;
-//     }
-//     default:
-//       return partialState;
-//   }
-// };
+const history = handleActions({
+  [actions.historyPush](state, { payload: { operations } }) {
+    const newHistory = [...state.undo, operations];
+    return { undo: newHistory, redo: [] };
+  },
+  [actions.historySwap](state, { payload: { type } }) {
+    const { undo, redo } = state;
+    if (type === 'undo') {
+      return {
+        undo: undo.slice(0, undo.length - 1),
+        redo: [...redo, _.last(undo)],
+      };
+    }
+    return {
+      undo: [...undo, _.last(redo)],
+      redo: redo.slice(0, redo.length - 1),
+    };
+  },
+}, { undo: [], redo: [] });
 
 const colorPresetName = handleActions({
   [actions.changePresetName](state, { payload: { name } }) {
@@ -125,6 +93,6 @@ export default combineReducers({
   brickSize,
   sector,
   bricksColors,
-  // history,
+  history,
   colorPresetName,
 });

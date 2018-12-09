@@ -1,11 +1,10 @@
 import { connect } from 'react-redux';
-import PaintingPanel from '../components/tools/PaintingPanel';
+import PaintingPanel from '../components/tools/History';
 import * as actionCreators from '../actions';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ history }) => {
   const props = {
-    colorPresetName: state.colorPresetName,
-    bricksColors: state.bricksColors,
+    history,
   };
   return props;
 };

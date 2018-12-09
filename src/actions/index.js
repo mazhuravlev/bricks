@@ -19,5 +19,5 @@ export const setColor = createAction('SET_COLOR');
 
 export const changeCurrentPreset = createAction('CHANGE_CURRENT_PRESET');
 
-export const hisoryForward = createAction('FORWARD');
-export const hisoryBackward = createAction('BACKWARD');
+export const historyPush = createAction('HISTORY_PUSH');
+export const historySwap = createAction('HISTORY_SWAP');
