@@ -22,7 +22,7 @@ export default class Tools extends Component {
     return (
       <div style={{ padding: 8 }}>
         <div>
-          <button onClick={this.save} type="button">save</button>
+          <button onClick={this.props.save} type="button">save</button>
         </div>
         <HistoryContainer
           undoredo={this.props.undoredo}

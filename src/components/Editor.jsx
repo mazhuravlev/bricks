@@ -28,10 +28,13 @@ export default class Editor extends Component {
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
     this.updateBrickSector = this.updateBrickSector.bind(this);
+    this.save = this.save.bind(this);
   }
 
   componentDidMount() {
-    setInterval(() => this.save(), 1000);
+    if (window.CefSharp) {
+      window.CefSharp.BindObjectAsync('vasya').then(x => console.log('bound vasya', x));
+    }
   }
 
   setOperation(operation) {
@@ -114,6 +117,9 @@ export default class Editor extends Component {
     });
     document.querySelector('#preview').src = img;
     document.body.background = this.state.fillBackground ? img : 'none';
+    if (window.vasya) {
+      window.vasya.save(img);
+    }
   }
 
   render() {
@@ -158,6 +164,7 @@ export default class Editor extends Component {
             color={this.state.color}
             brickSector={this.updateBrickSector()}
             undoredo={this.undoredo}
+            save={this.save}
           />
           <ReactCursorPosition>
             <GridBricksContainer
@@ -180,8 +187,7 @@ export default class Editor extends Component {
           />
         </div>
         <div>
-          <p>PNG</p>
-          <img id="preview" alt="preview" src="https://via.placeholder.com/1" />
+          <img id="preview" style={window.CefSharp ? { position: 'absolute', left: -1000 } : {}} alt="preview" src="https://via.placeholder.com/1" />
         </div>
       </div>
     );
