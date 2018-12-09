@@ -40,8 +40,8 @@ export default class Editor extends Component {
 
   handleKyeDown = (key) => {
     const operationMapping = {
-      shift: operations.CHANGE_COLOR_BRICK,
-      ctrl: operations.REMOVE_BRICK,
+      ctrl: operations.CHANGE_COLOR_BRICK,
+      shift: operations.REMOVE_BRICK,
     }[key];
     this.setState({
       isDisabledHandleKey: true,
