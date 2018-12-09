@@ -1,7 +1,6 @@
 /* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
-// import { has } from 'lodash';
 
 import Brick from './Brick';
 import * as operations from '../operations';
@@ -23,40 +22,71 @@ class GridBricks extends Component {
     this.setState({ cursorPosition: currentCell });
   };
 
+  keyBoardEvents = (event) => {
+    console.log(event.key);
+  }
+
   addBrick = () => {
     const newBrick = {
       id: uuid(),
       position: getBrickPosition(this.state.cursorPosition, this.props.brickSize),
       size: this.props.brickSize,
-      color: this.props.color,
     };
-    const { bricks } = this.props;
+    const { bricks, colorPresetName, color } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
+    const actions = [];
     for (let x = 0; x < newBrick.size.width; x++) {
       for (let y = 0; y < newBrick.size.height; y++) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
-          const { id } = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
-          this.props.removeBrick({ id });
+          const brick = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
+          this.props.removeBrick({ brick });
+          actions.push({
+            type: operations.REMOVE_BRICK,
+            data: { brick, color, colorPresetName },
+          });
         }
       }
     }
-    this.props.addBrick({ brick: newBrick });
+    this.props.addBrick({ brick: newBrick, color, colorPresetName });
+
+    const lastAction = ({
+      type: this.props.currentOperation.type,
+      data: { brick: newBrick, color, colorPresetName },
+    });
+    const resultAction = actions.length > 0 ? [...actions, lastAction] : lastAction;
+    this.props.historyPush({ operations: resultAction });
   }
 
-  removeBrick = (id) => {
-    if (id) {
-      this.props.removeBrick({ id });
+  removeBrick = (brick) => {
+    const { colorPresetName, color } = this.props;
+    if (brick) {
+      this.props.removeBrick({ brick });
+      const action = {
+        type: this.props.currentOperation.type,
+        data: { brick, color, colorPresetName },
+      };
+      this.props.historyPush({ operations: action });
     }
   }
 
-  changeBrickColor = (id) => {
-    if (id) {
-      const { color } = this.props;
-      this.props.changeBrickColor({ id, color });
+  changeBrickColor = (brick) => {
+    if (brick) {
+      const { color, colorPresetName, bricksColors } = this.props;
+      const oldColor = bricksColors[`${brick.id}-${colorPresetName}`].color;
+      this.props.changeBrickColor({ brickId: brick.id, color, colorPresetName });
+      const action = {
+        type: this.props.currentOperation.type,
+        data: {
+          brickId: brick.id,
+          color: { old: oldColor, new: color },
+          colorPresetName,
+        },
+      };
+      this.props.historyPush({ operations: action });
     }
   }
 
-  handleOperation = id => (e) => {
+  handleOperation = brick => (e) => {
     e.stopPropagation();
     const { currentOperation: { type } } = this.props;
     if (type) {
@@ -65,9 +95,8 @@ class GridBricks extends Component {
         [operations.REMOVE_BRICK]: this.removeBrick,
         [operations.CHANGE_COLOR_BRICK]: this.changeBrickColor,
       };
-      method[type](id);
+      method[type](brick);
     }
-    setTimeout(() => this.props.updateBrickSector());
   }
 
   renderSector() {
@@ -127,6 +156,7 @@ class GridBricks extends Component {
       step,
       bricks,
       bricksColors,
+      colorPresetName,
     } = this.props;
 
     return (
@@ -136,20 +166,20 @@ class GridBricks extends Component {
         onClick={this.handleOperation()}
         style={buildSyleObj(templateSize, step)}
       >
-        {Object.values(bricks).map(({ position, size, id }) => {
-          const colorId = `${id}-${bricksColors.name}`;
-          const color = bricksColors.data[colorId]
-            ? bricksColors.data[colorId].color.rgb
+        {Object.values(bricks).map((brick) => {
+          const colorId = `${brick.id}-${colorPresetName}`;
+          const color = bricksColors[colorId]
+            ? bricksColors[colorId].color.rgb
             : null;
 
           return (
             <Brick
-              key={id}
-              id={id}
+              key={brick.id}
+              id={brick.id}
               className="brick"
               color={color}
-              style={buildSyleObj({ ...position, ...size }, step)}
-              handleOperation={this.handleOperation(id)}
+              style={buildSyleObj({ ...brick.position, ...brick.size }, step)}
+              handleOperation={this.handleOperation(brick)}
             />);
         })}
         {isActive && currentOperation.type === operations.ADD_BRICK

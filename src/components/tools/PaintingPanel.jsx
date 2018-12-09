@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+
 import { makeRgbStyleProp } from '../../helpers';
+import { CHANGE_COLOR_BRICK } from '../../operations';
 
 class PaintingPanel extends Component {
   state = {
@@ -30,12 +32,27 @@ class PaintingPanel extends Component {
 
   makeRundomPainting = () => {
     const { colorList } = this.state;
-    const { brickSector } = this.props;
+    const { brickSector, colorPresetName, bricksColors } = this.props;
     const colors = Object.values(colorList);
     const maxRandom = colors.length - 1;
+    const actions = [];
     Object.values(brickSector).forEach(({ id }) => {
-      this.props.changeBrickColor({ id, color: colors[_.random(0, maxRandom)] });
+      const color = colors[_.random(0, maxRandom)];
+      const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
+
+      this.props.changeBrickColor({ brickId: id, color, colorPresetName });
+
+      actions.push({
+        type: CHANGE_COLOR_BRICK,
+        data: {
+          brickId: id,
+          color: { old: oldColor, new: color },
+          colorPresetName,
+        },
+      });
     });
+
+    this.props.historyPush({ operations: actions });
   }
 
   renderColorList() {

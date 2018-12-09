@@ -2,13 +2,13 @@ import React from 'react';
 import Brick from './Brick';
 import { buildSyleObj } from '../helpers';
 
-function getColor(colors, brickId) {
-  const color = colors.data[`${brickId}-${colors.name}`];
+function getColor(bricksColors, brickId, colorPresetName) {
+  const color = bricksColors[`${brickId}-${colorPresetName}`];
   return color ? color.color.rgb : null;
 }
 
 export default function Preview({
-  bricks, sectorSize, colors, width, step,
+  bricks, sectorSize, bricksColors, width, step, colorPresetName,
 }) {
   const tileArr = new Array(4).fill(null);
   const tiles = tileArr.map((_, i) => (
@@ -17,7 +17,7 @@ export default function Preview({
         <Brick
           key={id}
           className="brick"
-          color={getColor(colors, id)}
+          color={getColor(bricksColors, id, colorPresetName)}
           style={buildSyleObj({ ...position, ...size }, step)}
         />
       ))}

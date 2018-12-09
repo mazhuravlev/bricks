@@ -21,13 +21,13 @@ class PaintingPanel extends Component {
 
 
   render() {
-    const { bricksColors } = this.props;
+    const { colorPresetName } = this.props;
     const { presetsColl } = this.state;
     return (
       <div>
         <div className="control-panel">
           <p>Набор цветов:</p>
-          <select onChange={this.changeColorPreset} value={bricksColors.name}>
+          <select onChange={this.changeColorPreset} value={colorPresetName}>
             {presetsColl.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
           <button onClick={this.addNewColorPreset} type="button">add</button>

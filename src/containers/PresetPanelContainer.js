@@ -4,7 +4,7 @@ import * as actionCreators from '../actions';
 
 const mapStateToProps = (state) => {
   const props = {
-    bricksColors: state.bricksColors,
+    colorPresetName: state.colorPresetName,
   };
   return props;
 };

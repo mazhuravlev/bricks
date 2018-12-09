@@ -1,50 +1,74 @@
 /* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import domtoimage from 'dom-to-image';
-import { ADD_BRICK, REMOVE_BRICK, CHANGE_COLOR_BRICK } from '../operations';
 
 import GridBricksContainer from '../containers/GridBricksContainer';
 import Tools from './tools';
 import Preview from './Preview';
+
 import { generateBricksMatrix } from '../helpers';
 import colors from '../data/colors.json';
+import * as operations from '../operations';
 
 export default class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      operation: { type: ADD_BRICK },
+      operation: { type: operations.ADD_BRICK },
       step: 15,
       fillBackground: false,
       color: Object.values(colors)[0],
+      isDisabledHandleKey: false,
     };
     this.setBrickOperation = this.setBrickOperation.bind(this);
     this.setRemoveBrickOperation = this.setRemoveBrickOperation.bind(this);
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
     this.updateBrickSector = this.updateBrickSector.bind(this);
+    this.save = this.save.bind(this);
   }
 
   componentDidMount() {
-    setInterval(() => this.save(), 1000);
+    if (window.CefSharp) {
+      window.CefSharp.BindObjectAsync('vasya').then(x => console.log('bound vasya', x));
+    }
   }
 
   setOperation(operation) {
     this.setState({ operation });
   }
 
+  handleKyeDown = (key) => {
+    const operationMapping = {
+      ctrl: operations.CHANGE_COLOR_BRICK,
+      shift: operations.REMOVE_BRICK,
+    }[key];
+    this.setState({
+      isDisabledHandleKey: true,
+      operation: { type: operationMapping },
+    });
+  }
+
+  handleKyeUp = () => {
+    this.setState({
+      isDisabledHandleKey: false,
+      operation: { type: operations.ADD_BRICK },
+    });
+  }
+
   setBrickOperation = (width, height) => () => {
     this.props.changeBrickSize({ size: { width, height } });
-    this.setOperation({ type: ADD_BRICK });
+    this.setOperation({ type: operations.ADD_BRICK });
   }
 
   changeColor = color => this.setState({ color });
 
-  setPaintOperation = () => this.setOperation({ type: CHANGE_COLOR_BRICK })
+  setPaintOperation = () => this.setOperation({ type: operations.CHANGE_COLOR_BRICK })
 
-  setRemoveBrickOperation = () => this.setOperation({ type: REMOVE_BRICK });
+  setRemoveBrickOperation = () => this.setOperation({ type: operations.REMOVE_BRICK });
 
   handleGridSize = newSize => ({ target }) => {
     const { changeTemplateSize } = this.props;
@@ -58,11 +82,10 @@ export default class Editor extends Component {
 
   setSectorSize = (size) => {
     this.props.setSectorSize(size);
-    setTimeout(() => this.updateBrickSector());
   };
 
   updateBrickSector = () => {
-    const { sector, bricks, buildBrickSector } = this.props;
+    const { sector, bricks } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
     const bricksInSectorMap = {};
     for (let x = 0; x < sector.size.width; x++) {
@@ -81,10 +104,9 @@ export default class Editor extends Component {
       return { ...brick, position: { left, top } };
     });
     if (bricksInSector.length > 0) {
-      buildBrickSector({ selectedBricks: tileBricks });
-    } else {
-      buildBrickSector({ selectedBricks: [] });
+      return tileBricks;
     }
+    return [];
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -95,21 +117,36 @@ export default class Editor extends Component {
     });
     document.querySelector('#preview').src = img;
     document.body.background = this.state.fillBackground ? img : 'none';
+    if (window.vasya) {
+      window.vasya.save(img);
+    }
   }
 
   render() {
-    const {
-      brickSector,
-      sector: { size },
-      bricksColors,
-    } = this.props;
+    const { sector: { size }, bricksColors } = this.props;
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '360px auto',
-      }}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '360px auto',
+          cursor: this.state.isDisabledHandleKey ? 'pointer' : 'default',
+        }
+      }
       >
+        <KeyboardEventHandler
+          handleKeys={['ctrl', 'shift']}
+          isDisabled={this.state.isDisabledHandleKey}
+          handleEventType="keydown"
+          onKeyEvent={this.handleKyeDown}
+          handleFocusableElements
+        />
+        <KeyboardEventHandler
+          handleKeys={['ctrl', 'shift']}
+          handleEventType="keyup"
+          onKeyEvent={this.handleKyeUp}
+          handleFocusableElements
+        />
         <div>
           <input
             type="checkbox"
@@ -125,6 +162,9 @@ export default class Editor extends Component {
             setSectorSize={this.setSectorSize}
             changeColor={this.changeColor}
             color={this.state.color}
+            brickSector={this.updateBrickSector()}
+            undoredo={this.undoredo}
+            save={this.save}
           />
           <ReactCursorPosition>
             <GridBricksContainer
@@ -132,21 +172,22 @@ export default class Editor extends Component {
               currentOperation={this.state.operation}
               step={this.state.step}
               updateBrickSector={this.updateBrickSector}
+              addToHistory={this.addToHistory}
             />
           </ReactCursorPosition>
         </div>
         <div>
           <Preview
-            bricks={brickSector}
+            bricks={this.updateBrickSector()}
             sectorSize={size}
-            colors={bricksColors}
+            bricksColors={bricksColors}
             width={size.width}
             step={this.state.step}
+            colorPresetName={this.props.colorPresetName}
           />
         </div>
         <div>
-          <p>PNG</p>
-          <img id="preview" alt="preview" src="https://via.placeholder.com/1" />
+          <img id="preview" style={window.CefSharp ? { position: 'absolute', left: -1000 } : {}} alt="preview" src="https://via.placeholder.com/1" />
         </div>
       </div>
     );

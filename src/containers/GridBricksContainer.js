@@ -8,8 +8,8 @@ const mapStateToProps = (state) => {
     templateSize: state.templateSize,
     brickSize: state.brickSize,
     sector: state.sector,
-    brickSector: state.brickSector,
     bricksColors: state.bricksColors,
+    colorPresetName: state.colorPresetName,
   };
   return props;
 };
