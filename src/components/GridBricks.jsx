@@ -1,7 +1,6 @@
 /* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
-// import { has } from 'lodash';
 
 import Brick from './Brick';
 import * as operations from '../operations';
@@ -22,6 +21,10 @@ class GridBricks extends Component {
     const currentCell = getGridPos(x, y, step);
     this.setState({ cursorPosition: currentCell });
   };
+
+  keyBoardEvents = (event) => {
+    console.log(event.key);
+  }
 
   addBrick = () => {
     const newBrick = {
@@ -66,15 +69,15 @@ class GridBricks extends Component {
     }
   }
 
-  changeBrickColor = ({ id }) => {
-    if (id) {
+  changeBrickColor = (brick) => {
+    if (brick) {
       const { color, colorPresetName, bricksColors } = this.props;
-      const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
-      this.props.changeBrickColor({ brickId: id, color, colorPresetName });
+      const oldColor = bricksColors[`${brick.id}-${colorPresetName}`].color;
+      this.props.changeBrickColor({ brickId: brick.id, color, colorPresetName });
       const action = {
         type: this.props.currentOperation.type,
         data: {
-          brickId: id,
+          brickId: brick.id,
           color: { old: oldColor, new: color },
           colorPresetName,
         },

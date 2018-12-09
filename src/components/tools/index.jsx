@@ -24,7 +24,9 @@ export default class Tools extends Component {
         <div>
           <button onClick={this.save} type="button">save</button>
         </div>
-        <HistoryContainer />
+        <HistoryContainer
+          undoredo={this.props.undoredo}
+        />
         <div>
           <button onClick={this.props.setBrickOperation(4, 1)} type="button">H 4</button>
           <button onClick={this.props.setBrickOperation(3, 1)} type="button">H 3</button>

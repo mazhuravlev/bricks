@@ -1,15 +1,17 @@
 /* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import domtoimage from 'dom-to-image';
-import * as operations from '../operations';
 
 import GridBricksContainer from '../containers/GridBricksContainer';
 import Tools from './tools';
 import Preview from './Preview';
+
 import { generateBricksMatrix } from '../helpers';
 import colors from '../data/colors.json';
+import * as operations from '../operations';
 
 export default class Editor extends Component {
   constructor(props) {
@@ -19,6 +21,7 @@ export default class Editor extends Component {
       step: 15,
       fillBackground: false,
       color: Object.values(colors)[0],
+      isDisabledHandleKey: false,
     };
     this.setBrickOperation = this.setBrickOperation.bind(this);
     this.setRemoveBrickOperation = this.setRemoveBrickOperation.bind(this);
@@ -33,6 +36,24 @@ export default class Editor extends Component {
 
   setOperation(operation) {
     this.setState({ operation });
+  }
+
+  handleKyeDown = (key) => {
+    const operationMapping = {
+      shift: operations.CHANGE_COLOR_BRICK,
+      ctrl: operations.REMOVE_BRICK,
+    }[key];
+    this.setState({
+      isDisabledHandleKey: true,
+      operation: { type: operationMapping },
+    });
+  }
+
+  handleKyeUp = () => {
+    this.setState({
+      isDisabledHandleKey: false,
+      operation: { type: operations.ADD_BRICK },
+    });
   }
 
   setBrickOperation = (width, height) => () => {
@@ -99,11 +120,27 @@ export default class Editor extends Component {
     const { sector: { size }, bricksColors } = this.props;
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '360px auto',
-      }}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '360px auto',
+          cursor: this.state.isDisabledHandleKey ? 'pointer' : 'default',
+        }
+      }
       >
+        <KeyboardEventHandler
+          handleKeys={['ctrl', 'shift']}
+          isDisabled={this.state.isDisabledHandleKey}
+          handleEventType="keydown"
+          onKeyEvent={this.handleKyeDown}
+          handleFocusableElements
+        />
+        <KeyboardEventHandler
+          handleKeys={['ctrl', 'shift']}
+          handleEventType="keyup"
+          onKeyEvent={this.handleKyeUp}
+          handleFocusableElements
+        />
         <div>
           <input
             type="checkbox"
@@ -120,6 +157,7 @@ export default class Editor extends Component {
             changeColor={this.changeColor}
             color={this.state.color}
             brickSector={this.updateBrickSector()}
+            undoredo={this.undoredo}
           />
           <ReactCursorPosition>
             <GridBricksContainer
