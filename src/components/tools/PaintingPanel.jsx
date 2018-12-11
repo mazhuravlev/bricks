@@ -105,6 +105,7 @@ class PaintingPanel extends Component {
   }
 
   makeRundomPainting = () => {
+    // debugger;
     const { colorList } = this.state;
     const { bricks, colorPresetName, bricksColors } = this.props;
 
@@ -115,7 +116,6 @@ class PaintingPanel extends Component {
     const brickColors = makeBrickColors(bricks, colors);
 
     const resultColorsList = fixColorForPairs(brickColors, brickPairs);
-
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
       const color = resultColorsList[id];

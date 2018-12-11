@@ -56,6 +56,8 @@ export default class Editor extends Component {
       up: setSectorSize.bind(this, { top: sector.top - 1 }),
       right: setSectorSize.bind(this, { left: sector.left + 1 }),
       down: setSectorSize.bind(this, { top: sector.top + 1 }),
+      '+': setSectorSize.bind(this, { width: sector.width + 1, height: sector.height + 1 }),
+      '-': setSectorSize.bind(this, { width: sector.width - 1, height: sector.height - 1 }),
     }[key];
 
     if (_.isFunction(keyMapping)) {
