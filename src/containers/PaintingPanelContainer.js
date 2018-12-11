@@ -6,6 +6,7 @@ const mapStateToProps = (state) => {
   const props = {
     colorPresetName: state.colorPresetName,
     bricksColors: state.bricksColors,
+    sector: state.sector,
   };
   return props;
 };

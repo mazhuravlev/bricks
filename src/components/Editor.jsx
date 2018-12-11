@@ -220,7 +220,7 @@ export default class Editor extends Component {
             setRemoveBrickOperation={this.setRemoveBrickOperation}
             setBrickOperation={this.setBrickOperation}
             setPaintOperation={this.setPaintOperation}
-            sectorSize={sector}
+            sector={sector}
             setSectorSize={this.setSectorSize}
             changeColor={this.changeColor}
             color={this.state.color}
@@ -241,7 +241,7 @@ export default class Editor extends Component {
         <div>
           <Preview
             bricks={this.updateBrickSector()}
-            sectorSize={sector}
+            sector={sector}
             bricksColors={bricksColors}
             width={sector.width}
             step={this.state.step}

@@ -4,10 +4,82 @@ import _ from 'lodash';
 import { makeRgbStyleProp } from '../../helpers';
 import { CHANGE_COLOR_BRICK } from '../../operations';
 
+const isOutside = (position, size, sector) => {
+  const conditions = [
+    position.left < 0 || position.top < 0,
+    position.left + size.width > sector.width,
+    position.top + size.height > sector.height,
+  ];
+  return conditions.some(item => item);
+};
+
+const isPair = (brick1, brick2) => {
+  const conditions1 = [
+    brick1.position.left === brick2.position.left,
+  ].every(item => item);
+  const conditions2 = [
+    brick1.position.top === brick2.position.top,
+  ].every(item => item);
+  return conditions1 || conditions2;
+};
+
+const getBrickPairs = (bricks) => {
+  if (bricks.length < 2) return [];
+  const [head, ...tail] = bricks;
+  const [pair] = tail.filter(brick => isPair(head, brick));
+  if (!pair && tail.length === 0) {
+    return [];
+  }
+  if (!pair && tail.length > 0) {
+    return getBrickPairs(tail);
+  }
+
+  const restBricks = _.without(tail, pair);
+  if (restBricks.length === 0) {
+    return [head, pair];
+  }
+  return _.flatten([[head, pair], ...getBrickPairs(restBricks)]);
+};
+
+const makeBrickColors = (bricks, colors) => {
+  const maxRandom = colors.length - 1;
+  return Object.values(bricks).reduce((acc, brick) => {
+    const color = colors[_.random(0, maxRandom)];
+    return { ...acc, [brick.id]: color };
+  }, {});
+};
+
+const fixColorForPairs = (brickColors, brickPairs) => brickPairs.reduce((acc, brick, i) => {
+  if (!(i % 2)) return acc;
+  const firstId = brickPairs[i].id;
+  const secondId = brickPairs[i - 1].id;
+
+  const randomPairIndex = _.random(0, 1);
+  const randomId = [firstId, secondId][randomPairIndex];
+  const color = brickColors[randomId === firstId ? secondId : firstId];
+  return { ...acc, [randomId]: color };
+}, brickColors);
+
 class PaintingPanel extends Component {
   state = {
     mode: 'manual',
     colorList: {},
+  }
+
+  getInsideBricks() {
+    const {
+      bricks,
+      sector,
+    } = this.props;
+    return bricks.filter(({ position, size }) => !isOutside(position, size, sector));
+  }
+
+  getOutsideBricks() {
+    const { bricks, sector } = this.props;
+    const outsideBricks = bricks.filter(({ position, size }) => (
+      isOutside(position, size, sector)
+    ));
+    return outsideBricks;
   }
 
   changeMode = ({ target: { value } }) => {
@@ -32,12 +104,19 @@ class PaintingPanel extends Component {
 
   makeRundomPainting = () => {
     const { colorList } = this.state;
-    const { brickSector, colorPresetName, bricksColors } = this.props;
+    const { bricks, colorPresetName, bricksColors } = this.props;
+
+    const outsideBricks = this.getOutsideBricks();
+    const brickPairs = getBrickPairs(outsideBricks);
+
     const colors = Object.values(colorList);
-    const maxRandom = colors.length - 1;
+    const brickColors = makeBrickColors(bricks, colors);
+
+    const resultColorsList = fixColorForPairs(brickColors, brickPairs);
+
     const actions = [];
-    Object.values(brickSector).forEach(({ id }) => {
-      const color = colors[_.random(0, maxRandom)];
+    Object.keys(resultColorsList).forEach((id) => {
+      const color = resultColorsList[id];
       const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
 
       this.props.changeBrickColor({ brickId: id, color, colorPresetName });

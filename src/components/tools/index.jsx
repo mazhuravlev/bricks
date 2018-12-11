@@ -18,7 +18,7 @@ export default class Tools extends Component {
   }
 
   render() {
-    const { sectorSize } = this.props;
+    const { sector } = this.props;
     return (
       <div style={{ padding: 8 }}>
         <div>
@@ -48,24 +48,24 @@ export default class Tools extends Component {
         <PresetPanelContainer />
         <PaintingPanelContainer
           color={this.props.color}
-          brickSector={this.props.brickSector}
+          bricks={this.props.brickSector}
         />
         <div className="grid-sector-options-panel">
           <label htmlFor="sector-left">
                 x:
-            <input type="number" min="0" className="input-sector-size" name="left" id="sector-left" value={sectorSize.left} onChange={this.handleSector} />
+            <input type="number" min="0" className="input-sector-size" name="left" id="sector-left" value={sector.left} onChange={this.handleSector} />
           </label>
           <label htmlFor="grid-width">
                 y:
-            <input type="number" min="0" className="input-sector-size" name="top" id="sector-top" value={sectorSize.top} onChange={this.handleSector} />
+            <input type="number" min="0" className="input-sector-size" name="top" id="sector-top" value={sector.top} onChange={this.handleSector} />
           </label>
           <label htmlFor="grid-width">
                 w:
-            <input type="number" min="2" className="input-sector-size" name="width" id="sector-width" value={sectorSize.width} onChange={this.handleSector} />
+            <input type="number" min="2" className="input-sector-size" name="width" id="sector-width" value={sector.width} onChange={this.handleSector} />
           </label>
           <label htmlFor="grid-height">
                 h:
-            <input type="number" min="2" className="input-sector-size" name="height" id="sector-height" value={sectorSize.height} onChange={this.handleSector} />
+            <input type="number" min="2" className="input-sector-size" name="height" id="sector-height" value={sector.height} onChange={this.handleSector} />
           </label>
         </div>
       </div>
