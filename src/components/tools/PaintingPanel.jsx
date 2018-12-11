@@ -15,9 +15,11 @@ const isOutside = (position, size, sector) => {
 
 const isPair = (brick1, brick2) => {
   const conditions1 = [
+    brick1.size.width === 1,
     brick1.position.left === brick2.position.left,
   ].every(item => item);
   const conditions2 = [
+    brick1.size.height === 1,
     brick1.position.top === brick2.position.top,
   ].every(item => item);
   return conditions1 || conditions2;
