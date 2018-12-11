@@ -21,3 +21,6 @@ export const changeCurrentPreset = createAction('CHANGE_CURRENT_PRESET');
 
 export const historyPush = createAction('HISTORY_PUSH');
 export const historySwap = createAction('HISTORY_SWAP');
+
+export const addColorPalette = createAction('ADD_COLOR_PALETTE');
+export const removeColorPalette = createAction('REMOVE_COLOR_PALETTE');

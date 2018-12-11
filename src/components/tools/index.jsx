@@ -1,7 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 
-import ColorPalette from './ColorPalette';
+import ColorList from './ColorList/Index';
 import PaintingPanelContainer from '../../containers/PaintingPanelContainer';
 import PresetPanelContainer from '../../containers/PresetPanelContainer';
 import History from './History';
@@ -42,7 +42,7 @@ export default class Tools extends Component {
         <div>
           <button onClick={this.props.setRemoveBrickOperation} type="button">Delete</button>
         </div>
-        <ColorPalette
+        <ColorList
           changeColor={this.props.changeColor}
         />
         <PresetPanelContainer />

@@ -62,6 +62,7 @@ const fixColorForPairs = (brickColors, brickPairs) => brickPairs.reduce((acc, br
   return { ...acc, [randomId]: color };
 }, brickColors);
 
+
 class PaintingPanel extends Component {
   state = {
     mode: 'manual',
@@ -105,7 +106,6 @@ class PaintingPanel extends Component {
   }
 
   makeRundomPainting = () => {
-    // debugger;
     const { colorList } = this.state;
     const { bricks, colorPresetName, bricksColors } = this.props;
 
