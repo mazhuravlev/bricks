@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+
+import '../../../styles/ColorList.css';
 
 import ColorPallete from './ColorPalette';
 
@@ -8,6 +11,7 @@ import { makeRgbStyleProp } from '../../../helpers';
 class ColorList extends Component {
   state = {
     currentColor: Object.values(colors)[0],
+    colorList: {},
   }
 
   componentWillMount() {
@@ -15,23 +19,37 @@ class ColorList extends Component {
     this.props.changeColor(colors[code]);
   }
 
+  setColorList = (colorList) => {
+    this.setState({ colorList });
+  }
+
+  removeColor = (code) => {
+    const { colorList } = this.state;
+    this.setState({ colorList: _.omit(colorList, code) });
+  }
+
   setNewColor = (color) => {
     this.setState({ currentColor: color });
     this.props.changeColor(color);
   }
 
-  changeColor = ({ target: { value } }) => {
+  addNewColor = ({ target: { value } }) => {
+    const { colorList } = this.state;
     const color = colors[value];
-    this.setNewColor(color);
+    const newColorList = {
+      ...colorList,
+      [color.code]: color,
+    };
+    this.setColorList(newColorList);
   }
 
   render() {
     const { currentColor } = this.state;
     return (
-      <div>
+      <div className="color-list">
         <select
-          onChange={this.changeColor}
-          style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '14px' }}
+          onChange={this.addNewColor}
+          style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '12px' }}
           value={this.state.currentColor.code}
         >
           {Object.values(colors).map(({ code, rgb }) => (
@@ -46,6 +64,9 @@ class ColorList extends Component {
         <ColorPallete
           color={this.state.currentColor}
           setNewColor={this.setNewColor}
+          colorList={this.state.colorList}
+          setColorList={this.setColorList}
+          removeColor={this.removeColor}
         />
       </div>
     );

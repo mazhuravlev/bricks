@@ -119,7 +119,7 @@ class PaintingPanel extends Component {
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
       const color = resultColorsList[id];
-      const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
+      const oldColor = bricksColors[`${id}-${colorPresetName}`] ? bricksColors[`${id}-${colorPresetName}`].color : null;
 
       this.props.changeBrickColor({ brickId: id, color, colorPresetName });
 

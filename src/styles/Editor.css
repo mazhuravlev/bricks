@@ -1,0 +1,86 @@
+/* Editor styles */
+
+.editor-container {
+  padding: 2px;
+  display: grid;
+  /* background-color: aquamarine; */
+  grid-template-columns: 200px 200px 450px;
+  grid-template-rows: auto;
+  grid-column-gap: 10px;
+  grid-row-gap: 15px;
+  justify-items: center;
+  align-items: center;
+  grid-template-areas: 
+    "tools palette tile"
+    "tools workarea tile"
+    "tools briks tile";
+}
+
+/* .editor-container .editor-item {
+  justify-self: center;
+} */
+
+.editor-container .palette {
+  grid-area: palette;
+  /* background-color: whitesmoke; */
+}
+
+.editor-container .workarea {
+  grid-area: workarea;
+  /* background-color: green; */
+}
+
+.editor-container .briks {
+  grid-area: briks;
+  /* background-color: greenyellow; */
+
+}
+
+.editor-container .tile {
+  grid-area: tile;
+  /* background-color: gray; */
+}
+
+.editor-container .tools {
+  grid-area: tools;
+  /* background-color: gray; */
+  justify-self: start;
+  align-self: start;
+  /* padding: 10px; */
+}
+
+/* Bricks select panel styles */
+
+.editor-container .bricks-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 200px;
+}
+
+.editor-container .bricks-panel .bricks-panel-group {
+  margin-bottom: 5px;
+  align-self: center;
+}
+
+.editor-container .bricks-panel .bricks-panel-group:first-child {
+  margin-bottom: 0;
+}
+
+/* Sector size panel styles */
+
+.editor-container .grid-sector-options-panel {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+  border-bottom: 2px solid black;
+  padding-left: 10px;
+}
+
+.editor-container .grid-sector-options-panel .input-sector-size {
+  text-align: center;
+  max-width: 40px;
+  padding: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+}

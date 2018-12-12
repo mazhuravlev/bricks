@@ -6,10 +6,18 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 import domtoimage from 'dom-to-image';
 import _ from 'lodash';
 
+import '../styles/Editor.css';
+import 'bootstrap/dist/css/bootstrap.css';
+
+// import Tools from './tools';
 import GridBricksContainer from '../containers/GridBricksContainer';
-import Tools from './tools';
+import PaintingPanelContainer from '../containers/PaintingPanelContainer';
+import PresetPanelContainer from '../containers/PresetPanelContainer';
+
 import Preview from './Preview';
-import HotKeyPanel from './HotKeyPanel';
+import BricksPanel from './tools/BricksPanel';
+import ColorList from './tools/ColorList/Index';
+import SectorPanel from './tools/SectorPanel';
 
 import { generateBricksMatrix } from '../helpers';
 import colors from '../data/colors.json';
@@ -22,7 +30,8 @@ export default class Editor extends Component {
     super(props);
     this.state = {
       operation: { type: operations.ADD_BRICK },
-      step: 15,
+      workareaStep: 20,
+      tileStep: 15,
       fillBackground: false,
       color: Object.values(colors)[0],
       isDisabledHandleKey: false,
@@ -124,6 +133,7 @@ export default class Editor extends Component {
   }
 
   setBrickOperation = (width, height) => () => {
+    console.log(width, height);
     this.props.changeBrickSize({ size: { width, height } });
     this.setOperation({ type: operations.ADD_BRICK });
   }
@@ -186,18 +196,9 @@ export default class Editor extends Component {
     }
   }
 
-  render() {
-    const { sector, bricksColors } = this.props;
-
+  makeKeyHandlers() {
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '360px auto',
-          cursor: this.state.isDisabledHandleKey ? 'pointer' : 'default',
-        }
-      }
-      >
+      <>
         <KeyboardEventHandler
           handleKeys={keyList}
           isDisabled={this.state.isDisabledHandleKey}
@@ -211,50 +212,64 @@ export default class Editor extends Component {
           onKeyEvent={this.handleKyeUp}
           handleFocusableElements
         />
-        <div>
-          <input
-            type="checkbox"
-            checked={this.state.fillBackground}
-            onChange={() => this.setState(state => ({ fillBackground: !state.fillBackground }))}
-          />
-          fill background
-          <Tools
-            setRemoveBrickOperation={this.setRemoveBrickOperation}
-            setBrickOperation={this.setBrickOperation}
-            setPaintOperation={this.setPaintOperation}
-            sector={sector}
-            setSectorSize={this.setSectorSize}
-            changeColor={this.changeColor}
-            color={this.state.color}
-            brickSector={this.updateBrickSector()}
-            undoredo={this.undoredo}
-            save={this.save}
-          />
-          <ReactCursorPosition>
-            <GridBricksContainer
-              color={this.state.color}
-              currentOperation={this.state.operation}
-              step={this.state.step}
-              updateBrickSector={this.updateBrickSector}
-              addToHistory={this.addToHistory}
+      </>
+    );
+  }
+
+  render() {
+    const { sector, bricksColors } = this.props;
+
+    return (
+      <>
+        <div className="editor-container" style={{ cursor: this.state.isDisabledHandleKey ? 'pointer' : 'default' }}>
+          <div className="editor-item palette">
+            <ColorList
+              changeColor={this.changeColor}
             />
-          </ReactCursorPosition>
+          </div>
+          <div className="editor-item workarea">
+            <ReactCursorPosition>
+              <GridBricksContainer
+                color={this.state.color}
+                currentOperation={this.state.operation}
+                step={this.state.workareaStep}
+                updateBrickSector={this.updateBrickSector}
+                addToHistory={this.addToHistory}
+              />
+            </ReactCursorPosition>
+          </div>
+          <div className="editor-item briks">
+            <BricksPanel
+              setRemoveBrickOperation={this.setRemoveBrickOperation}
+              setBrickOperation={this.setBrickOperation}
+              setPaintOperation={this.setPaintOperation}
+            />
+          </div>
+          <div className="editor-item tile">
+            <Preview
+              bricks={this.updateBrickSector()}
+              sector={sector}
+              bricksColors={bricksColors}
+              width={sector.width}
+              step={this.state.tileStep}
+              colorPresetName={this.props.colorPresetName}
+            />
+          </div>
+          <div className="editor-item tools">
+            <SectorPanel
+              sector={this.props.sector}
+              setSectorSize={this.props.setSectorSize}
+            />
+            <PresetPanelContainer />
+            <PaintingPanelContainer
+              color={this.state.color}
+              bricks={this.updateBrickSector()}
+            />
+          </div>
         </div>
-        <div>
-          <Preview
-            bricks={this.updateBrickSector()}
-            sector={sector}
-            bricksColors={bricksColors}
-            width={sector.width}
-            step={this.state.step}
-            colorPresetName={this.props.colorPresetName}
-          />
-        </div>
-        <div>
-          <img id="preview" style={window.CefSharp ? { position: 'absolute', left: -1000 } : {}} alt="preview" src="https://via.placeholder.com/1" />
-        </div>
-        <HotKeyPanel />
-      </div>
+        {this.makeKeyHandlers()}
+        <img id="preview" style={window.CefSharp ? { position: 'absolute', left: -1000 } : {}} alt="preview" src="https://via.placeholder.com/1" />
+      </>
     );
   }
 }

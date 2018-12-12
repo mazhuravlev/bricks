@@ -1,0 +1,39 @@
+.color-list {
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+}
+
+.color-list select {
+  min-height: 30px;
+}
+
+.color-list label {
+  margin: 0;
+  margin-right: 2px;
+  line-height: 2;
+  /* text-align: center; */
+}
+
+.color-list .color-palette {
+  width: 100%;
+  min-height: 26px;
+  max-height: 48px;
+  overflow: auto;
+  border: 2px solid gray;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.color-list .color-palette-item {
+  width: 30px;
+  height: 20px;
+  text-align: center;
+  border: 1px solid gray;
+  margin: 1px;
+  box-sizing: border-box;
+}
+
+.color-list .color-palette-item:hover {
+  border: 2px solid darkslategrey;
+}

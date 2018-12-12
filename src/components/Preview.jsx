@@ -10,7 +10,7 @@ function getColor(bricksColors, brickId, colorPresetName) {
 export default function Preview({
   bricks, sector, bricksColors, width, step, colorPresetName,
 }) {
-  const tileArr = new Array(4).fill(null);
+  const tileArr = new Array(9).fill(null);
   const tiles = tileArr.map((_, i) => (
     <div key={i} className="sectorItem" style={buildSyleObj({ width: sector.width, height: sector.height }, step)}>
       {bricks.map(({ position, size, id }) => (
@@ -25,7 +25,7 @@ export default function Preview({
   ));
   return (
     <div
-      style={{ gridTemplateColumns: [1, 1].map(() => `${step * width}px`).join(' ') }}
+      style={{ gridTemplateColumns: [1, 1, 1].map(() => `${step * width}px`).join(' ') }}
       className="grid-area-preview"
     >
       {tiles}

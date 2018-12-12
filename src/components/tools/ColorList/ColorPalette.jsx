@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import PalettePresetPanelContainer from '../../../containers/PalettePresetPanelContainer';
 
 import { makeRgbStyleProp } from '../../../helpers';
 
+
 export class ColorPalette extends Component {
   state = {
-    colorList: {},
+    dropdownOpen: false,
   }
 
-  setColorList = (colorList) => {
-    this.setState({ colorList });
-  }
-
-  addNewColor = () => {
-    const { color } = this.props;
-    const { colorList } = this.state;
-    this.setColorList({
-      ...colorList,
-      [color.code]: color,
-    });
+  toggle = () => {
+    this.setState(prevState => ({
+      dropdownOpen: !prevState.dropdownOpen,
+    }));
   }
 
   setColor = color => () => {
@@ -29,25 +26,22 @@ export class ColorPalette extends Component {
 
   removeColor = code => (e) => {
     e.preventDefault();
-    const { colorList } = this.state;
-    this.setState({ colorList: _.omit(colorList, code) });
+    this.props.removeColor(code);
   }
 
   renderColorList() {
-    const { colorList } = this.state;
+    const { colorList } = this.props;
     return (
-      <div>
-        <button onClick={this.addNewColor} type="button">+</button>
+      <div className="color-palette">
         {Object.values(colorList).map(color => (
           <div
-            className="color-preview"
+            className="color-palette-item"
             key={color.code}
             style={{ backgroundColor: makeRgbStyleProp(color.rgb) }}
             onClick={this.setColor(color)}
+            title={color.code}
             onContextMenu={this.removeColor(color.code)}
-          >
-            <p>{color.code}</p>
-          </div>
+          />
         ))}
       </div>
     );
@@ -56,11 +50,20 @@ export class ColorPalette extends Component {
   render() {
     return (
       <div>
+        <Dropdown direction="right" size="sm" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+          <DropdownToggle caret block>
+            Наборы палитр
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem disabled>
+              <PalettePresetPanelContainer
+                colorList={this.props.colorList}
+                setColorList={this.props.setColorList}
+              />
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         {this.renderColorList()}
-        <PalettePresetPanelContainer
-          colorList={this.state.colorList}
-          setColorList={this.setColorList}
-        />
       </div>
     );
   }

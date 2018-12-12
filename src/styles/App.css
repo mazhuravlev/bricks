@@ -7,7 +7,7 @@
   position: relative;
   background-color: gray;
   overflow: hidden;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
 }
 
 .templateSector {
@@ -26,16 +26,6 @@
   /* margin-bottom: 10px; */
   margin: 0;
   margin-right: 5px;
-}
-
-.grid-size-options-panel .input-grid-size {
-  text-align: center;
-  max-width: 100px;
-}
-
-.grid-sector-options-panel .input-sector-size {
-  text-align: center;
-  max-width: 40px;
 }
 
 .brick {
@@ -80,20 +70,6 @@
 
 .active {
   background-color: aqua;
-}
-
-.color-preview {
-  width: '100%'; 
-  height: '20px';
-  text-align: center;
-  border: 1px solid gray;
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-
-.color-preview p {
-  margin: auto;
-  padding: 0;
 }
 
 @keyframes App-logo-spin {
