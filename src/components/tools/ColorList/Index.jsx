@@ -41,6 +41,7 @@ class ColorList extends Component {
       [color.code]: color,
     };
     this.setColorList(newColorList);
+    this.setNewColor(color);
   }
 
   render() {

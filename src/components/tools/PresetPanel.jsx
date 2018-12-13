@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 
 const initPresetsColl = [1];
 
@@ -13,6 +14,8 @@ class PaintingPanel extends Component {
     const { presetsColl } = this.state;
     const newPreset = presetsColl.length + 1;
     this.setState({ presetsColl: [...presetsColl, newPreset] });
+    this.props.changePresetName({ name: newPreset });
+    this.props.historyRemove();
   }
 
   changeColorPreset = ({ target: { value } }) => {
@@ -27,11 +30,11 @@ class PaintingPanel extends Component {
     return (
       <div>
         <div className="control-panel">
-          <p>Набор цветов:</p>
+          <span style={{ marginRight: '16px' }}>Вариант</span>
           <select onChange={this.changeColorPreset} value={colorPresetName}>
             {presetsColl.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          <button onClick={this.addNewColorPreset} type="button">add</button>
+          <Button onClick={this.addNewColorPreset} size="sm" className="float-right">+</Button>
         </div>
       </div>
     );

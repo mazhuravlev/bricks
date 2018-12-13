@@ -15,8 +15,8 @@
 }
 
 .control-panel {
-  /* margin-bottom: 10px; */
-  display: flex;
+  margin: 10px 0 10px;
+  display: block;
   justify-content: start;
   align-items: center;
   /* border: 2px solid black; */

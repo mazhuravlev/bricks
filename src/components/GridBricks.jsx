@@ -8,6 +8,16 @@ import {
   getGridPos, buildSyleObj, generateBricksMatrix, getBrickPosition,
 } from '../helpers';
 
+function makeCursor(operation) {
+  switch (operation.type) {
+    case 'CHANGE_COLOR_BRICK':
+      return 'crosshair';
+    case 'REMOVE_BRICK':
+      return 'no-drop';
+    default: return 'default';
+  }
+}
+
 class GridBricks extends Component {
   constructor(props) {
     super(props);
@@ -77,7 +87,7 @@ class GridBricks extends Component {
   changeBrickColor = (brick) => {
     if (brick) {
       const { color, colorPresetName, bricksColors } = this.props;
-      const oldColor = bricksColors[`${brick.id}-${colorPresetName}`].color;
+      const oldColor = bricksColors[`${brick.id}-${colorPresetName}`] ? bricksColors[`${brick.id}-${colorPresetName}`].color : undefined;
 
       this.props.changeBrickColor({ brickId: brick.id, color, colorPresetName });
       const action = {
@@ -169,7 +179,7 @@ class GridBricks extends Component {
         className="bricks-grid"
         onMouseMove={this.cursorPosition}
         onClick={this.handleOperation()}
-        style={buildSyleObj(templateSize, step)}
+        style={{ ...buildSyleObj(templateSize, step), cursor: makeCursor(currentOperation) }}
       >
         {Object.values(bricks).map((brick) => {
           const colorId = `${brick.id}-${colorPresetName}`;

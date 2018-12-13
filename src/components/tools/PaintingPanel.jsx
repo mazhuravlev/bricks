@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { Button, ButtonGroup } from 'reactstrap';
 import _ from 'lodash';
 
 import { makeRgbStyleProp } from '../../helpers';
 import { CHANGE_COLOR_BRICK } from '../../operations';
+
+const weightedRandom = require('weighted-random');
 
 const isOutside = (position, size, sector) => {
   const conditions = [
@@ -44,11 +47,14 @@ const getBrickPairs = (bricks) => {
 };
 
 const makeBrickColors = (bricks, colors) => {
-  const maxRandom = colors.length - 1;
-  return Object.values(bricks).reduce((acc, brick) => {
-    const color = colors[_.random(0, maxRandom)];
+  const colorColors = Object.values(colors).map(x => x.color);
+  const weights = Object.values(colors).map(x => x.value);
+  const newColors = Object.values(bricks).reduce((acc, brick) => {
+    const index = weightedRandom(weights);
+    const color = colorColors[index];
     return { ...acc, [brick.id]: color };
   }, {});
+  return newColors;
 };
 
 const fixColorForPairs = (brickColors, brickPairs) => brickPairs.reduce((acc, brick, i) => {
@@ -64,8 +70,12 @@ const fixColorForPairs = (brickColors, brickPairs) => brickPairs.reduce((acc, br
 
 
 class PaintingPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.changeColorValue = this.changeColorValue.bind(this);
+  }
+
   state = {
-    mode: 'manual',
     colorList: {},
   }
 
@@ -85,19 +95,25 @@ class PaintingPanel extends Component {
     return outsideBricks;
   }
 
-  changeMode = ({ target: { value } }) => {
-    this.setState({ mode: value });
-  }
-
   addNewColor = () => {
     const { color } = this.props;
     const { colorList } = this.state;
     this.setState({
       colorList: {
         ...colorList,
-        [color.code]: color,
+        [color.code]: { color, value: 1 },
       },
     });
+  }
+
+  // eslint-disable-next-line react/sort-comp
+  changeColorValue(code, value) {
+    this.setState(state => ({
+      colorList: {
+        ...state.colorList,
+        [code]: { color: state.colorList[code].color, value: Number(value) },
+      },
+    }));
   }
 
   removeColor = code => () => {
@@ -105,23 +121,18 @@ class PaintingPanel extends Component {
     this.setState({ colorList: _.omit(colorList, code) });
   }
 
-  makeRundomPainting = () => {
-    const { colorList } = this.state;
+  makeRandomPainting = () => {
+    if (!Object.keys(this.state.colorList).length) return;
     const { bricks, colorPresetName, bricksColors } = this.props;
-
     const outsideBricks = this.getOutsideBricks();
     const brickPairs = getBrickPairs(outsideBricks);
-
-    const colors = Object.values(colorList);
-    const brickColors = makeBrickColors(bricks, colors);
-
+    const brickColors = makeBrickColors(bricks, this.state.colorList);
     const resultColorsList = fixColorForPairs(brickColors, brickPairs);
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
       const color = resultColorsList[id];
-      const oldColor = bricksColors[`${id}-${colorPresetName}`].color;
+      const oldColor = bricksColors[`${id}-${colorPresetName}`] ? bricksColors[`${id}-${colorPresetName}`].color : undefined;
       this.props.changeBrickColor({ brickId: id, color, colorPresetName });
-
       actions.push({
         type: CHANGE_COLOR_BRICK,
         data: {
@@ -139,14 +150,14 @@ class PaintingPanel extends Component {
     const { colorList } = this.state;
     return (
       <div>
-        {Object.values(colorList).map(color => (
-          <div
-            className="color-preview"
-            key={color.code}
-            style={{ backgroundColor: makeRgbStyleProp(color.rgb) }}
-            onClick={this.removeColor(color.code)}
-          >
-            <p>{color.code}</p>
+        {Object.values(colorList).map(colorEntry => (
+          <div key={colorEntry.color.code} className="color-preview">
+            <div
+              className="color"
+              style={{ backgroundColor: makeRgbStyleProp(colorEntry.color.rgb) }}
+              onClick={this.removeColor(colorEntry.color.code)}
+            />
+            <input type="number" value={colorEntry.value} min="0" onChange={e => this.changeColorValue(colorEntry.color.code, e.target.value)} />
           </div>
         ))}
       </div>
@@ -157,28 +168,19 @@ class PaintingPanel extends Component {
     const { colorList } = this.state;
     return (
       <div>
-        <button onClick={this.addNewColor} type="button">Добавить выбранный цвет в список</button>
+        <ButtonGroup size="sm">
+          <Button onClick={this.addNewColor}>+ цвет</Button>
+          <Button onClick={this.makeRandomPainting}>Красить</Button>
+        </ButtonGroup>
         {Object.values(colorList).length > 0 ? this.renderColorList() : null}
-        <button onClick={this.makeRundomPainting} style={{ marginBottom: '5px' }} type="button">Применить расскраску</button>
       </div>
     );
   }
 
   render() {
-    const { mode } = this.state;
     return (
       <div>
-        <div>
-          <label htmlFor="manual">
-            <input onChange={this.changeMode} checked={mode === 'manual'} type="radio" id="manual" name="mode" value="manual" />
-            Ручная покраска
-          </label>
-          <label htmlFor="rundom">
-            <input onChange={this.changeMode} checked={mode === 'rundom'} type="radio" id="rundom" name="mode" value="rundom" />
-            Случайная покраска
-          </label>
-        </div>
-        {this.state.mode === 'manual' ? null : this.renderRandomPaintingPanel()}
+        {this.renderRandomPaintingPanel()}
       </div>
     );
   }

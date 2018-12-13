@@ -1,5 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 
 import ColorList from './ColorList/Index';
 import PaintingPanelContainer from '../../containers/PaintingPanelContainer';
@@ -21,9 +22,6 @@ export default class Tools extends Component {
     const { sector } = this.props;
     return (
       <div style={{ padding: 8 }}>
-        <div>
-          <button onClick={this.props.save} type="button">save</button>
-        </div>
         <History
           undoredo={this.props.undoredo}
         />

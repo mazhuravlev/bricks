@@ -32,8 +32,8 @@ export default class BricksPanel extends React.Component {
           <Button onClick={setBrickOperation(1, 2)}>V 2</Button>
         </ButtonGroup>
         <ButtonGroup className="bricks-panel-group">
-          <Button onClick={setPaintOperation}>Цвет</Button>
-          <Button onClick={setRemoveBrickOperation}>Удаление</Button>
+          <Button onClick={setPaintOperation} id="paint">🖌</Button>
+          <Button onClick={setRemoveBrickOperation} id="delete">⨯</Button>
         </ButtonGroup>
       </div>
     );

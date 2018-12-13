@@ -57,21 +57,22 @@ const bricksColors = handleActions({
   [actions.removeBrick](state, { payload: { brick } }) {
     return _.omitBy(state, ({ brickId }) => brickId === brick.id);
   },
-  [actions.changePresetName](state, { payload: { name } }) {
-    const defaultColor = {
-      code: 'gray',
-      rgb: '214,199,148',
-    };
-    return Object.keys(state).reduce((acc, id) => {
-      const newId = `${state[id].brickId}-${name}`;
-      const newItem = {
-        [newId]: {
-          ...state[id],
-          color: defaultColor,
-        },
-      };
-      return { ...acc, ...newItem };
-    }, { ...state });
+  [actions.changePresetName](state) {
+    // const defaultColor = {
+    //   code: 'gray',
+    //   rgb: '214,199,148',
+    // };
+    return state;
+    // return Object.keys(state).reduce((acc, id) => {
+    //   const newId = `${state[id].brickId}-${name}`;
+    //   const newItem = {
+    //     [newId]: {
+    //       ...state[id],
+    //       color: defaultColor,
+    //     },
+    //   };
+    //   return { ...acc, ...newItem };
+    // }, { ...state });
   },
 }, {});
 

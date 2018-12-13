@@ -51,7 +51,7 @@ export class ColorPalette extends Component {
     return (
       <div>
         <Dropdown direction="right" size="sm" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-          <DropdownToggle caret block>
+          <DropdownToggle caret block disabled>
             Наборы палитр
           </DropdownToggle>
           <DropdownMenu>

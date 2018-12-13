@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import ReactCursorPosition from 'react-cursor-position';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
-import domtoimage from 'dom-to-image';
 import _ from 'lodash';
 
 import '../styles/Editor.css';
@@ -31,7 +30,6 @@ export default class Editor extends Component {
       operation: { type: operations.ADD_BRICK },
       workareaStep: 20,
       tileStep: 15,
-      fillBackground: false,
       color: Object.values(colors)[0],
       isDisabledHandleKey: false,
     };
@@ -40,7 +38,6 @@ export default class Editor extends Component {
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
     this.updateBrickSector = this.updateBrickSector.bind(this);
-    this.save = this.save.bind(this);
   }
 
   componentDidMount() {
@@ -53,7 +50,7 @@ export default class Editor extends Component {
     this.setState({ operation });
   }
 
-  handleKyeDown = (key) => {
+  handleKeyDown = (key) => {
     const { sector, setSectorSize } = this.props;
     const keyMapping = {
       alt: operations.CHANGE_COLOR_BRICK,
@@ -78,7 +75,7 @@ export default class Editor extends Component {
     }
   }
 
-  handleKyeUp = () => {
+  handleKeyUp = () => {
     this.setState({
       isDisabledHandleKey: false,
       operation: { type: operations.ADD_BRICK },
@@ -181,19 +178,6 @@ export default class Editor extends Component {
     return [];
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async save() {
-    const img = await domtoimage.toPng(document.querySelector('.sectorItem'), {
-      width: this.props.sector.width * 15,
-      height: this.props.sector.height * 15,
-    });
-    document.querySelector('#preview').src = img;
-    document.body.background = this.state.fillBackground ? img : 'none';
-    if (window.vasya) {
-      window.vasya.save(img);
-    }
-  }
-
   makeKeyHandlers() {
     return (
       <>
@@ -201,13 +185,13 @@ export default class Editor extends Component {
           handleKeys={keyList}
           isDisabled={this.state.isDisabledHandleKey}
           handleEventType="keydown"
-          onKeyEvent={this.handleKyeDown}
+          onKeyEvent={this.handleKeyDown}
           handleFocusableElements
         />
         <KeyboardEventHandler
           handleKeys={keyList}
           handleEventType="keyup"
-          onKeyEvent={this.handleKyeUp}
+          onKeyEvent={this.handleKeyUp}
           handleFocusableElements
         />
       </>
@@ -263,9 +247,6 @@ export default class Editor extends Component {
               color={this.state.color}
               bricks={this.updateBrickSector()}
             />
-            <div>
-              <button onClick={this.save} type="button">save</button>
-            </div>
           </div>
         </div>
         {this.makeKeyHandlers()}

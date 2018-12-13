@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using CefSharp;
 using CefSharp.Wpf;
 using Microsoft.Win32;
@@ -23,10 +25,16 @@ namespace WpfApplication1
                 Address = string.IsNullOrEmpty(bricksUrl) ? "https://mazhuravlev.github.io/bricks/" : bricksUrl
             };
             Grid.Children.Add(browser);
-            browser.Width = 600;
-            browser.Height = 600;
+            browser.Width = 875;
+            browser.Height = 500;
+            Height = browser.Height + 5;
+            Width = browser.Width + 15;
             browser.JavascriptObjectRepository.Register("vasya", new Vasya());
-            Button.Click += (sender, args) => browser.ShowDevTools();
+            KeyDown += (sender, args) =>
+            {
+                if(args.Key == Key.F12) browser.ShowDevTools();
+            };
+            Background = Brushes.Gray;
         }
     }
 

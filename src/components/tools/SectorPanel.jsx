@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { UncontrolledTooltip } from 'reactstrap';
 import HotKeyPanel from '../HotKeyPanel';
 
 export default class SectorPanel extends React.Component {
@@ -12,13 +13,11 @@ export default class SectorPanel extends React.Component {
     const { sector } = this.props;
     return (
       <div className="grid-sector-options-panel">
-        <label htmlFor="grid-width">
-          <input type="number" min="2" className="input-sector-size form-control" name="width" id="sector-width" value={sector.width} onChange={this.handleSector} />
-        </label>
-        <label htmlFor="grid-height">
-          <input type="number" min="2" className="input-sector-size form-control" name="height" id="sector-height" value={sector.height} onChange={this.handleSector} />
-        </label>
-        <HotKeyPanel />
+        <input type="number" min="2" className="input-sector-size" name="width" id="sector-width" value={sector.width} onChange={this.handleSector} />
+        <UncontrolledTooltip target="sector-width">Ширина</UncontrolledTooltip>
+        <input type="number" min="2" className="input-sector-size" name="height" id="sector-height" value={sector.height} onChange={this.handleSector} />
+        <UncontrolledTooltip target="sector-height">Высота</UncontrolledTooltip>
+        <HotKeyPanel sector={sector} />
       </div>
     );
   }
