@@ -39,7 +39,11 @@ class GridBricks extends Component {
       for (let y = 0; y < newBrick.size.height; y++) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
           const brick = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
-          const oldColor = this.props.bricksColors[`${brick.id}-${colorPresetName}`].color;
+
+          const oldColor = this.props.bricksColors[`${brick.id}-${colorPresetName}`]
+            ? this.props.bricksColors[`${brick.id}-${colorPresetName}`].color
+            : { rgb: 'rgb(214,199,148)' };
+
           this.props.removeBrick({ brick });
           actions.push({
             type: operations.REMOVE_BRICK,
@@ -74,6 +78,7 @@ class GridBricks extends Component {
     if (brick) {
       const { color, colorPresetName, bricksColors } = this.props;
       const oldColor = bricksColors[`${brick.id}-${colorPresetName}`].color;
+
       this.props.changeBrickColor({ brickId: brick.id, color, colorPresetName });
       const action = {
         type: this.props.currentOperation.type,

@@ -9,7 +9,6 @@ import _ from 'lodash';
 import '../styles/Editor.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
-// import Tools from './tools';
 import GridBricksContainer from '../containers/GridBricksContainer';
 import PaintingPanelContainer from '../containers/PaintingPanelContainer';
 import PresetPanelContainer from '../containers/PresetPanelContainer';
@@ -133,7 +132,6 @@ export default class Editor extends Component {
   }
 
   setBrickOperation = (width, height) => () => {
-    console.log(width, height);
     this.props.changeBrickSize({ size: { width, height } });
     this.setOperation({ type: operations.ADD_BRICK });
   }
@@ -265,6 +263,9 @@ export default class Editor extends Component {
               color={this.state.color}
               bricks={this.updateBrickSector()}
             />
+            <div>
+              <button onClick={this.save} type="button">save</button>
+            </div>
           </div>
         </div>
         {this.makeKeyHandlers()}

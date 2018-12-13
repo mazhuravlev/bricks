@@ -17,6 +17,7 @@ class PaintingPanel extends Component {
 
   changeColorPreset = ({ target: { value } }) => {
     this.props.changePresetName({ name: value });
+    this.props.historyRemove();
   }
 
 
