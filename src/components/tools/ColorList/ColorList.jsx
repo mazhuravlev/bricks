@@ -55,19 +55,23 @@ class ColorList extends Component {
     this.props.switchPalette(e.target.value);
   }
 
+  currentPaletteColors() {
+    return this.props.colorPalette.palettes[this.props.colorPalette.currentPalette].colors;
+  }
+
   render() {
     const { currentColor } = this.state;
     return (
       <div className="color-list">
         <div>
-          <select className="white" onChange={this.switchPalette} value={this.props.colorPalette.currentPalette}>
+          <select style={{ width: '80%' }} className="white" onChange={this.switchPalette} value={this.props.colorPalette.currentPalette}>
             {Object.values(this.props.colorPalette.palettes).map(x => <option key={x.id} value={x.id}>{x.name}</option>)}
           </select>
-          <Button size="sm" onClick={this.props.addPalette}>+</Button>
+          <Button size="sm" className="float-right" onClick={this.props.addPalette}>+</Button>
         </div>
         <select
           onChange={this.addNewColor}
-          style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '12px' }}
+          style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '12px', margin: '8px 0 8px' }}
           value={this.state.currentColor.code}
         >
           {Object.values(colors).map(({ code, rgb }) => (
@@ -82,7 +86,7 @@ class ColorList extends Component {
         <ColorPallete
           color={this.state.currentColor}
           setNewColor={this.setNewColor}
-          colorList={this.state.colorList}
+          colorList={this.currentPaletteColors()}
           setColorList={this.setColorList}
           removeColor={this.removeColor}
         />
