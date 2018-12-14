@@ -1,11 +1,4 @@
 import React, { Component } from 'react';
-
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
-
-import PalettePresetPanelContainer from '../../../containers/PalettePresetPanelContainer';
-
 import { makeRgbStyleProp } from '../../../helpers';
 
 
@@ -50,8 +43,8 @@ export class ColorPalette extends Component {
   render() {
     return (
       <div>
-        <Dropdown direction="right" size="sm" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-          <DropdownToggle caret block disabled>
+        {/* <Dropdown direction="right" size="sm" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+          <DropdownToggle caret block>
             Наборы палитр
           </DropdownToggle>
           <DropdownMenu>
@@ -62,7 +55,17 @@ export class ColorPalette extends Component {
               />
             </DropdownItem>
           </DropdownMenu>
-        </Dropdown>
+        </Dropdown> */}
+        {/* {this.props.colorPalette}
+        <select>
+          {Object.keys(this.props.colorPalette).map(name => (
+            <option
+              key={name}
+              value={name}
+            >
+              {name}
+            </option>))}
+        </select> */}
         {this.renderColorList()}
       </div>
     );

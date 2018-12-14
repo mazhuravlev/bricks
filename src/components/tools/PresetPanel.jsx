@@ -31,7 +31,7 @@ class PaintingPanel extends Component {
       <div>
         <div className="control-panel">
           <span style={{ marginRight: '16px' }}>Вариант</span>
-          <select onChange={this.changeColorPreset} value={colorPresetName}>
+          <select className="white" onChange={this.changeColorPreset} value={colorPresetName}>
             {presetsColl.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
           <Button onClick={this.addNewColorPreset} size="sm" className="float-right">+</Button>

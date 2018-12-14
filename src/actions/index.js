@@ -25,3 +25,5 @@ export const historyRemove = createAction('HISTORY_REMOVE');
 
 export const addColorPalette = createAction('ADD_COLOR_PALETTE');
 export const removeColorPalette = createAction('REMOVE_COLOR_PALETTE');
+export const addColorToPalette = createAction('ADD_COLOR_TO_PALETTE');
+export const switchPalette = createAction('SWITCH_PALETTE');

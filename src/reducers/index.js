@@ -1,8 +1,8 @@
 import { handleActions } from 'redux-actions';
 import { combineReducers } from 'redux';
 import _ from 'lodash';
-
 import * as actions from '../actions';
+import colorPalette from './colorPalette';
 
 const bricks = handleActions({
   [actions.addBrick](state, { payload: { brick } }) {
@@ -105,14 +105,6 @@ const colorPresetName = handleActions({
   },
 }, '1');
 
-const colorPalette = handleActions({
-  [actions.addColorPalette](state, { payload: { name, palette } }) {
-    return { ...state, [name]: palette };
-  },
-  [actions.removeColorPalette](state, { payload: { name } }) {
-    return _.omit(state, name);
-  },
-}, {});
 
 export default combineReducers({
   bricks,

@@ -4,6 +4,11 @@ import React, { Component } from 'react';
 import { Label, Input } from 'reactstrap';
 
 class PalettePresetPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.addNewPallete = this.addNewPallete.bind(this);
+  }
+
   state = {
     presetName: '',
   }
@@ -52,7 +57,7 @@ class PalettePresetPanel extends Component {
             onChange={this.handleNameInput}
             placeholder="Имя новой палитры"
           />
-          <a className="btn btn-secondary" href="#" onClick={this.addNewPallete}>add</a>
+          <a className="btn btn-secondary" onClick={() => console.log(12)}>add</a>
         </div>
       </div>
     );

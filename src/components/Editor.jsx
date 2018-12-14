@@ -8,13 +8,16 @@ import _ from 'lodash';
 import '../styles/Editor.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import { connect } from 'react-redux';
 import GridBricksContainer from '../containers/GridBricksContainer';
 import PaintingPanelContainer from '../containers/PaintingPanelContainer';
 import PresetPanelContainer from '../containers/PresetPanelContainer';
 
+import * as actionCreators from '../actions';
+
 import Preview from './Preview';
 import BricksPanel from './tools/BricksPanel';
-import ColorList from './tools/ColorList/Index';
+import ColorList from './tools/ColorList/ColorList';
 import SectorPanel from './tools/SectorPanel';
 
 import { generateBricksMatrix } from '../helpers';
@@ -23,7 +26,7 @@ import * as operations from '../operations';
 
 const keyList = ['left', 'up', 'right', 'down', 'alt', 'shift', 'ctrl+z', 'ctrl+y', '+', '-'];
 
-export default class Editor extends Component {
+class _Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,6 +41,8 @@ export default class Editor extends Component {
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
     this.updateBrickSector = this.updateBrickSector.bind(this);
+    this.addColor = this.addColor.bind(this);
+    this.addPalette = this.addPalette.bind(this);
   }
 
   componentDidMount() {
@@ -178,6 +183,15 @@ export default class Editor extends Component {
     return [];
   }
 
+  addColor(color) {
+    this.props.addColorToPalette(color);
+    this.changeColor(color);
+  }
+
+  addPalette() {
+    this.props.addColorPalette();
+  }
+
   makeKeyHandlers() {
     return (
       <>
@@ -207,6 +221,10 @@ export default class Editor extends Component {
           <div className="editor-item palette">
             <ColorList
               changeColor={this.changeColor}
+              addColor={this.addColor}
+              addPalette={this.addPalette}
+              colorPalette={this.props.colorPalette}
+              switchPalette={this.props.switchPalette}
             />
           </div>
           <div className="editor-item workarea">
@@ -255,3 +273,23 @@ export default class Editor extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const props = {
+    bricks: state.bricks,
+    templateSize: state.templateSize,
+    sector: state.sector,
+    bricksColors: state.bricksColors,
+    colorPresetName: state.colorPresetName,
+    history: state.history,
+    colorPalette: state.colorPalette,
+  };
+  return props;
+};
+
+const Editor = connect(
+  mapStateToProps,
+  actionCreators,
+)(_Editor);
+
+export default Editor;

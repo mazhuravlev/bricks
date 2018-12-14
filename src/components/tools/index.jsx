@@ -1,8 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
 
-import ColorList from './ColorList/Index';
+import ColorList from './ColorList/ColorList';
 import PaintingPanelContainer from '../../containers/PaintingPanelContainer';
 import PresetPanelContainer from '../../containers/PresetPanelContainer';
 import History from './History';

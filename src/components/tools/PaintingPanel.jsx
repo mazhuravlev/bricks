@@ -5,8 +5,6 @@ import _ from 'lodash';
 import { makeRgbStyleProp } from '../../helpers';
 import { CHANGE_COLOR_BRICK } from '../../operations';
 
-const weightedRandom = require('weighted-random');
-
 const isOutside = (position, size, sector) => {
   const conditions = [
     position.left < 0 || position.top < 0,
@@ -46,27 +44,43 @@ const getBrickPairs = (bricks) => {
   return _.flatten([[head, pair], ...getBrickPairs(restBricks)]);
 };
 
-const makeBrickColors = (bricks, colors) => {
-  const colorColors = Object.values(colors).map(x => x.color);
-  const weights = Object.values(colors).map(x => x.value);
-  const newColors = Object.values(bricks).reduce((acc, brick) => {
-    const index = weightedRandom(weights);
-    const color = colorColors[index];
-    return { ...acc, [brick.id]: color };
-  }, {});
+const makeBrickColors = (bricksPairs, colorMap) => {
+  const colors = Object.values(colorMap);
+  const totalValue = colors.map(x => x.value).reduce((a, c) => a + c);
+  const colorParts = colors.map(x => x.value / totalValue);
+  const colorBrickCount = colorParts.map(x => Math.round(bricksPairs.length * x));
+  const getColor = () => {
+    let n = 0;
+    while (n < 100) {
+      n += 1;
+      const i = Math.floor(Math.random() * colorBrickCount.length);
+      if (colorBrickCount[i] > 0) {
+        colorBrickCount[i] -= 1;
+        return colors[i].color;
+      }
+    }
+    throw new Error('coloring iterations exceeded');
+  };
+  const newColors = {};
+  Object.values(bricksPairs).forEach((bricks) => {
+    const color = getColor();
+    bricks.forEach((b) => {
+      newColors[b.id] = color;
+    });
+  });
   return newColors;
 };
 
-const fixColorForPairs = (brickColors, brickPairs) => brickPairs.reduce((acc, brick, i) => {
-  if (!(i % 2)) return acc;
-  const firstId = brickPairs[i].id;
-  const secondId = brickPairs[i - 1].id;
+// const fixColorForPairs = (brickColors, brickPairs) => brickPairs.reduce((acc, brick, i) => {
+//   if (!(i % 2)) return acc;
+//   const firstId = brickPairs[i].id;
+//   const secondId = brickPairs[i - 1].id;
 
-  const randomPairIndex = _.random(0, 1);
-  const randomId = [firstId, secondId][randomPairIndex];
-  const color = brickColors[randomId === firstId ? secondId : firstId];
-  return { ...acc, [randomId]: color };
-}, brickColors);
+//   const randomPairIndex = _.random(0, 1);
+//   const randomId = [firstId, secondId][randomPairIndex];
+//   const color = brickColors[randomId === firstId ? secondId : firstId];
+//   return { ...acc, [randomId]: color };
+// }, brickColors);
 
 
 class PaintingPanel extends Component {
@@ -124,10 +138,14 @@ class PaintingPanel extends Component {
   makeRandomPainting = () => {
     if (!Object.keys(this.state.colorList).length) return;
     const { bricks, colorPresetName, bricksColors } = this.props;
+    console.log(1);
     const outsideBricks = this.getOutsideBricks();
     const brickPairs = getBrickPairs(outsideBricks);
-    const brickColors = makeBrickColors(bricks, this.state.colorList);
-    const resultColorsList = fixColorForPairs(brickColors, brickPairs);
+    const bricksInPairsIds = _.keyBy(brickPairs, 'id');
+    const brickSets = _.chunk(brickPairs, 2)
+      .concat(bricks.filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
+    const resultColorsList = makeBrickColors(brickSets, this.state.colorList);
+    // const resultColorsList = fixColorForPairs(brickColors, brickPairs);
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
       const color = resultColorsList[id];
@@ -148,6 +166,10 @@ class PaintingPanel extends Component {
 
   renderColorList() {
     const { colorList } = this.state;
+    const totalValue = Object.values(colorList)
+      .map(colorEntry => colorEntry.value)
+      .reduce((a, c) => a + c);
+    const getPercent = v => Math.round(v / totalValue * 100);
     return (
       <div>
         {Object.values(colorList).map(colorEntry => (
@@ -158,6 +180,10 @@ class PaintingPanel extends Component {
               onClick={this.removeColor(colorEntry.color.code)}
             />
             <input type="number" value={colorEntry.value} min="0" onChange={e => this.changeColorValue(colorEntry.color.code, e.target.value)} />
+            <span className="percent">
+              {getPercent(colorEntry.value)}
+              %
+            </span>
           </div>
         ))}
       </div>

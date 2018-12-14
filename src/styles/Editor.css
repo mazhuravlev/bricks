@@ -102,3 +102,10 @@
   position: relative;
   top: -13px;
 }
+
+.color-preview .percent{
+  position: relative;
+    top: -14px;
+    left: 8px;
+    color: gray;
+}

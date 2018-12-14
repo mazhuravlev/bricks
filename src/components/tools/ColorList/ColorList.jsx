@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { Button } from 'reactstrap';
 
 import '../../../styles/ColorList.css';
 
@@ -9,6 +10,11 @@ import colors from '../../../data/colors.json';
 import { makeRgbStyleProp } from '../../../helpers';
 
 class ColorList extends Component {
+  constructor(props) {
+    super(props);
+    this.switchPalette = this.switchPalette.bind(this);
+  }
+
   state = {
     currentColor: Object.values(colors)[0],
     colorList: {},
@@ -42,12 +48,23 @@ class ColorList extends Component {
     };
     this.setColorList(newColorList);
     this.setNewColor(color);
+    this.props.addColor(color);
+  }
+
+  switchPalette(e) {
+    this.props.switchPalette(e.target.value);
   }
 
   render() {
     const { currentColor } = this.state;
     return (
       <div className="color-list">
+        <div>
+          <select className="white" onChange={this.switchPalette} value={this.props.colorPalette.currentPalette}>
+            {Object.values(this.props.colorPalette.palettes).map(x => <option key={x.id} value={x.id}>{x.name}</option>)}
+          </select>
+          <Button size="sm" onClick={this.props.addPalette}>+</Button>
+        </div>
         <select
           onChange={this.addNewColor}
           style={{ backgroundColor: makeRgbStyleProp(currentColor.rgb), fontSize: '12px' }}

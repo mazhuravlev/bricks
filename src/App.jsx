@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 
 import './styles/App.css';
 import reducers from './reducers';
-import EditorContainer from './containers/EditorContainer';
+import Editor from './components/Editor';
 
 
 /* eslint-disable no-underscore-dangle */
@@ -16,7 +16,7 @@ const store = createStore(
 
 const App = () => (
   <Provider store={store}>
-    <EditorContainer />
+    <Editor />
   </Provider>
 );
 
