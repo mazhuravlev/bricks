@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using CefSharp;
 using CefSharp.Wpf;
 using Microsoft.Win32;
 
-namespace WpfApplication1
+namespace Bricks
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -17,12 +15,22 @@ namespace WpfApplication1
     {
         public MainWindow()
         {
+            Directory.CreateDirectory("strings");
             var bricksUrl = Environment.GetEnvironmentVariable("BRICKS_URL");
             InitializeComponent();
-            Cef.Initialize(new CefSettings());
+            Cef.Initialize(new CefSettings{CefCommandLineArgs =
+            {
+                {"disable-gpu-vsync","1"},
+                {"disable-gpu","1"},
+                {"disable-gpu-compositing","1"},
+            }});
             var browser = new ChromiumWebBrowser()
             {
-                Address = string.IsNullOrEmpty(bricksUrl) ? "https://mazhuravlev.github.io/bricks/" : bricksUrl
+                Address = string.IsNullOrEmpty(bricksUrl) ? "https://mazhuravlev.github.io/bricks/" : bricksUrl,
+                BrowserSettings = new BrowserSettings
+                {
+                    
+                }
             };
             Grid.Children.Add(browser);
             browser.Width = 875;
@@ -42,6 +50,33 @@ namespace WpfApplication1
     {
         private string _prevPath;
 
+        public void SaveString(string key, string value)
+        {
+            try
+            {
+                File.WriteAllText(Path.Combine("strings", key), value);
+            }
+            catch
+            {
+                //
+            }
+        }
+        
+        public string LoadString(string key)
+        {
+            var file = Path.Combine("strings", key);
+            if (!File.Exists(file)) return null;
+            try
+            {
+                var str = File.ReadAllText(file);
+                return str;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        
         public void Save(string image)
         {
             var saveFileDialog = new SaveFileDialog

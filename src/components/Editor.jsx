@@ -26,6 +26,11 @@ import * as operations from '../operations';
 
 const keyList = ['left', 'up', 'right', 'down', 'alt', 'shift', 'ctrl+z', 'ctrl+y', '+', '-'];
 
+function handleKnopka(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
 class _Editor extends Component {
   constructor(props) {
     super(props);
@@ -41,14 +46,9 @@ class _Editor extends Component {
     this.changeColor = this.changeColor.bind(this);
     this.setPaintOperation = this.setPaintOperation.bind(this);
     this.updateBrickSector = this.updateBrickSector.bind(this);
-    this.addColor = this.addColor.bind(this);
+    this.addColorToPalette = this.addColorToPalette.bind(this);
     this.addPalette = this.addPalette.bind(this);
-  }
-
-  componentDidMount() {
-    if (window.CefSharp) {
-      window.CefSharp.BindObjectAsync('vasya').then(x => console.log('bound vasya', x));
-    }
+    this.removeColorFromPalette = this.removeColorFromPalette.bind(this);
   }
 
   setOperation(operation) {
@@ -183,9 +183,14 @@ class _Editor extends Component {
     return [];
   }
 
-  addColor(color) {
+  addColorToPalette(color) {
     this.props.addColorToPalette(color);
     this.changeColor(color);
+  }
+
+  removeColorFromPalette(color) {
+    this.props.removeColorFromPalette(color);
+    // this.changeColor(color);
   }
 
   addPalette() {
@@ -217,11 +222,15 @@ class _Editor extends Component {
 
     return (
       <>
-        <div className="editor-container" style={{ cursor: this.state.isDisabledHandleKey ? 'pointer' : 'default' }}>
+        <div
+          className="editor-container"
+          onContextMenu={handleKnopka}
+        >
           <div className="editor-item palette">
             <ColorList
               changeColor={this.changeColor}
-              addColor={this.addColor}
+              addColor={this.addColorToPalette}
+              removeColor={this.removeColorFromPalette}
               addPalette={this.addPalette}
               colorPalette={this.props.colorPalette}
               switchPalette={this.props.switchPalette}

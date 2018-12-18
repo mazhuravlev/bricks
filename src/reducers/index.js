@@ -106,7 +106,7 @@ const colorPresetName = handleActions({
 }, '1');
 
 
-export default combineReducers({
+export default ({ colorPaletteState }) => combineReducers({
   bricks,
   templateSize,
   brickSize,
@@ -114,5 +114,5 @@ export default combineReducers({
   bricksColors,
   history,
   colorPresetName,
-  colorPalette,
+  colorPalette: colorPalette(colorPaletteState),
 });

@@ -32,6 +32,7 @@ class ColorList extends Component {
   removeColor = (code) => {
     const { colorList } = this.state;
     this.setState({ colorList: _.omit(colorList, code) });
+    this.props.removeColor(code);
   }
 
   setNewColor = (color) => {
