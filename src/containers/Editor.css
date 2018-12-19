@@ -1,0 +1,129 @@
+/* Editor styles */
+
+.editor-container {
+  padding: 2px;
+  min-height: 454px;
+  display: grid;
+  /* background-color: aquamarine; */
+  grid-template-columns: 200px 200px 450px;
+  grid-template-rows: auto;
+  grid-column-gap: 10px;
+  grid-row-gap: 15px;
+  justify-items: center;
+  align-items: center;
+  grid-template-areas: 
+    "tools palette tile"
+    "tools workarea tile"
+    "tools briks tile";
+}
+
+/* .editor-container .editor-item {
+  justify-self: center;
+} */
+
+.editor-container .palette {
+  grid-area: palette;
+  /* background-color: whitesmoke; */
+}
+
+.editor-container .workarea {
+  grid-area: workarea;
+  /* background-color: green; */
+}
+
+.editor-container .briks {
+  grid-area: briks;
+  /* background-color: greenyellow; */
+
+}
+
+.editor-container .tile {
+  grid-area: tile;
+  /* background-color: gray; */
+}
+
+.editor-container .tools {
+  grid-area: tools;
+  /* background-color: gray; */
+  justify-self: start;
+  width: 100%;
+  align-self: start;
+  /* padding: 10px; */
+}
+
+/* Bricks select panel styles */
+
+.editor-container .bricks-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 200px;
+}
+
+.editor-container .bricks-panel .bricks-panel-group {
+  margin-bottom: 5px;
+  align-self: center;
+}
+
+.editor-container .bricks-panel .bricks-panel-group:first-child {
+  margin-bottom: 0;
+}
+
+/* Sector size panel styles */
+
+ .grid-sector-options-panel {
+  display: inline-block;
+  text-align: right;
+  margin: 0 auto;
+}
+
+ .grid-sector-options-panel .input-sector-size {
+  text-align: center;
+  max-width: 40px;
+  padding: 0;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.color-preview .color {
+  width: 60px;
+  position: relative;
+  top: -4px;
+  height: 22px;
+  margin: 4px;
+  display: inline-block;
+  border: 1px solid grey ;
+}
+
+.color-preview input {
+  margin-left: 10px;
+  height: 22px;
+  width: 45px;
+  position: relative;
+  top: -13px;
+}
+
+.color-preview .percent{
+  position: relative;
+    top: -14px;
+    left: 8px;
+    color: gray;
+}
+
+.delete-random-color::before {
+  content: "-";
+}
+
+.delete-random-color:hover {
+  background-color: gray;
+}
+
+.delete-random-color {
+  display: inline-block;
+  background-color: lightgray;
+  width: 20px;
+  height: 22px;
+  text-align: center;
+  position: relative;
+  top: -12px;
+}
