@@ -80,3 +80,37 @@
     transform: rotate(360deg);
   }
 }
+
+.button.brick {
+  cursor: pointer;
+}
+
+.button.brick:hover {
+  border-color: gray;
+}
+
+.tool-button {
+  width: 20px;
+  height: 20px;
+  display: 'inline-block';
+  border: '1px solid gray';
+  box-sizing: 'border-box';
+  background-size: contain;
+  cursor: pointer;
+}
+
+.tool-button:hover {
+  background-color: grey;
+}
+
+.trash-button {
+  background-image: url('../images/trash.png');
+}
+
+.paint-button {
+  background-image: url('../images/brush.png');
+}
+
+.random-button {
+  background-image: url('../images/random.png');
+}

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 
+import classnames from 'classnames';
 import Brick from './Brick';
 import * as operations from '../operations';
 import {
@@ -13,10 +14,25 @@ function makeCursor(operation) {
     case 'CHANGE_COLOR_BRICK':
       return 'crosshair';
     case 'REMOVE_BRICK':
-      return 'no-drop';
+      return 'default';
+    case 'ADD_BRICK':
+      return 'default';
     default: return 'default';
   }
 }
+
+const containerStyle = {
+  display: 'grid',
+  gridTemplateColumns: '26px auto',
+  gridTemplateRows: '26px auto',
+  justifyItems: 'left',
+  alignItems: 'left',
+  gridTemplateAreas: '"top-tool top-tool" "left-tool editor"',
+};
+
+const topToolStyle = {
+  gridArea: 'top-tool', display: 'block', width: '100%', height: '100%',
+};
 
 class GridBricks extends Component {
   constructor(props) {
@@ -28,7 +44,7 @@ class GridBricks extends Component {
 
   cursorPosition = () => {
     const { position: { x, y }, step } = this.props;
-    const currentCell = getGridPos(x, y, step);
+    const currentCell = getGridPos(x - 26, y - 26, step);
     this.setState({ cursorPosition: currentCell });
   };
 
@@ -105,6 +121,7 @@ class GridBricks extends Component {
   handleOperation = brick => (e) => {
     e.stopPropagation();
     const { currentOperation: { type } } = this.props;
+    console.log('operation ', type, brick);
     if (type) {
       const method = {
         [operations.ADD_BRICK]: this.addBrick,
@@ -167,39 +184,81 @@ class GridBricks extends Component {
     const {
       isActive,
       currentOperation,
-      templateSize,
       step,
       bricks,
       bricksColors,
       colorPresetName,
     } = this.props;
 
+    const templateSize = { height: 11, width: 11 };
     return (
-      <div
-        className="bricks-grid"
-        onMouseMove={this.cursorPosition}
-        onClick={this.handleOperation()}
-        style={{ ...buildSyleObj(templateSize, step), cursor: makeCursor(currentOperation) }}
-      >
-        {Object.values(bricks).map((brick) => {
-          const colorId = `${brick.id}-${colorPresetName}`;
-          const color = bricksColors[colorId]
-            ? bricksColors[colorId].color.rgb
-            : null;
-
-          return (
+      <div style={containerStyle}>
+        <div style={topToolStyle}>
+          {[1, 2, 3, 4].map(x => (
             <Brick
-              key={brick.id}
-              id={brick.id}
-              className="brick"
-              color={color}
-              style={buildSyleObj({ ...brick.position, ...brick.size }, step)}
-              handleOperation={this.handleOperation(brick)}
-            />);
-        })}
-        {isActive && currentOperation.type === operations.ADD_BRICK
-          ? this.renderBrickPreview(this.state.cursorPosition) : null}
-        {this.renderSector()}
+              button
+              onClick={this.props.setBrickOperation(x, 1)}
+              key={x}
+              style={{
+                width: x * 20, height: 20, position: 'relative', marginRight: 6,
+              }}
+            />
+          )) }
+          <div
+            className={classnames('tool-button', 'paint-button',
+              { active: currentOperation.type === operations.CHANGE_COLOR_BRICK })}
+            onClick={this.props.setPaintOperation}
+            style={{
+              display: 'inline-block', marginLeft: 1, top: -1, position: 'relative',
+            }}
+          />
+        </div>
+        <div style={{ gridArea: 'left-tool', width: 20, paddingTop: 3 }}>
+          {[2, 3, 4].map(x => (
+            <Brick
+              button
+              onClick={this.props.setBrickOperation(1, x)}
+              key={x}
+              data-w={1}
+              data-h={x}
+              style={{
+                width: 20, height: 20 * x, position: 'relative', marginBottom: 7, marginTop: -4,
+              }}
+            />
+          )) }
+          <div
+            className={classnames('tool-button', 'trash-button',
+              { active: currentOperation.type === operations.REMOVE_BRICK })}
+            onClick={this.props.setRemoveBrickOperation}
+            style={{ marginTop: -4 }}
+          />
+        </div>
+        <div
+          className="bricks-grid"
+          onMouseMove={this.cursorPosition}
+          onClick={this.handleOperation()}
+          style={{ ...buildSyleObj(templateSize, step), cursor: makeCursor(currentOperation), gridArea: 'editor' }}
+        >
+          {Object.values(bricks).map((brick) => {
+            const colorId = `${brick.id}-${colorPresetName}`;
+            const color = bricksColors[colorId]
+              ? bricksColors[colorId].color.rgb
+              : null;
+
+            return (
+              <Brick
+                key={brick.id}
+                id={brick.id}
+                className="brick"
+                color={color}
+                style={buildSyleObj({ ...brick.position, ...brick.size }, step)}
+                onClick={this.handleOperation(brick)}
+              />);
+          })}
+          {isActive && currentOperation.type === operations.ADD_BRICK && this.props.position.x > 40 && this.props.position.y > 40
+            ? this.renderBrickPreview(this.state.cursorPosition) : null}
+          {this.renderSector()}
+        </div>
       </div>
     );
   }
