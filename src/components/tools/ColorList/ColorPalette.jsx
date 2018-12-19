@@ -22,7 +22,7 @@ export class ColorPalette extends Component {
     this.props.removeColor(code);
   }
 
-  renderColorList() {
+  render() {
     const { colorList } = this.props;
     return (
       <div className="color-palette">
@@ -36,39 +36,7 @@ export class ColorPalette extends Component {
             onContextMenu={this.removeColor(color.code)}
           />
         ))}
-      </div>
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        {/* <Dropdown direction="right" size="sm" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-          <DropdownToggle caret block>
-            Наборы палитр
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem disabled>
-              <PalettePresetPanelContainer
-                colorList={this.props.colorList}
-                setColorList={this.props.setColorList}
-              />
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown> */}
-        {/* {this.props.colorPalette}
-        <select>
-          {Object.keys(this.props.colorPalette).map(name => (
-            <option
-              key={name}
-              value={name}
-            >
-              {name}
-            </option>))}
-        </select> */}
-        {this.renderColorList()}
-      </div>
-    );
+      </div>);
   }
 }
 

@@ -1,9 +1,8 @@
 import React from 'react';
-import domtoimage from 'dom-to-image';
-
 import {
-  Button, Popover, PopoverHeader, PopoverBody, ButtonGroup,
+  Popover, PopoverHeader, PopoverBody,
 } from 'reactstrap';
+import NumberInput from './NumberInput';
 
 
 export default class HotKeyPanel extends React.Component {
@@ -16,6 +15,11 @@ export default class HotKeyPanel extends React.Component {
     };
   }
 
+  handleSector = (param, value) => {
+    const newSize = { [param]: Number(value) };
+    this.props.setSectorSize(newSize);
+  }
+
   toggle() {
     const { popoverOpen } = this.state;
     this.setState({
@@ -23,27 +27,31 @@ export default class HotKeyPanel extends React.Component {
     });
   }
 
-
-  // eslint-disable-next-line class-methods-use-this
-  async save() {
-    const img = await domtoimage.toPng(document.querySelector('.sectorItem'), {
-      width: this.props.sector.width * 15,
-      height: this.props.sector.height * 15,
-    });
-    document.querySelector('#preview').src = img;
-    document.body.background = this.state.fillBackground ? img : 'none';
-    if (window.vasya) {
-      window.vasya.save(img);
-    }
-  }
-
   render() {
     return (
       <div>
-        <ButtonGroup size="sm">
-          <Button id="Popover1" onClick={this.toggle} color="link">?</Button>
-          <Button onClick={() => this.save()}>Сохранить</Button>
-        </ButtonGroup>
+        <div className="grid-sector-options-panel">
+          <span style={{
+            float: 'left', fontSize: 12, marginLeft: 12, position: 'relative', top: 6,
+          }}
+          >
+Размер текстуры
+          </span>
+          <NumberInput style={{ position: 'relative', top: 4 }} value={this.props.sector.width} min={2} max={11} onChange={v => this.handleSector('width', v)} />
+          <NumberInput style={{ position: 'relative', top: 4 }} value={this.props.sector.height} min={2} max={11} onChange={v => this.handleSector('height', v)} />
+        </div>
+        <div
+          className="tool-button"
+          style={{
+            backgroundColor: 'gray', textAlign: 'center', width: 24, height: 24, borderRadius: 100, position: 'relative', top: 4,
+          }}
+          id="Popover1"
+          onClick={this.toggle}
+          color="link"
+        >
+?
+
+        </div>
         <Popover placement="bottom" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle}>
           <PopoverHeader>Помощь</PopoverHeader>
           <PopoverBody>

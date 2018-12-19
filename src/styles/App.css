@@ -92,9 +92,8 @@
 .tool-button {
   width: 20px;
   height: 20px;
-  display: 'inline-block';
-  border: '1px solid gray';
-  box-sizing: 'border-box';
+  display: inline-block;
+  box-sizing: border-box;
   background-size: contain;
   cursor: pointer;
 }
