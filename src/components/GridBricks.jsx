@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import Brick from './Brick';
 import * as operations from '../operations';
 import {
-  getGridPos, buildSyleObj, generateBricksMatrix, getBrickPosition,
+  getGridPos, buildSyleObj, generateBricksMatrix, getBrickPosition, isBrickButonActive,
 } from '../helpers';
 
 function makeCursor(operation) {
@@ -121,7 +121,6 @@ class GridBricks extends Component {
   handleOperation = brick => (e) => {
     e.stopPropagation();
     const { currentOperation: { type } } = this.props;
-    console.log('operation ', type, brick);
     if (type) {
       const method = {
         [operations.ADD_BRICK]: this.addBrick,
@@ -197,6 +196,7 @@ class GridBricks extends Component {
           {[1, 2, 3, 4].map(x => (
             <Brick
               button
+              active={isBrickButonActive(currentOperation, this.props.brickSize, x, 1)}
               onClick={this.props.setBrickOperation(x, 1)}
               key={x}
               style={{
@@ -206,10 +206,14 @@ class GridBricks extends Component {
           )) }
           <div
             className={classnames('tool-button', 'paint-button',
-              { active: currentOperation.type === operations.CHANGE_COLOR_BRICK })}
+              { buttonActive: currentOperation.type === operations.CHANGE_COLOR_BRICK })}
             onClick={this.props.setPaintOperation}
             style={{
-              display: 'inline-block', marginLeft: 1, top: -1, position: 'relative',
+              backgroundColor: `rgb(${this.props.color.rgb})`,
+              display: 'inline-block',
+              marginLeft: 1,
+              top: -1,
+              position: 'relative',
             }}
           />
         </div>
@@ -218,6 +222,7 @@ class GridBricks extends Component {
             <Brick
               button
               onClick={this.props.setBrickOperation(1, x)}
+              active={isBrickButonActive(currentOperation, this.props.brickSize, 1, x)}
               key={x}
               data-w={1}
               data-h={x}
@@ -228,7 +233,7 @@ class GridBricks extends Component {
           )) }
           <div
             className={classnames('tool-button', 'trash-button',
-              { active: currentOperation.type === operations.REMOVE_BRICK })}
+              { buttonActive: currentOperation.type === operations.REMOVE_BRICK })}
             onClick={this.props.setRemoveBrickOperation}
             style={{ marginTop: -4 }}
           />

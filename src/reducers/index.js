@@ -14,7 +14,7 @@ const bricks = handleActions({
 }, {});
 
 const initBrickSize = {
-  width: 4,
+  width: 1,
   height: 1,
 };
 export const brickSize = handleActions({

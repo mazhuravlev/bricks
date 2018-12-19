@@ -11,10 +11,11 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../actions';
 import * as operations from '../operations';
 import colors from '../data/colors.json';
-import { getBricksInSector, createImage, isOutside, makeBrickColors, isPair, getBrickPairs } from '../helpers';
+import { getBricksInSector, createImage, isOutside, makeBrickColors, getBrickPairs } from '../helpers';
 import HotKeyPanel from '../components/HotKeyPanel';
 import './Editor.css';
 import PaintingPanel from '../components/tools/PaintingPanel';
+import domtoimage from 'dom-to-image';
 
 const keyList = ['left', 'up', 'right', 'down', 'alt', 'shift', 'ctrl+z', 'ctrl+y', '+', '-'];
 

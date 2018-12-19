@@ -1,4 +1,5 @@
 import domtoimage from 'dom-to-image';
+import { ADD_BRICK } from '../operations';
 
 export const getGridPos = (x, y, step) => {
   const left = Math.floor(x / step);
@@ -132,3 +133,9 @@ export function  makeBrickColors  (bricksPairs, colorMap)  {
   });
   return newColors;
 };
+
+export function isBrickButonActive(operation, size, w, h) {
+  if(operation.type !== ADD_BRICK) return false;
+  return w === size.width && h === size.height;
+
+}

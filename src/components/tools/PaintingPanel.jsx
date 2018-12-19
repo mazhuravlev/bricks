@@ -73,7 +73,7 @@ class PaintingPanel extends Component {
         <div style={{ height: 150, overflowY: 'scroll', paddingLeft: 16 }}>
           {this.state.colorList.length > 0 ? this.renderColorList() : null}
         </div>
-        <Button onClick={this.props.save} size="sm" block>Сохранить</Button>
+        <Button onClick={this.props.onSave} size="sm" block>Сохранить</Button>
       </>
 
     );

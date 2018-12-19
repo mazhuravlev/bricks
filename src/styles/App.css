@@ -39,6 +39,10 @@
   display: inline-block;
 }
 
+.brick.active {
+  background-color: lightgray !important;
+}
+
 .workArea {
   display: flex;
   flex-direction: column;
@@ -106,10 +110,18 @@
   background-image: url('../images/trash.png');
 }
 
+.trash-button.buttonActive {
+  background-color: lightcoral;
+}
+
 .paint-button {
   background-image: url('../images/brush.png');
 }
 
 .random-button {
   background-image: url('../images/random.png');
+}
+
+.tool-button.buttonActive {
+  border: 1px solid grey;
 }

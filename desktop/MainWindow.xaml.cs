@@ -33,10 +33,12 @@ namespace Bricks
                 }
             };
             Grid.Children.Add(browser);
-            browser.Width = 875;
-            browser.Height = 500;
-            Height = browser.Height + 5;
-            Width = browser.Width + 15;
+            var w = 760;
+            var h = 611;
+            browser.Width = w;
+            browser.Height = h;
+            Width = w + 15;
+            Height = h + 5;
             browser.JavascriptObjectRepository.Register("vasya", new Vasya());
             KeyDown += (sender, args) =>
             {
