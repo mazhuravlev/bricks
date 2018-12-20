@@ -69,10 +69,11 @@ export async function createImage(sectorWidth, sectorHeight) {
 }
 
 export function isOutside (position, size, sector){
+  const relPos = {left: position.left - sector.left, top: position.top - sector.top};
   const conditions = [
-    position.left < 0 || position.top < 0,
-    position.left + size.width > sector.width,
-    position.top + size.height > sector.height,
+    relPos.left < 0 || relPos.top < 0,
+    relPos.left + size.width > sector.width,
+    relPos.top + size.height > sector.height,
   ];
   return conditions.some(item => item);
 };

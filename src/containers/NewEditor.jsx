@@ -135,7 +135,7 @@ class _NewEditor extends Component {
     const bricksInPairsIds = _.keyBy(brickPairs, 'id');
     const brickSets = _.chunk(brickPairs, 2)
       .concat(Object.values(bricks).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
-    const resultColorsList = makeBrickColors(brickSets, colorList);
+     const resultColorsList = makeBrickColors(brickSets, colorList);
     // const resultColorsList = fixColorForPairs(brickColors, brickPairs);
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
