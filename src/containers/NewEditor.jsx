@@ -32,7 +32,7 @@ const containerStyle = {
 };
 
 const editorLayout = {
-  paddingLeft: 6
+  padding: '6px 0 6px 6px'
     // display: 'grid',
     // gridTemplateRows: '300px'
 }
@@ -235,6 +235,7 @@ class _NewEditor extends Component {
               setSectorSize={this.setSectorSize}
               sector={this.props.sector}/>
             <ColorList 
+              colors={colors}
               color={this.state.color}
               changeColor={this.changeColor}/>
             <ReactCursorPosition>
@@ -253,9 +254,12 @@ class _NewEditor extends Component {
               makeRandomPainting={this.makeRandomPainting}
               bricks={this.props.bricks}
               onSave={this.save}
+              colors={colors}
               color={this.state.color}/>
         </div>
-        <div style={{width:495, height: '100%', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`}}>
+        <div style={{width:495, height: '100%', padding: '6px 6px 6px'}}>
+        <div style={{width: '100%', height: '100%', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`}}>
+        </div>
         </div>
         <div style={{ position: 'absolute', left: -1000 }}>
         <Preview

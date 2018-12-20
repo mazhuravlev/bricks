@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './ColorList.css';
 import ColorPallete from './ColorPalette';
-import colors from '../../../data/colors.json';
 import { makeRgbStyleProp } from '../../../helpers';
 
 class ColorList extends Component {
@@ -10,7 +9,7 @@ class ColorList extends Component {
   }
 
   changeColor(colorCode) {
-    const color = colors[colorCode];
+    const color = this.props.colors[colorCode];
     this.props.changeColor(color);
     const { colorList } = this.state;
     if (colorList.some(x => x.code === colorCode)) return;
@@ -27,7 +26,7 @@ class ColorList extends Component {
           style={{ backgroundColor: makeRgbStyleProp(this.props.color.rgb), fontSize: '12px', margin: '8px 0 8px' }}
           value={this.props.color.code}
         >
-          {Object.values(colors).map(({ code, rgb }) => (
+          {Object.values(this.props.colors).map(({ code, rgb }) => (
             <option
               style={{ backgroundColor: makeRgbStyleProp(rgb) }}
               key={code}
