@@ -112,12 +112,15 @@ export function  makeBrickColors  (bricksPairs, colorMap)  {
   const colors = Object.values(colorMap);
   const totalValue = colors.map(x => x.value).reduce((a, c) => a + c);
   const colorParts = colors.map(x => x.value / totalValue);
-  const colorBrickCount = colorParts.map(x => Math.round(bricksPairs.length * x) + 1);
+  const colorBrickCount = colorParts.map(x => Math.round(bricksPairs.length * x));
   const getColor = () => {
     let n = 0;
     while (n < 100) {
       n += 1;
       const i = Math.floor(Math.random() * colorBrickCount.length);
+      if(colorBrickCount.reduce((a,c) => a+c) === 0) {
+        return colors[i].color;
+      }
       if (colorBrickCount[i] > 0) {
         colorBrickCount[i] -= 1;
         return colors[i].color;
