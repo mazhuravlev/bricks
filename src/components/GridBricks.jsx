@@ -260,7 +260,8 @@ class GridBricks extends Component {
                 onClick={this.handleOperation(brick)}
               />);
           })}
-          {isActive && currentOperation.type === operations.ADD_BRICK && this.props.position.x > 40 && this.props.position.y > 40
+          {isActive && currentOperation.type === operations.ADD_BRICK
+            && this.props.position.x > 40 && this.props.position.y > 40
             ? this.renderBrickPreview(this.state.cursorPosition) : null}
           {this.renderSector()}
         </div>

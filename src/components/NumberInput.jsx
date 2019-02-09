@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import './NumberInput.css';
 
 function handleInc(props) {
@@ -24,13 +23,5 @@ function NumberInput(props) {
     </div>
   );
 }
-
-NumberInput.propTypes = {
-  value: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired,
-  min: PropTypes.number.isRequired,
-  max: PropTypes.number.isRequired,
-};
-
 
 export default NumberInput;

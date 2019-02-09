@@ -23,7 +23,6 @@ class PaintingPanel extends Component {
     this.props.historyRemove();
   }
 
-
   render() {
     const { colorPresetName } = this.props;
     const { presetsColl } = this.state;
