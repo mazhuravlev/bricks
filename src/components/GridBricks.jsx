@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 
@@ -61,20 +60,22 @@ class GridBricks extends Component {
     const { bricks, colorPresetName, color } = this.props;
     const brickMatrix = generateBricksMatrix(bricks);
     const actions = [];
-    for (let x = 0; x < newBrick.size.width; x++) {
-      for (let y = 0; y < newBrick.size.height; y++) {
+    for (let x = 0; x < newBrick.size.width; x += 1) {
+      for (let y = 0; y < newBrick.size.height; y += 1) {
         if (brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`]) {
-          const brick = brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
+          return; // off auto remove bricks
+          // const brick =
+          //  brickMatrix[`${x + newBrick.position.left};${y + newBrick.position.top}`];
 
-          const oldColor = this.props.bricksColors[`${brick.id}-${colorPresetName}`]
-            ? this.props.bricksColors[`${brick.id}-${colorPresetName}`].color
-            : { rgb: 'rgb(214,199,148)' };
+          // const oldColor = this.props.bricksColors[`${brick.id}-${colorPresetName}`]
+          //   ? this.props.bricksColors[`${brick.id}-${colorPresetName}`].color
+          //   : { rgb: 'rgb(214,199,148)' };
 
-          this.props.removeBrick({ brick });
-          actions.push({
-            type: operations.REMOVE_BRICK,
-            data: { brick, color: oldColor, colorPresetName },
-          });
+          // this.props.removeBrick({ brick });
+          // actions.push({
+          //   type: operations.REMOVE_BRICK,
+          //   data: { brick, color: oldColor, colorPresetName },
+          // });
         }
       }
     }
