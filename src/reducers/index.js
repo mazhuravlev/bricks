@@ -11,6 +11,9 @@ const bricks = handleActions({
   [actions.removeBrick](state, { payload: { brick } }) {
     return _.omit(state, brick.id);
   },
+  [actions.resetBricks]() {
+    return {};
+  },
 }, {});
 
 const initBrickSize = {

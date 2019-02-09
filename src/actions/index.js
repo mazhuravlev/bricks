@@ -5,6 +5,9 @@ export const addBrick = createAction('ADD_BRICK');
 
 export const removeBrick = createAction('REMOVE_BRICK');
 
+export const resetBricks = createAction('RESET_BRICKS');
+
+
 export const changeBrickSize = createAction('CHANGE_BRICK_SIZE');
 
 export const changeBrickColor = createAction('CHANGE_BRICK_COLOR');

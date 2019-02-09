@@ -16,8 +16,11 @@ export default class HotKeyPanel extends React.Component {
   }
 
   handleSector = (param, value) => {
+    // eslint-disable-next-line no-restricted-globals
     const newSize = { [param]: Number(value) };
-    this.props.setSectorSize(newSize);
+    if (this.props.confirmChangeSectorSize()) {
+      this.props.setSectorSize(newSize);
+    }
   }
 
   toggle() {
