@@ -29,7 +29,8 @@ const colorPalette = (initialState) => {
           [state.currentPalette]:
             {
               ...state.palettes[state.currentPalette],
-              colors: state.palettes[state.currentPalette].colors.filter(x => x.code !== action.payload),
+              colors: state.palettes[state.currentPalette].colors.filter(x => (
+                x.code !== action.payload)),
             },
         },
       };

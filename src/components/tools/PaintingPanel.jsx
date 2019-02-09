@@ -33,7 +33,8 @@ class PaintingPanel extends Component {
     const oldColor = this.state.colorList[colorIndex];
     this.setState((state) => {
       const colorList = state.colorList.slice(0);
-      colorList.splice(colorIndex, 1, { color: this.props.colors[newColorCode], value: oldColor.value });
+      colorList.splice(colorIndex, 1,
+        { color: this.props.colors[newColorCode], value: oldColor.value });
       return { colorList };
     });
   }
@@ -57,7 +58,10 @@ class PaintingPanel extends Component {
         {colorList.map((colorEntry, i) => (
           <div key={i} className="color-preview">
             <div className="delete-random-color" onClick={() => this.deleteColor(i)} />
-            <select onChange={e => this.changeColor(i, e.target.value)} style={{ backgroundColor: makeRgbStyleProp(colorEntry.color.rgb) }}>
+            <select
+              onChange={e => this.changeColor(i, e.target.value)}
+              style={{ backgroundColor: makeRgbStyleProp(colorEntry.color.rgb) }}
+            >
               {Object.values(this.props.colors).map(c => (
                 <option
                   value={c.code}

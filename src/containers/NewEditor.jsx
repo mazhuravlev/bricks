@@ -215,6 +215,7 @@ class _NewEditor extends Component {
     }
 
   render() {
+    console.log('object');
     return (
     <div style={containerStyle}>
         <KeyboardEventHandler
