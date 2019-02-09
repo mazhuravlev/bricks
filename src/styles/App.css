@@ -125,3 +125,29 @@
 .tool-button.buttonActive {
   border: 1px solid grey;
 }
+
+.textureTypePanel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.textureTypePanel .textureTypePanel-item {
+  /* display: block; */
+  margin: 0;
+  margin-right: 15px;
+  padding: 0;
+  font-size: 12px;
+  text-align: center;
+  position: relative;
+}
+
+.textureTypePanel .textureTypePanel-item .input {
+  position: absolute;
+  display: block;
+
+  left: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+}

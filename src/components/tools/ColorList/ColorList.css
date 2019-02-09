@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   max-width: 245px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .color-list select {

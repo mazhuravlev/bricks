@@ -175,6 +175,7 @@ class GridBricks extends Component {
       <Brick
         style={style}
         color={this.props.color.rgb}
+        textureType={this.props.textureType}
       />
     );
   }
@@ -202,6 +203,7 @@ class GridBricks extends Component {
               style={{
                 width: x * 20, height: 20, position: 'relative', marginRight: 6,
               }}
+              textureType={this.props.textureType}
             />
           )) }
           <div
@@ -229,6 +231,7 @@ class GridBricks extends Component {
               style={{
                 width: 20, height: 20 * x, position: 'relative', marginBottom: 7, marginTop: -4,
               }}
+              textureType={this.props.textureType}
             />
           )) }
           <div
@@ -258,6 +261,7 @@ class GridBricks extends Component {
                 color={color}
                 style={buildSyleObj({ ...brick.position, ...brick.size }, step)}
                 onClick={this.handleOperation(brick)}
+                textureType={this.props.textureType}
               />);
           })}
           {isActive && currentOperation.type === operations.ADD_BRICK

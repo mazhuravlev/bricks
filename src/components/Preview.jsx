@@ -8,8 +8,9 @@ function getColor(bricksColors, brickId, colorPresetName) {
 }
 
 export default function Preview({
-  bricks, sector, bricksColors, width, step, colorPresetName,
+  bricks, sector, bricksColors, width, step, colorPresetName, textureType,
 }) {
+  console.log('Preview Type', textureType);
   const gridSize = 1;
   const tileArr = new Array(gridSize * gridSize).fill(null);
   const tiles = tileArr.map((_, i) => (
@@ -20,6 +21,7 @@ export default function Preview({
           className="brick"
           color={getColor(bricksColors, id, colorPresetName)}
           style={buildSyleObj({ ...position, ...size }, step)}
+          textureType={textureType}
         />
       ))}
     </div>

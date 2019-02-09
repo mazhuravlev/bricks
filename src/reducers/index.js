@@ -108,6 +108,12 @@ const colorPresetName = handleActions({
   },
 }, '1');
 
+const textureType = handleActions({
+  [actions.switchTextureType](state) {
+    if (state === 'brick') return 'tile';
+    return 'brick';
+  },
+}, 'brick');
 
 export default ({ colorPaletteState }) => combineReducers({
   bricks,
@@ -117,5 +123,6 @@ export default ({ colorPaletteState }) => combineReducers({
   bricksColors,
   history,
   colorPresetName,
+  textureType,
   colorPalette: colorPalette(colorPaletteState),
 });

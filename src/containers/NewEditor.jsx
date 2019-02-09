@@ -139,6 +139,10 @@ class _NewEditor extends Component {
 
   setRemoveBrickOperation = () => this.setOperation({ type: operations.REMOVE_BRICK });
 
+  switchTextureType = () => {
+    this.props.switchTextureType();
+  }
+
   handleKeyUp = () => {
     this.setState({
       isDisabledHandleKey: false,
@@ -240,8 +244,35 @@ class _NewEditor extends Component {
     }
   }
 
+  textureTypePanel() {
+    return (
+      <div className="textureTypePanel">
+        <p className="textureTypePanel-item">Тип текстуры:</p>
+        <p className="textureTypePanel-item">
+          Кирпич
+          <input
+            className="input"
+            type="radio"
+            name="textureType"
+            checked={this.props.textureType === 'brick'}
+            onChange={this.switchTextureType}
+          />
+        </p>
+        <p className="textureTypePanel-item">
+          Плитка
+          <input
+            className="input"
+            type="radio"
+            name="textureType"
+            checked={this.props.textureType === 'tile'}
+            onChange={this.switchTextureType}
+          />
+        </p>
+      </div>
+    );
+  }
+
   render() {
-    console.log('object');
     return (
       <div style={containerStyle}>
         <KeyboardEventHandler
@@ -268,6 +299,7 @@ class _NewEditor extends Component {
             color={this.state.color}
             changeColor={this.changeColor}
           />
+          {this.textureTypePanel()}
           <ReactCursorPosition>
             <GridBricksContainer
               color={this.state.color}
@@ -302,6 +334,7 @@ class _NewEditor extends Component {
             width={this.props.sector.width}
             step={this.state.tileStep}
             colorPresetName="1"
+            textureType={this.props.textureType}
           />
           <img id="preview" alt="preview" src="https://via.placeholder.com/1" />
         </div>
@@ -318,6 +351,7 @@ const mapStateToProps = (state) => {
     bricksColors: state.bricksColors,
     // colorPresetName: state.colorPresetName,
     history: state.history,
+    textureType: state.textureType,
     // colorPalette: state.colorPalette,
   };
   return props;

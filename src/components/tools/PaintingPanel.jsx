@@ -91,7 +91,7 @@ class PaintingPanel extends Component {
           <div className="tool-button random-button" style={{ color: 'transparent' }} onClick={() => this.props.makeRandomPainting(this.state.colorList)} size="sm">i</div>
           <div className="tool-button" style={{ marginLeft: 6, textAlign: 'center' }} onClick={this.addNewColor} size="sm">+</div>
         </div>
-        <div style={{ height: 150, overflowY: 'scroll' }}>
+        <div style={{ height: 132, overflowY: 'scroll' }}>
           {this.state.colorList.length > 0 ? this.renderColorList() : null}
         </div>
         <Button onClick={this.props.onSave} size="sm" block>Сохранить</Button>

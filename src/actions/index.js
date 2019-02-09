@@ -31,3 +31,5 @@ export const removeColorPalette = createAction('REMOVE_COLOR_PALETTE');
 export const addColorToPalette = createAction('ADD_COLOR_TO_PALETTE');
 export const removeColorFromPalette = createAction('REMOVE_COLOR_TO_PALETTE');
 export const switchPalette = createAction('SWITCH_PALETTE');
+
+export const switchTextureType = createAction('SWITCH_TEXTURE_TYPE');

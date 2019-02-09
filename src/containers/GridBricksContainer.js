@@ -10,6 +10,7 @@ const mapStateToProps = (state) => {
     sector: state.sector,
     bricksColors: state.bricksColors,
     colorPresetName: state.colorPresetName,
+    textureType: state.textureType,
   };
   return props;
 };
