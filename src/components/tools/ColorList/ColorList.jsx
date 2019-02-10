@@ -23,7 +23,7 @@ class ColorList extends Component {
       <div className="color-list">
         <select
           onChange={e => this.changeColor(e.target.value)}
-          style={{ backgroundColor: makeRgbStyleProp(this.props.color.rgb), fontSize: '12px', margin: '8px 0 8px' }}
+          style={{ backgroundColor: makeRgbStyleProp(this.props.color.rgb), fontSize: '12px', margin: '6px 0 4px' }}
           value={this.props.color.code}
         >
           {Object.values(this.props.colors).map(({ code, rgb }) => (

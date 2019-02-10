@@ -10,66 +10,14 @@
     margin-right: 5px;
   } */
   
-  .texture-panel-container .texture-name {
-    width: 250px;
-    height: 60px;
-  
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-  
-  .texture-panel-container .custom-file {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-  
-    opacity: 0;
-  }
-  
-  .texture-panel-container .custom-file-input {
-    display: block;
-    width: 0;
-    height: 0;
-  }
-  
-  .texture-panel-container .imgPreview {
-      position: relative;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 120px;
-      width: 120px;
-      background-color: gray;
-      border: 2px solid gray;
-      cursor: pointer;
-      background-size: contain;
-  }
-  
-  .texture-panel-container .imgPreview img {
-    flex-shrink: 0;
-    -webkit-flex-shrink: 0;
-    max-width: 70%;
-    max-height: 90%;
-  }
-  
-  .texture-panel-container .centerText {
-    text-align: center;
-    width: 500px;
-  }
-  
   .texture-panel-container .preview-list {
     position: absolute;
     top: 100%;
-    left: 100%;
+    left: 0;
     z-index: 21;
   
-    width: 300px;
-    height: 300px;
+    width: 246px;
+    height: 130px;
   
     overflow-y: scroll;
     overflow-x: auto;
@@ -83,6 +31,7 @@
     border: 2px solid black;
     cursor: pointer;
     background: white;
+    text-align: center;
   }
   
   .add-texture-button:hover {
@@ -97,24 +46,51 @@
     margin-left: 2px;
   }
   
-  .texture-panel-container .preview-list .preview-history {
-    /* position: fixed; */
-    width: 278px;
-    height: 60px;
+  .texture-panel-container .preview-history {
+    position: relative;
+    width: 246px;
+    height: 35px;
     background-color: white;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    margin-bottom: 8px;
+    border: 2px solid gray;
+  }
+
+  .texture-panel-container .preview-history .button-open-palette-list {
+    position: absolute;
+    right: 10px;
+    top: 15%;
+
+    width: 15px;
+    height: 15px;
+    font-size: 0;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    transform: rotate(45deg);
+
+    cursor: pointer;
+  }
+
+  .texture-panel-container .preview-history .button-open-palette-list:hover {
+    border-right: 2px solid gray;
+    border-bottom: 2px solid gray;
   }
   
-  .texture-panel-container .preview-list .preview-history .preview-history-item {
+  .texture-panel-container .preview-history .preview-history-item {
     display: inline-block;
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 25px;
     margin-left: 3px;
     margin-right: 3px;
+    cursor: pointer;
   }
   
+  .texture-panel-container .preview-history .preview-history-item:hover {
+    border: 2px solid gray;
+  }
+
   .texture-panel-container
     .preview-list
     .preview-history
@@ -157,11 +133,14 @@
   
   .texture-panel-container .preview-list .preview-list-item .img {
     /* background-size: contain; */
-    background-color: red;
+    /* background-color: red; */
     display: inline-block;
     padding: 1px;
     margin: 1px;
-    width: 30px;
-    height: 30px;
+    width: 182px;
+    height: 40px;
   }
   
+  .texture-panel-container .preview-list .preview-list-item .img:hover {
+    border: 2px solid gray;
+  }

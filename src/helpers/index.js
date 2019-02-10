@@ -1,4 +1,5 @@
 import domtoimage from 'dom-to-image';
+import _ from 'lodash';
 import { ADD_BRICK } from '../operations';
 
 export const getGridPos = (x, y, step) => {
@@ -36,11 +37,10 @@ export function getBrickPosition(cursorPosition, { width, height }) {
 export const makeRgbStyleProp = rgb => (rgb ? `rgb(${rgb})` : 'rgb(214,199,148)');
 
 export function getBricksInSector(bricks, sector) {
-  /* eslint-disable */
   const brickMatrix = generateBricksMatrix(bricks);
   const bricksInSectorMap = {};
-  for (let x = 0; x < sector.width; x++) {
-    for (let y = 0; y < sector.height; y++) {
+  for (let x = 0; x < sector.width; x += 1) {
+    for (let y = 0; y < sector.height; y += 1) {
       const brick = brickMatrix[`${x + sector.left};${y + sector.top}`];
       if (brick && !bricksInSectorMap[brick.id]) {
         bricksInSectorMap[brick.id] = brick;
@@ -68,17 +68,17 @@ export async function createImage(sectorWidth, sectorHeight) {
   return img;
 }
 
-export function isOutside (position, size, sector){
-  const relPos = {left: position.left - sector.left, top: position.top - sector.top};
+export function isOutside(position, size, sector) {
+  const relPos = { left: position.left - sector.left, top: position.top - sector.top };
   const conditions = [
     relPos.left < 0 || relPos.top < 0,
     relPos.left + size.width > sector.width,
     relPos.top + size.height > sector.height,
   ];
   return conditions.some(item => item);
-};
+}
 
-export function  isPair (brick1, brick2)  {
+export function isPair(brick1, brick2) {
   const conditions1 = [
     brick1.size.width === 1,
     brick1.position.left === brick2.position.left,
@@ -88,9 +88,9 @@ export function  isPair (brick1, brick2)  {
     brick1.position.top === brick2.position.top,
   ].every(item => item);
   return conditions1 || conditions2;
-};
+}
 
-export function  getBrickPairs(bricks) {
+export function getBrickPairs(bricks) {
   if (bricks.length < 2) return [];
   const [head, ...tail] = bricks;
   const [pair] = tail.filter(brick => isPair(head, brick));
@@ -106,9 +106,9 @@ export function  getBrickPairs(bricks) {
     return [head, pair];
   }
   return _.flatten([[head, pair], ...getBrickPairs(restBricks)]);
-};
+}
 
-export function  makeBrickColors  (bricksPairs, colorMap)  {
+export function makeBrickColors(bricksPairs, colorMap) {
   const colors = Object.values(colorMap);
   const totalValue = colors.map(x => x.value).reduce((a, c) => a + c);
   const colorParts = colors.map(x => x.value / totalValue);
@@ -118,7 +118,7 @@ export function  makeBrickColors  (bricksPairs, colorMap)  {
     while (n < 100) {
       n += 1;
       const i = Math.floor(Math.random() * colorBrickCount.length);
-      if(colorBrickCount.reduce((a,c) => a+c) === 0) {
+      if (colorBrickCount.reduce((a, c) => a + c) === 0) {
         return colors[i].color;
       }
       if (colorBrickCount[i] > 0) {
@@ -136,10 +136,33 @@ export function  makeBrickColors  (bricksPairs, colorMap)  {
     });
   });
   return newColors;
-};
+}
 
 export function isBrickButonActive(operation, size, w, h) {
-  if(operation.type !== ADD_BRICK) return false;
+  if (operation.type !== ADD_BRICK) return false;
   return w === size.width && h === size.height;
-
 }
+
+export const getPercent = (colorList, value) => {
+  const totalValue = colorList
+    .map(colorEntry => colorEntry.value)
+    .reduce((a, c) => a + c);
+  return (value === 0 ? 0 : Math.round(value / totalValue * 100));
+};
+
+export const builGradientForPalette = (randomPalette) => {
+  const colorsArr = randomPalette.reduce((acc, item, i) => {
+    const { value, color: { rgb } } = item;
+    const colorPercent = getPercent(randomPalette, value);
+    const color = makeRgbStyleProp(rgb);
+    if (i === 0) {
+      return [{ color, percent: 0 }, { color, percent: colorPercent }];
+    }
+    const percentFrom = acc[acc.length - 1].percent;
+    const percentTo = percentFrom + colorPercent;
+    return [...acc, { color, percent: percentFrom }, { color, percent: percentTo }];
+  }, []);
+
+  const result = `linear-gradient(to right, ${colorsArr.map(({ color, percent }) => `${color} ${percent}%`).join(', ')})`;
+  return result;
+};

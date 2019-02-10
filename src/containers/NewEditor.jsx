@@ -144,7 +144,8 @@ class _NewEditor extends Component {
     this.props.addRandomPalette(randomPallete);
   }
 
-  removeRandomPalette = paletteId => () => {
+  removeRandomPalette = paletteId => (event) => {
+    event.stopPropagation();
     this.props.removeRandomPalette(paletteId);
   }
 
