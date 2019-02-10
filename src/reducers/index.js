@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { combineReducers } from 'redux';
 import _ from 'lodash';
+import uuid from 'uuid/v4';
 import * as actions from '../actions';
 import colorPalette from './colorPalette';
 
@@ -115,6 +116,16 @@ const textureType = handleActions({
   },
 }, 'brick');
 
+const randomPaletts = handleActions({
+  [actions.addRandomPalette](state, { payload: randomPalette }) {
+    const id = uuid();
+    return { ...state, [id]: randomPalette };
+  },
+  [actions.removeRandomPalette](state, { payload: id }) {
+    return _.omit(state, id);
+  },
+}, {});
+
 export default ({ colorPaletteState }) => combineReducers({
   bricks,
   templateSize,
@@ -124,5 +135,6 @@ export default ({ colorPaletteState }) => combineReducers({
   history,
   colorPresetName,
   textureType,
+  randomPaletts,
   colorPalette: colorPalette(colorPaletteState),
 });

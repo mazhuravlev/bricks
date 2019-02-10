@@ -139,6 +139,15 @@ class _NewEditor extends Component {
 
   setRemoveBrickOperation = () => this.setOperation({ type: operations.REMOVE_BRICK });
 
+  onSaveRandomPalette = randomPallete => () => {
+    if (randomPallete.length === 0) return;
+    this.props.addRandomPalette(randomPallete);
+  }
+
+  removeRandomPalette = paletteId => () => {
+    this.props.removeRandomPalette(paletteId);
+  }
+
   switchTextureType = () => {
     this.props.switchTextureType();
   }
@@ -314,10 +323,13 @@ class _NewEditor extends Component {
           </ReactCursorPosition>
           <PaintingPanel
             makeRandomPainting={this.makeRandomPainting}
+            onSaveRandomPalette={this.onSaveRandomPalette}
+            removeRandomPalette={this.removeRandomPalette}
             bricks={this.props.bricks}
             onSave={this.save}
             colors={colors}
             color={this.state.color}
+            randomPalettes={this.props.randomPalettes}
           />
         </div>
         <div style={{ width: 495, height: '100%', padding: '6px 6px 6px' }}>
@@ -352,6 +364,7 @@ const mapStateToProps = (state) => {
     // colorPresetName: state.colorPresetName,
     history: state.history,
     textureType: state.textureType,
+    randomPalettes: state.randomPaletts,
     // colorPalette: state.colorPalette,
   };
   return props;

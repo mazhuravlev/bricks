@@ -33,3 +33,6 @@ export const removeColorFromPalette = createAction('REMOVE_COLOR_TO_PALETTE');
 export const switchPalette = createAction('SWITCH_PALETTE');
 
 export const switchTextureType = createAction('SWITCH_TEXTURE_TYPE');
+
+export const addRandomPalette = createAction('ADD_RANDOM_PALETTE');
+export const removeRandomPalette = createAction('REMOVE_RANDOM_PALETTE');

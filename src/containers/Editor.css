@@ -28,7 +28,7 @@
 
 .editor-container .workarea {
   grid-area: workarea;
-  /* background-color: green; */
+  /* background-color: lightgray; */
 }
 
 .editor-container .briks {
