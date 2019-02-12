@@ -4,6 +4,7 @@ import _ from 'lodash';
 import uuid from 'uuid/v4';
 import * as actions from '../actions';
 import colorPalette from './colorPalette';
+import { buildRandomPalleteId } from '../helpers';
 
 const bricks = handleActions({
   [actions.addBrick](state, { payload: { brick } }) {
@@ -118,7 +119,7 @@ const textureType = handleActions({
 
 const randomPaletts = handleActions({
   [actions.addRandomPalette](state, { payload: randomPalette }) {
-    const id = uuid();
+    const id = buildRandomPalleteId(randomPalette);
     return { ...state, [id]: randomPalette };
   },
   [actions.removeRandomPalette](state, { payload: id }) {

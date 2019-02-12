@@ -84,6 +84,7 @@
     height: 25px;
     margin-left: 3px;
     margin-right: 3px;
+    border: 1px solid gray;
     cursor: pointer;
   }
   
@@ -120,6 +121,7 @@
     margin-left: 5px;
     display: flex;
     justify-content: flex-start;
+    border: 1px solid gray;
     cursor: pointer;
   }
   
@@ -138,7 +140,7 @@
     padding: 1px;
     margin: 1px;
     width: 182px;
-    height: 40px;
+    height: 34px;
   }
   
   .texture-panel-container .preview-list .preview-list-item .img:hover {

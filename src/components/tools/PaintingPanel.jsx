@@ -25,8 +25,7 @@ class PaintingPanel extends Component {
   }
 
   handleHisoryListClick = randomPalette => () => {
-    console.log(randomPalette);
-    this.setState({ colorList: [...randomPalette] });
+    this.setState({ colorList: [...randomPalette], palettesVisible: false });
   }
 
   handlePreviewListClick = randomPalette => () => {
@@ -159,7 +158,11 @@ class PaintingPanel extends Component {
                     onClick={this.handlePreviewListClick(this.props.randomPalettes[key])}
 
                   />
-                  <div className="tool-button trash-button" style={{ width: '40px', height: '40px' }} onClick={this.props.removeRandomPalette(key)} />
+                  <div
+                    className="tool-button trash-button"
+                    style={{ width: '34px', height: '34px', margin: '1px 0 0 5px' }}
+                    onClick={this.props.removeRandomPalette(key)}
+                  />
                 </div>
               );
             })}
@@ -185,7 +188,7 @@ class PaintingPanel extends Component {
           <div className="tool-button" style={{ marginLeft: 6, textAlign: 'center' }} onClick={this.addNewColor} size="sm">+</div>
         </div>
         <div style={{
-          height: 100, overflowY: 'scroll', position: 'relative', marginBottom: '5px',
+          height: 100, overflowY: 'auto', position: 'relative', marginBottom: '5px',
         }}
         >
           {this.state.colorList.length > 0 ? this.renderColorList() : null}

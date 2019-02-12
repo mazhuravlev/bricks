@@ -166,3 +166,23 @@ export const builGradientForPalette = (randomPalette) => {
   const result = `linear-gradient(to right, ${colorsArr.map(({ color, percent }) => `${color} ${percent}%`).join(', ')})`;
   return result;
 };
+
+const rgbToHex = (r, g, b) => {
+  let r1 = r.toString(16);
+  let g1 = g.toString(16);
+  let b1 = b.toString(16);
+  if (r.length === 1) r1 = `0${r}`;
+  if (g.length === 1) g1 = `0${g}`;
+  if (b.length === 1) b1 = `0${b}`;
+
+  return (r1 + g1 + b1).toUpperCase();
+};
+
+export const buildRandomPalleteId = randomPallete => randomPallete
+  .map(({ color: { rgb }, value }) => ({ value, color: rgbToHex(...rgb.split(',')) }))
+  .sort((a, b) => {
+    if (a.color > b.color) return 1;
+    if (a.color < b.color) return -1;
+    return 0;
+  })
+  .reduce((acc, { color, value }) => `${acc}${color}${value}`, '');
