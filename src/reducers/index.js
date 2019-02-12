@@ -1,7 +1,6 @@
 import { handleActions } from 'redux-actions';
 import { combineReducers } from 'redux';
 import _ from 'lodash';
-import uuid from 'uuid/v4';
 import * as actions from '../actions';
 import colorPalette from './colorPalette';
 import { buildRandomPalleteId } from '../helpers';
@@ -121,6 +120,9 @@ const randomPaletts = handleActions({
   [actions.addRandomPalette](state, { payload: randomPalette }) {
     const id = buildRandomPalleteId(randomPalette);
     return { ...state, [id]: randomPalette };
+  },
+  [actions.setRandomPalettes](state, { payload: randomPalettes }) {
+    return { ...randomPalettes };
   },
   [actions.removeRandomPalette](state, { payload: id }) {
     return _.omit(state, id);

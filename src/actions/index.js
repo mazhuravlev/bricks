@@ -35,4 +35,5 @@ export const switchPalette = createAction('SWITCH_PALETTE');
 export const switchTextureType = createAction('SWITCH_TEXTURE_TYPE');
 
 export const addRandomPalette = createAction('ADD_RANDOM_PALETTE');
+export const setRandomPalettes = createAction('SET_RANDOM_PALETTE');
 export const removeRandomPalette = createAction('REMOVE_RANDOM_PALETTE');

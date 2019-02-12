@@ -4,6 +4,7 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { connect } from 'react-redux';
 import domtoimage from 'dom-to-image';
 import _ from 'lodash';
+import { Base64 } from 'js-base64';
 
 import GridBricksContainer from './GridBricksContainer';
 import Preview from '../components/Preview';
@@ -147,6 +148,39 @@ class _NewEditor extends Component {
   removeRandomPalette = paletteId => (event) => {
     event.stopPropagation();
     this.props.removeRandomPalette(paletteId);
+  }
+
+  importPaintingPalettes = (event) => {
+    event.preventDefault();
+    const { files } = event.target;
+
+    if (files.length === 0) return;
+    const file = files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const json = Base64.decode(reader.result);
+      if (json.length !== 0) {
+        const randomPaletts = JSON.parse(json);
+        this.props.setRandomPalettes(randomPaletts);
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
+  exportPaintingPalettes = () => {
+    if (Object.keys(this.props.randomPalettes).length === 0) return;
+    const json = JSON.stringify(this.props.randomPalettes);
+    const data = new Blob([Base64.encode(json)], {
+      type: 'application/json',
+    });
+
+    const csvURL = window.URL.createObjectURL(data);
+    const tempLink = document.createElement('a');
+    tempLink.href = csvURL;
+    tempLink.setAttribute('download', 'template.txt');
+    tempLink.click();
   }
 
   switchTextureType = () => {
@@ -331,6 +365,8 @@ class _NewEditor extends Component {
             colors={colors}
             color={this.state.color}
             randomPalettes={this.props.randomPalettes}
+            importPaintingPalettes={this.importPaintingPalettes}
+            exportPaintingPalettes={this.exportPaintingPalettes}
           />
         </div>
         <div style={{ width: 495, height: '100%', padding: '6px 6px 6px' }}>

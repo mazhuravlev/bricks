@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import { makeRgbStyleProp, builGradientForPalette } from '../../helpers';
+
+import importIcon from '../../images/import.svg';
+import exportIcon from '../../images/export.svg';
+
 import '../../styles/randomPalettePanel.css';
 
 class PaintingPanel extends Component {
@@ -19,8 +23,6 @@ class PaintingPanel extends Component {
   addNewColor = () => {
     const { color } = this.props;
     const { colorList } = this.state;
-    // eslint-disable-next-line no-debugger
-    // debugger;
     this.setState({ colorList: [...colorList, { color, value: 1 }] });
   }
 
@@ -184,8 +186,17 @@ class PaintingPanel extends Component {
         </div>
         <div style={{ textAlign: 'right', userSelect: 'none' }}>
           <span style={{ float: 'left', fontSize: 12, marginLeft: 12 }}>Случайная покраска</span>
-          <div className="tool-button random-button" style={{ color: 'transparent' }} onClick={() => this.props.makeRandomPainting(this.state.colorList)} size="sm">i</div>
-          <div className="tool-button" style={{ marginLeft: 6, textAlign: 'center' }} onClick={this.addNewColor} size="sm">+</div>
+          <div className="tool-button" style={{ marginLeft: 6, backgroundImage: `url(${importIcon})` }} size="sm">
+            <input
+              type="file"
+              className="custom-file-input"
+              required
+              onChange={this.props.importPaintingPalettes}
+            />
+          </div>
+          <div className="tool-button" style={{ marginLeft: 6, backgroundImage: `url(${exportIcon})` }} onClick={this.props.exportPaintingPalettes} size="sm" />
+          <div className="tool-button random-button" style={{ marginLeft: 6, color: 'transparent' }} onClick={() => this.props.makeRandomPainting(this.state.colorList)} size="sm">i</div>
+          <div className="tool-button" style={{ textAlign: 'center' }} onClick={this.addNewColor} size="sm">+</div>
         </div>
         <div style={{
           height: 100, overflowY: 'auto', position: 'relative', marginBottom: '5px',

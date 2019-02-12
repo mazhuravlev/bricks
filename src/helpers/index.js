@@ -186,3 +186,10 @@ export const buildRandomPalleteId = randomPallete => randomPallete
     return 0;
   })
   .reduce((acc, { color, value }) => `${acc}${color}${value}`, '');
+
+// const getMeta = async (url) => new Promise((resolve, reject) => {
+//   const img = new Image();
+//   img.onload = () => resolve({ width: img.width, height: img.height });
+//   img.onerror = reject;
+//   img.src = url as string;
+// });
