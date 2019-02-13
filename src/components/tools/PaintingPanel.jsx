@@ -199,7 +199,7 @@ class PaintingPanel extends Component {
           <div className="tool-button" style={{ textAlign: 'center' }} onClick={this.addNewColor} size="sm">+</div>
         </div>
         <div style={{
-          height: 100, overflowY: 'auto', position: 'relative', marginBottom: '5px',
+          height: '87px', overflowY: 'auto', position: 'relative', marginBottom: '5px',
         }}
         >
           {this.state.colorList.length > 0 ? this.renderColorList() : null}

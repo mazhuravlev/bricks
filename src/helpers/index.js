@@ -1,5 +1,6 @@
 import domtoimage from 'dom-to-image';
 import _ from 'lodash';
+import uuid from 'uuid/v4';
 import { ADD_BRICK } from '../operations';
 
 export const getGridPos = (x, y, step) => {
@@ -77,6 +78,40 @@ export function isOutside(position, size, sector) {
   ];
   return conditions.some(item => item);
 }
+
+export const calculateMirrorBrick = ({ position, size }, sector) => {
+  const horizontalOffset = position.left > 0 ? -sector.width : sector.width;
+  const verticalOffset = position.top > 0 ? -sector.height : sector.height;
+  if (size.width > size.height) {
+    const newPos = {
+      left: position.left + horizontalOffset + sector.left,
+      top: position.top + sector.top,
+    };
+    return { id: uuid(), position: newPos, size };
+  }
+
+  const newPos = {
+    left: position.left + sector.left,
+    top: position.top + verticalOffset + sector.top,
+  };
+  return { id: uuid(), position: newPos, size };
+};
+
+export const isOverSize = (size, sector) => {
+  if (size.width > size.height) {
+    return size.width > sector.width;
+  }
+  return size.height > sector.height;
+};
+
+// export function isIntersect(position, size, sector) {
+//   const conditions = [
+//     position.left < sector.left || position.top < 0,
+//     relPos.left + size.width > sector.width,
+//     relPos.top + size.height > sector.height,
+//   ];
+//   return conditions.some(item => item);
+// }
 
 export function isPair(brick1, brick2) {
   const conditions1 = [
@@ -186,10 +221,3 @@ export const buildRandomPalleteId = randomPallete => randomPallete
     return 0;
   })
   .reduce((acc, { color, value }) => `${acc}${color}${value}`, '');
-
-// const getMeta = async (url) => new Promise((resolve, reject) => {
-//   const img = new Image();
-//   img.onload = () => resolve({ width: img.width, height: img.height });
-//   img.onerror = reject;
-//   img.src = url as string;
-// });

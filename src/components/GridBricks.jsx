@@ -5,7 +5,15 @@ import classnames from 'classnames';
 import Brick from './Brick';
 import * as operations from '../operations';
 import {
-  getGridPos, buildSyleObj, generateBricksMatrix, getBrickPosition, isBrickButonActive,
+  getGridPos,
+  buildSyleObj,
+  generateBricksMatrix,
+  getBrickPosition,
+  isBrickButonActive,
+  isOutside,
+  getBricksInSector,
+  calculateMirrorBrick,
+  isOverSize,
 } from '../helpers';
 
 function makeCursor(operation) {
@@ -73,10 +81,29 @@ class GridBricks extends Component {
 
           // this.props.removeBrick({ brick });
           // actions.push({
-          //   type: operations.REMOVE_BRICK,
-          //   data: { brick, color: oldColor, colorPresetName },
+          //   type: operations.REMOVE_BRICK,--e },
           // });
         }
+      }
+    }
+    if (isOutside(newBrick.position, newBrick.size, this.props.sector)) {
+      const brick = getBricksInSector([newBrick], this.props.sector)[0];
+      if (brick) {
+        if (isOverSize(brick.size, this.props.sector)) return;
+        const mirrorBrick = calculateMirrorBrick(brick, this.props.sector);
+
+        for (let x = 0; x < mirrorBrick.size.width; x += 1) {
+          for (let y = 0; y < mirrorBrick.size.height; y += 1) {
+            if (brickMatrix[`${x + mirrorBrick.position.left};${y + mirrorBrick.position.top}`]) {
+              return;
+            }
+          }
+        }
+        this.props.addBrick({ brick: mirrorBrick, color, colorPresetName });
+        actions.push({
+          type: operations.ADD_BRICK,
+          data: { brick: mirrorBrick, color, colorPresetName },
+        });
       }
     }
     this.props.addBrick({ brick: newBrick, color, colorPresetName });
