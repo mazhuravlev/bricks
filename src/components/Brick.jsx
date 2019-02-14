@@ -7,7 +7,6 @@ const tileBorderColor = 'rgb(1,1,1)';
 
 
 const _brick = ({ style, color, onClick, button, active, textureType }) => {  //eslint-disable-line
-  const brickWidth = style.width > style.height ? style.height : style.width;
   const rgbColor = makeRgbStyleProp(color);
   return (
     <div
