@@ -16,7 +16,6 @@ const _brick = ({ style, color, onClick, button, active, textureType }) => {  //
       style={{
         ...style,
         backgroundColor: rgbColor,
-        borderWidth: brickWidth * 0.1,
         borderColor: textureType === 'brick' ? brickBorderColor : tileBorderColor,
       }}
     />
