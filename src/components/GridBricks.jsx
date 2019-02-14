@@ -216,13 +216,14 @@ class GridBricks extends Component {
       bricks,
       bricksColors,
       colorPresetName,
+      textureType,
     } = this.props;
 
     const templateSize = { height: 11, width: 11 };
     return (
-      <div style={containerStyle}>
+      <div style={{ ...containerStyle, marginBottom: textureType === 'tile' ? '17px' : 0 }}>
         <div style={topToolStyle}>
-          {[1, 2, 3, 4].map(x => (
+          {[1, 2, 3, 4].filter(x => (textureType === 'tile' ? x === 3 : true)).map(x => (
             <Brick
               button
               active={isBrickButonActive(currentOperation, this.props.brickSize, x, 1)}
@@ -248,7 +249,7 @@ class GridBricks extends Component {
           />
         </div>
         <div style={{ gridArea: 'left-tool', width: 20, paddingTop: 3 }}>
-          {[2, 3, 4].map(x => (
+          {[2, 3, 4].filter(x => (textureType === 'tile' ? x === 3 : true)).map(x => (
             <Brick
               button
               onClick={this.props.setBrickOperation(1, x)}
