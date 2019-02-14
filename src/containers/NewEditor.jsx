@@ -184,6 +184,7 @@ class _NewEditor extends Component {
   }
 
   switchTextureType = () => {
+    this.props.changeBrickSize({ size: { width: 3, height: 1 } });
     this.props.switchTextureType();
   }
 
