@@ -33,8 +33,8 @@ namespace Bricks
                 }
             };
             Grid.Children.Add(browser);
-            var w = 760;
-            var h = 611;
+            var w = 759;
+            var h = 619;
             browser.Width = w;
             browser.Height = h;
             Width = w + 15;
@@ -92,6 +92,34 @@ namespace Bricks
             _prevPath = Path.GetDirectoryName(saveFileDialog.FileName); 
             var bytes = Convert.FromBase64String(image.Substring(image.IndexOf(',') + 1));
             File.WriteAllBytes(saveFileDialog.FileName, bytes);
+        }
+
+        public void SavePalette(string json)
+        {
+            var saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                Filter = "pallette files (*.pall)|*.pall",
+                InitialDirectory = _prevPath
+            };
+            var result = saveFileDialog.ShowDialog();
+            if (!result.HasValue || !result.Value) return;
+            _prevPath = Path.GetDirectoryName(saveFileDialog.FileName); 
+            File.WriteAllText(saveFileDialog.FileName, json);
+        }
+        
+        public string LoadPalette()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                AddExtension = true,
+                Filter = "pallette files (*.pall)|*.pall",
+                InitialDirectory = _prevPath
+            };
+            var result = openFileDialog.ShowDialog();
+            if (!result.HasValue || !result.Value) return null;
+            _prevPath = Path.GetDirectoryName(openFileDialog.FileName); 
+            return File.ReadAllText(openFileDialog.FileName);
         }
     }
 }

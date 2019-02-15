@@ -62,6 +62,10 @@
     position: absolute;
     right: 10px;
     top: 15%;
+  }
+
+  .texture-panel-container .preview-history .button-open-palette-list div {
+
 
     width: 15px;
     height: 15px;
@@ -73,7 +77,7 @@
     cursor: pointer;
   }
 
-  .texture-panel-container .preview-history .button-open-palette-list:hover {
+  .texture-panel-container .preview-history .button-open-palette-list div:hover {
     border-right: 2px solid gray;
     border-bottom: 2px solid gray;
   }

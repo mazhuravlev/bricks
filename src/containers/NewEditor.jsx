@@ -152,6 +152,14 @@ class _NewEditor extends Component {
 
   importPaintingPalettes = (event) => {
     event.preventDefault();
+    debugger;
+    if (window.vasya) {
+      const json = window.vasya.loadPalette();
+      if(json) {
+        const randomPaletts = JSON.parse(json);
+        this.props.setRandomPalettes(randomPaletts);
+      }
+    } else {
     const { files } = event.target;
 
     if (files.length === 0) return;
@@ -167,20 +175,26 @@ class _NewEditor extends Component {
     };
 
     reader.readAsText(file);
+    }
   }
 
   exportPaintingPalettes = () => {
+    debugger;
     if (Object.keys(this.props.randomPalettes).length === 0) return;
     const json = JSON.stringify(this.props.randomPalettes);
-    const data = new Blob([Base64.encode(json)], {
-      type: 'application/json',
-    });
+    if(window.vasya) {
+      window.vasya.savePalette(json);
+    } else {
+      const data = new Blob([Base64.encode(json)], {
+        type: 'application/json',
+      });
 
-    const csvURL = window.URL.createObjectURL(data);
-    const tempLink = document.createElement('a');
-    tempLink.href = csvURL;
-    tempLink.setAttribute('download', 'template.txt');
-    tempLink.click();
+      const csvURL = window.URL.createObjectURL(data);
+      const tempLink = document.createElement('a');
+      tempLink.href = csvURL;
+      tempLink.setAttribute('download', 'template.txt');
+      tempLink.click();
+    }
   }
 
   switchTextureType = () => {
@@ -241,7 +255,7 @@ class _NewEditor extends Component {
     this.props.historySwap({ type });
   }
 
-  makeRandomPainting(colorList) {
+  makeRandomPainting = (colorList) => {
     if (!Object.keys(colorList).length) return;
     const { bricks, bricksColors } = this.props;
     const colorPresetName = '1';
