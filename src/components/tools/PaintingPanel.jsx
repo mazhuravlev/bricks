@@ -133,9 +133,8 @@ class PaintingPanel extends Component {
                 />
               </div>
             ))}
-            <div className="button-open-palette-list">
-              <div onClick={this.handlePalettesVisible}>
-            </div>
+          <div className="button-open-palette-list">
+            <div onClick={this.handlePalettesVisible} />
           </div>
         </div>
       </div>
@@ -188,13 +187,15 @@ class PaintingPanel extends Component {
         <div style={{ textAlign: 'right', userSelect: 'none' }}>
           <span style={{ float: 'left', fontSize: 12, marginLeft: 12 }}>Случайная покраска</span>
           <div className="tool-button" style={{ marginLeft: 6, backgroundImage: `url(${importIcon})` }} size="sm">
-            {window.vasya ? <div className="custom-file-input" onClick={this.props.importPaintingPalettes}/> : 
-            <input
-              type="file"
-              className="custom-file-input"
-              required
-              onChange={this.props.importPaintingPalettes}
-            />}
+            {window.vasya ? <div className="custom-file-input" onClick={this.props.importPaintingPalettes} />
+              : (
+                <input
+                  type="file"
+                  className="custom-file-input"
+                  required
+                  onChange={this.props.importPaintingPalettes}
+                />
+              )}
           </div>
           <div className="tool-button" style={{ marginLeft: 6, backgroundImage: `url(${exportIcon})` }} onClick={this.props.exportPaintingPalettes} size="sm" />
           <div className="tool-button random-button" style={{ marginLeft: 6, color: 'transparent' }} onClick={() => this.props.makeRandomPainting(this.state.colorList)} size="sm">i</div>

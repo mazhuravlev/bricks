@@ -9,6 +9,7 @@ import { Base64 } from 'js-base64';
 import GridBricksContainer from './GridBricksContainer';
 import Preview from '../components/Preview';
 import ColorList from '../components/tools/ColorList/ColorList';
+import NumberInput from '../components/NumberInput';
 
 import * as actionCreators from '../actions';
 import * as operations from '../operations';
@@ -50,6 +51,8 @@ class _NewEditor extends Component {
       tileStep: 15,
       color: Object.values(colors)[0],
       isDisabledHandleKey: false,
+      tilewidth: 1,
+      tileheight: 1,
     };
     this.setSectorSize = this.setSectorSize.bind(this);
     this.setBrickOperation = this.setBrickOperation.bind(this);
@@ -152,37 +155,35 @@ class _NewEditor extends Component {
 
   importPaintingPalettes = (event) => {
     event.preventDefault();
-    debugger;
     if (window.vasya) {
       const json = window.vasya.loadPalette();
-      if(json) {
+      if (json) {
         const randomPaletts = JSON.parse(json);
         this.props.setRandomPalettes(randomPaletts);
       }
     } else {
-    const { files } = event.target;
+      const { files } = event.target;
 
-    if (files.length === 0) return;
-    const file = files[0];
-    const reader = new FileReader();
+      if (files.length === 0) return;
+      const file = files[0];
+      const reader = new FileReader();
 
-    reader.onloadend = () => {
-      const json = Base64.decode(reader.result);
-      if (json.length !== 0) {
-        const randomPaletts = JSON.parse(json);
-        this.props.setRandomPalettes(randomPaletts);
-      }
-    };
+      reader.onloadend = () => {
+        const json = Base64.decode(reader.result);
+        if (json.length !== 0) {
+          const randomPaletts = JSON.parse(json);
+          this.props.setRandomPalettes(randomPaletts);
+        }
+      };
 
-    reader.readAsText(file);
+      reader.readAsText(file);
     }
   }
 
   exportPaintingPalettes = () => {
-    debugger;
     if (Object.keys(this.props.randomPalettes).length === 0) return;
     const json = JSON.stringify(this.props.randomPalettes);
-    if(window.vasya) {
+    if (window.vasya) {
       window.vasya.savePalette(json);
     } else {
       const data = new Blob([Base64.encode(json)], {
@@ -259,14 +260,17 @@ class _NewEditor extends Component {
     if (!Object.keys(colorList).length) return;
     const { bricks, bricksColors } = this.props;
     const colorPresetName = '1';
-    const outsideBricks = Object.values(bricks).filter(({ position, size }) => (
-      isOutside(position, size, this.props.sector)));
-    const brickPairs = getBrickPairs(outsideBricks);
+    // const outsideBricks = Object.values(bricks).filter(({ position, size }) => (
+    //   isOutside(position, size, this.props.sector)));
+    const bricksInSector = getBricksInSector(bricks, this.props.sector);
+    const brickPairs = getBrickPairs(bricksInSector);
     const bricksInPairsIds = _.keyBy(brickPairs, 'id');
     const brickSets = _.chunk(brickPairs, 2)
-      .concat(Object.values(bricks).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
+      .concat(Object.values(bricksInSector).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
     const resultColorsList = makeBrickColors(brickSets, colorList);
     // const resultColorsList = fixColorForPairs(brickColors, brickPairs);
+    // eslint-disable-next-line no-debugger
+    debugger;
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
       const color = resultColorsList[id];
@@ -283,6 +287,11 @@ class _NewEditor extends Component {
     });
 
     this.props.historyPush({ operations: actions });
+  }
+
+  handleTileSize = (param, v) => {
+    console.log(param, v);
+    this.setState({ [`tile${param}`]: v });
   }
 
   async updatePreview() {
@@ -385,6 +394,8 @@ class _NewEditor extends Component {
           />
         </div>
         <div style={{ width: 495, height: '100%', padding: '6px 6px 6px' }}>
+          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.tilewidth} min={1} max={6} onChange={v => this.handleTileSize('width', v)} />
+          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.tileheight} min={1} max={6} onChange={v => this.handleTileSize('height', v)} />
           <div style={{
             width: '100%', height: '100%', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`,
           }}
