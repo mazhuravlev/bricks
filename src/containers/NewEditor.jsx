@@ -260,17 +260,24 @@ class _NewEditor extends Component {
     if (!Object.keys(colorList).length) return;
     const { bricks, bricksColors } = this.props;
     const colorPresetName = '1';
-    // const outsideBricks = Object.values(bricks).filter(({ position, size }) => (
-    //   isOutside(position, size, this.props.sector)));
+
     const bricksInSector = getBricksInSector(bricks, this.props.sector);
-    const brickPairs = getBrickPairs(bricksInSector);
+    // eslint-disable-next-line no-debugger
+    debugger;
+    const outsideBricks = Object.values(bricksInSector)
+      .filter(({ position: { left, top }, size }) => (
+        isOutside(
+          { left: left + this.props.sector.left, top: top + this.props.sector.top },
+          size, this.props.sector,
+        )));
+
+    const brickPairs = getBrickPairs(outsideBricks);
+
     const bricksInPairsIds = _.keyBy(brickPairs, 'id');
     const brickSets = _.chunk(brickPairs, 2)
       .concat(Object.values(bricksInSector).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
     const resultColorsList = makeBrickColors(brickSets, colorList);
     // const resultColorsList = fixColorForPairs(brickColors, brickPairs);
-    // eslint-disable-next-line no-debugger
-    debugger;
     const actions = [];
     Object.keys(resultColorsList).forEach((id) => {
       const color = resultColorsList[id];

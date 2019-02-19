@@ -128,7 +128,7 @@ export function isPair(brick1, brick2) {
 export function getBrickPairs(bricks) {
   if (bricks.length < 2) return [];
   const [head, ...tail] = bricks;
-  const [pair] = tail.filter(brick => isPair(head, brick));
+  const pair = _.find(tail, brick => isPair(head, brick));
   if (!pair && tail.length === 0) {
     return [];
   }
