@@ -17,6 +17,7 @@ import colors from '../data/colors.json';
 import {
   getBricksInSector, createImage, isOutside, makeBrickColors, getBrickPairs,
 } from '../helpers';
+import buildBriksForNewSectorSize from '../helpers/bricksBuilder';
 import HotKeyPanel from '../components/HotKeyPanel';
 import './Editor.css';
 import PaintingPanel from '../components/tools/PaintingPanel';
@@ -51,8 +52,12 @@ class _NewEditor extends Component {
       tileStep: 15,
       color: Object.values(colors)[0],
       isDisabledHandleKey: false,
-      tilewidth: 1,
-      tileheight: 1,
+      teilwidth: 1,
+      teilheight: 1,
+      defaultPainting: false,
+      customSectorBricks: [],
+      customSector: this.props.sector,
+      customSectorBrickColors: {},
     };
     this.setSectorSize = this.setSectorSize.bind(this);
     this.setBrickOperation = this.setBrickOperation.bind(this);
@@ -65,9 +70,16 @@ class _NewEditor extends Component {
 
   componentDidMount() {
     setInterval(async () => {
-      this.setState({
-        preview: await createImage(this.props.sector.width, this.props.sector.height),
-      });
+      if (this.state.defaultPainting) {
+        this.setState({
+          preview: await createImage(this.props.sector.width, this.props.sector.height),
+        });
+      } else {
+        const { width, height } = this.state.customSector;
+        this.setState({
+          preview: await createImage(width, height),
+        });
+      }
     }, 1000);
   }
 
@@ -258,12 +270,14 @@ class _NewEditor extends Component {
 
   makeRandomPainting = (colorList) => {
     if (!Object.keys(colorList).length) return;
+    if (!this.state.defaultPainting) {
+      this.makePainingForCustomSectorSize(colorList);
+      return;
+    }
     const { bricks, bricksColors } = this.props;
     const colorPresetName = '1';
 
     const bricksInSector = getBricksInSector(bricks, this.props.sector);
-    // eslint-disable-next-line no-debugger
-    debugger;
     const outsideBricks = Object.values(bricksInSector)
       .filter(({ position: { left, top }, size }) => (
         isOutside(
@@ -296,9 +310,53 @@ class _NewEditor extends Component {
     this.props.historyPush({ operations: actions });
   }
 
+  makePainingForCustomSectorSize = (colorList) => {
+    const { teilwidth, teilheight, customSector } = this.state;
+    const { bricks, sector } = this.props;
+
+    const bricksInSector = getBricksInSector(bricks, sector);
+
+    const newBriks = buildBriksForNewSectorSize(bricksInSector, sector, teilwidth, teilheight);
+
+    // const { bricksColors } = this.props;
+    const colorPresetName = '1';
+
+
+    const outsideBricks = Object.values(newBriks)
+      .filter(({ position: { left, top }, size }) => (
+        isOutside(
+          { left: left + customSector.left, top: top + customSector.top },
+          size, customSector,
+        )));
+
+    const brickPairs = getBrickPairs(outsideBricks);
+
+    const bricksInPairsIds = _.keyBy(brickPairs, 'id');
+    const brickSets = _.chunk(brickPairs, 2)
+      .concat(Object.values(newBriks).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
+    const resultColorsList = makeBrickColors(brickSets, colorList);
+
+    const brickColors = {};
+    Object.keys(resultColorsList).forEach((id) => {
+      const color = resultColorsList[id];
+
+      const presetId = `${id}-${colorPresetName}`;
+      brickColors[presetId] = { colorPresetName, brickId: id, color };
+    });
+
+    this.setState({
+      customSectorBricks: newBriks,
+      customSectorBrickColors: brickColors,
+    });
+  }
+
   handleTileSize = (param, v) => {
     console.log(param, v);
-    this.setState({ [`tile${param}`]: v });
+    const { customSector } = this.state;
+    this.setState({
+      [`teil${param}`]: v,
+      customSector: { ...customSector, [param]: this.props.sector[param] * v },
+    });
   }
 
   async updatePreview() {
@@ -309,8 +367,10 @@ class _NewEditor extends Component {
 
   async save() {
     const img = await domtoimage.toPng(document.querySelector('.sectorItem'), {
-      width: this.props.sector.width * 15,
-      height: this.props.sector.height * 15,
+      width: (this.state.defaultPainting
+        ? this.props.sector.width : this.state.customSector.width) * 15,
+      height: (this.state.defaultPainting
+        ? this.props.sector.height : this.state.customSector.height) * 15,
     });
     document.querySelector('#preview').src = img;
     document.body.background = this.state.fillBackground ? img : 'none';
@@ -400,24 +460,52 @@ class _NewEditor extends Component {
             exportPaintingPalettes={this.exportPaintingPalettes}
           />
         </div>
-        <div style={{ width: 495, height: '100%', padding: '6px 6px 6px' }}>
-          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.tilewidth} min={1} max={6} onChange={v => this.handleTileSize('width', v)} />
-          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.tileheight} min={1} max={6} onChange={v => this.handleTileSize('height', v)} />
+        <div style={{
+          width: 495, height: '100%', padding: '6px 6px 6px', overflow: 'hidden',
+        }}
+        >
+          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.teilwidth} min={1} max={6} onChange={v => this.handleTileSize('width', v)} />
+          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.teilheight} min={1} max={6} onChange={v => this.handleTileSize('height', v)} />
+          <p style={{ padding: 0, display: 'inline-block', margin: '8px 0 8px 0' }}>
+            <input
+              type="checkbox"
+              name="paintingType"
+              checked={!this.state.defaultPainting}
+              // eslint-disable-next-line react/no-access-state-in-setstate
+              onChange={() => this.setState({ defaultPainting: !this.state.defaultPainting })}
+            />
+            Меланж
+          </p>
           <div style={{
-            width: '100%', height: '100%', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`,
+            width: '100%', height: '93%', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`,
           }}
           />
         </div>
         <div style={{ position: 'absolute', left: -1000 }}>
-          <Preview
-            bricks={getBricksInSector(this.props.bricks, this.props.sector)}
-            sector={this.props.sector}
-            bricksColors={this.props.bricksColors}
-            width={this.props.sector.width}
-            step={this.state.tileStep}
-            colorPresetName="1"
-            textureType={this.props.textureType}
-          />
+          {this.state.defaultPainting
+            ? (
+              <Preview
+                bricks={getBricksInSector(this.props.bricks, this.props.sector)}
+                sector={this.props.sector}
+                bricksColors={this.props.bricksColors}
+                width={this.props.sector.width}
+                step={this.state.tileStep}
+                colorPresetName="1"
+                textureType={this.props.textureType}
+              />
+            )
+            : (
+              <Preview
+                bricks={this.state.customSectorBricks}
+                sector={this.state.customSector}
+                bricksColors={this.state.customSectorBrickColors}
+                width={this.state.customSector.width}
+                step={this.state.tileStep}
+                colorPresetName="1"
+                textureType={this.props.textureType}
+              />
+            )
+          }
           <img id="preview" alt="preview" src="https://via.placeholder.com/1" />
         </div>
       </div>
