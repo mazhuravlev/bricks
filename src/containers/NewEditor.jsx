@@ -54,7 +54,7 @@ class _NewEditor extends Component {
       isDisabledHandleKey: false,
       teilwidth: 1,
       teilheight: 1,
-      defaultPainting: false,
+      defaultPainting: true,
       customSectorBricks: [],
       customSector: this.props.sector,
       customSectorBrickColors: {},
@@ -97,8 +97,10 @@ class _NewEditor extends Component {
   }
 
 
-  setOperation(operation) {
-    this.setState({ operation });
+  setOperation(op) {
+    // eslint-disable-next-line react/no-access-state-in-setstate
+    if (op.type === operations.CHANGE_COLOR_BRICK && !this.state.defaultPainting) return;
+    this.setState({ operation: op });
   }
 
   confirmChangeSectorSize = () => {
@@ -272,42 +274,40 @@ class _NewEditor extends Component {
     if (!Object.keys(colorList).length) return;
     if (!this.state.defaultPainting) {
       this.makePainingForCustomSectorSize(colorList);
-      return;
     }
-    const { bricks, bricksColors } = this.props;
-    const colorPresetName = '1';
+    // const { bricks, bricksColors } = this.props;
+    // const colorPresetName = '1';
 
-    const bricksInSector = getBricksInSector(bricks, this.props.sector);
-    const outsideBricks = Object.values(bricksInSector)
-      .filter(({ position: { left, top }, size }) => (
-        isOutside(
-          { left: left + this.props.sector.left, top: top + this.props.sector.top },
-          size, this.props.sector,
-        )));
+    // const bricksInSector = getBricksInSector(bricks, this.props.sector);
+    // const outsideBricks = Object.values(bricksInSector)
+    //   .filter(({ position: { left, top }, size }) => (
+    //     isOutside(
+    //       { left: left + this.props.sector.left, top: top + this.props.sector.top },
+    //       size, this.props.sector,
+    //     )));
 
-    const brickPairs = getBrickPairs(outsideBricks);
+    // const brickPairs = getBrickPairs(outsideBricks);
 
-    const bricksInPairsIds = _.keyBy(brickPairs, 'id');
-    const brickSets = _.chunk(brickPairs, 2)
-      .concat(Object.values(bricksInSector).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
-    const resultColorsList = makeBrickColors(brickSets, colorList);
-    // const resultColorsList = fixColorForPairs(brickColors, brickPairs);
-    const actions = [];
-    Object.keys(resultColorsList).forEach((id) => {
-      const color = resultColorsList[id];
-      const oldColor = bricksColors[`${id}-${colorPresetName}`] ? bricksColors[`${id}-${colorPresetName}`].color : undefined;
-      this.props.changeBrickColor({ brickId: id, color, colorPresetName });
-      actions.push({
-        type: actions.CHANGE_COLOR_BRICK,
-        data: {
-          brickId: id,
-          color: { old: oldColor, new: color },
-          colorPresetName,
-        },
-      });
-    });
+    // const bricksInPairsIds = _.keyBy(brickPairs, 'id');
+    // const brickSets = _.chunk(brickPairs, 2)
+    //   .concat(Object.values(bricksInSector).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
+    // const resultColorsList = makeBrickColors(brickSets, colorList);
+    // const actions = [];
+    // Object.keys(resultColorsList).forEach((id) => {
+    //   const color = resultColorsList[id];
+    //   const oldColor = bricksColors[`${id}-${colorPresetName}`] ? bricksColors[`${id}-${colorPresetName}`].color : undefined;
+    //   this.props.changeBrickColor({ brickId: id, color, colorPresetName });
+    //   actions.push({
+    //     type: actions.CHANGE_COLOR_BRICK,
+    //     data: {
+    //       brickId: id,
+    //       color: { old: oldColor, new: color },
+    //       colorPresetName,
+    //     },
+    //   });
+    // });
 
-    this.props.historyPush({ operations: actions });
+    // this.props.historyPush({ operations: actions });
   }
 
   makePainingForCustomSectorSize = (colorList) => {
@@ -318,7 +318,6 @@ class _NewEditor extends Component {
 
     const newBriks = buildBriksForNewSectorSize(bricksInSector, sector, teilwidth, teilheight);
 
-    // const { bricksColors } = this.props;
     const colorPresetName = '1';
 
 
@@ -347,7 +346,10 @@ class _NewEditor extends Component {
     this.setState({
       customSectorBricks: newBriks,
       customSectorBrickColors: brickColors,
+      operation: { type: operations.ADD_BRICK },
     });
+    this.props.historyRemove();
+    this.props.resetBrickColors();
   }
 
   handleTileSize = (param, v) => {
@@ -445,6 +447,7 @@ class _NewEditor extends Component {
               setBrickOperation={this.setBrickOperation}
               setRemoveBrickOperation={this.setRemoveBrickOperation}
               setPaintOperation={this.setPaintOperation}
+              disablePaintButton={!this.state.defaultPainting}
             />
           </ReactCursorPosition>
           <PaintingPanel

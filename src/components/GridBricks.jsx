@@ -153,8 +153,9 @@ class GridBricks extends Component {
       const method = {
         [operations.ADD_BRICK]: this.addBrick,
         [operations.REMOVE_BRICK]: this.removeBrick,
-        [operations.CHANGE_COLOR_BRICK]: this.changeBrickColor,
+        [operations.CHANGE_COLOR_BRICK]: this.props.disablePaintButton ? null : this.changeBrickColor,
       };
+      if (!method[type]) return;
       method[type](brick);
     }
   }
@@ -240,7 +241,7 @@ class GridBricks extends Component {
               { buttonActive: currentOperation.type === operations.CHANGE_COLOR_BRICK })}
             onClick={this.props.setPaintOperation}
             style={{
-              backgroundColor: `rgb(${this.props.color.rgb})`,
+              backgroundColor: this.props.disablePaintButton ? 'gray' : `rgb(${this.props.color.rgb})`,
               display: 'inline-block',
               marginLeft: 1,
               top: -1,
@@ -274,7 +275,11 @@ class GridBricks extends Component {
           className="bricks-grid"
           onMouseMove={this.cursorPosition}
           onClick={this.handleOperation()}
-          style={{ ...buildSyleObj(templateSize, step), cursor: makeCursor(currentOperation), gridArea: 'editor' }}
+          style={{
+            ...buildSyleObj(templateSize, step),
+            cursor: this.props.disablePaintButton ? 'default' : makeCursor(currentOperation),
+            gridArea: 'editor',
+          }}
         >
           {Object.values(bricks).map((brick) => {
             const colorId = `${brick.id}-${colorPresetName}`;

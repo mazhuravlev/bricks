@@ -11,6 +11,8 @@ export const resetBricks = createAction('RESET_BRICKS');
 export const changeBrickSize = createAction('CHANGE_BRICK_SIZE');
 
 export const changeBrickColor = createAction('CHANGE_BRICK_COLOR');
+export const resetBrickColors = createAction('RESET_BRICK_COLOR');
+
 
 export const changeTemplateSize = createAction('CHANGE_TEMPLATE_SIZE');
 
