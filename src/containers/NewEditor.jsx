@@ -58,6 +58,10 @@ class _NewEditor extends Component {
       customSectorBricks: [],
       customSector: this.props.sector,
       customSectorBrickColors: {},
+      gridSize: {
+        width: Math.ceil(480 / (this.props.sector.width * 15)),
+        height: Math.ceil(536 / (this.props.sector.height * 15)),
+      },
     };
     this.setSectorSize = this.setSectorSize.bind(this);
     this.setBrickOperation = this.setBrickOperation.bind(this);
@@ -354,10 +358,23 @@ class _NewEditor extends Component {
 
   handleTileSize = (param, v) => {
     console.log(param, v);
-    const { customSector } = this.state;
+    if (this.state.defaultPainting) {
+      this.setState({ teilwidth: 1, teilheight: 1 });
+      return;
+    }
+    const { customSector, tileStep } = this.state;
+    // 480, 536 ширина и высота окна с тайлом
+    const newTailWidth = param === 'width' ? v : this.state.teilwidth;
+    const newTailHeight = param === 'height' ? v : this.state.teilheight;
+
+    const widthGrixdSize = Math.ceil(480 / (newTailWidth * this.props.sector.width * tileStep));
+    console.log(this.props.sector.width * this.state.tileStep * this.state.teilwidth);
+    const heightGridSize = Math.ceil(536 / (newTailHeight * this.props.sector.height * tileStep));
+    console.log('TCL: handleTileSize -> tileStep', tileStep);
     this.setState({
       [`teil${param}`]: v,
       customSector: { ...customSector, [param]: this.props.sector[param] * v },
+      gridSize: { width: widthGrixdSize, height: heightGridSize },
     });
   }
 
@@ -409,6 +426,36 @@ class _NewEditor extends Component {
     );
   }
 
+  renderGrid() {
+    const rows = [];
+    for (let i = 0; i < this.state.gridSize.height; i += 1) {
+      rows.push(i);
+    }
+    const cols = [];
+    for (let i = 0; i < this.state.gridSize.width; i += 1) {
+      cols.push(i);
+    }
+    return (
+      rows.map((x, i) => (
+        cols.map((y, j) => (
+          <div
+            key={`${i}:${j}`}
+            style={{
+              width: this.props.sector.width * this.state.tileStep * this.state.teilwidth,
+              height: this.props.sector.height * this.state.tileStep * this.state.teilheight,
+              border: '1px solid black',
+              boxSizing: 'border-box',
+              position: 'absolute',
+              left: j * this.props.sector.width * this.state.tileStep * this.state.teilwidth,
+              top: i * this.props.sector.height * this.state.tileStep * this.state.teilheight,
+            }}
+          >
+            {''}
+          </div>
+        ))))
+    );
+  }
+
   render() {
     return (
       <div style={containerStyle}>
@@ -442,8 +489,6 @@ class _NewEditor extends Component {
               color={this.state.color}
               currentOperation={this.state.operation}
               step={20}
-              updateBrickSector={this.updateBrickSector}
-              addToHistory={this.addToHistory}
               setBrickOperation={this.setBrickOperation}
               setRemoveBrickOperation={this.setRemoveBrickOperation}
               setPaintOperation={this.setPaintOperation}
@@ -467,22 +512,44 @@ class _NewEditor extends Component {
           width: 495, height: '100%', padding: '6px 6px 6px', overflow: 'hidden',
         }}
         >
-          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.teilwidth} min={1} max={6} onChange={v => this.handleTileSize('width', v)} />
-          <NumberInput style={{ position: 'relative', top: 4 }} value={this.state.teilheight} min={1} max={6} onChange={v => this.handleTileSize('height', v)} />
+          <NumberInput
+            style={{ position: 'relative', top: 4 }}
+            value={this.state.teilwidth}
+            min={1}
+            max={6}
+            onChange={v => this.handleTileSize('width', v)}
+          />
+          <NumberInput
+            style={{ position: 'relative', top: 4 }}
+            value={this.state.teilheight}
+            min={1}
+            max={6}
+            onChange={v => this.handleTileSize('height', v)}
+          />
           <p style={{ padding: 0, display: 'inline-block', margin: '8px 0 8px 0' }}>
             <input
               type="checkbox"
               name="paintingType"
               checked={!this.state.defaultPainting}
+              onChange={() => this.setState({
               // eslint-disable-next-line react/no-access-state-in-setstate
-              onChange={() => this.setState({ defaultPainting: !this.state.defaultPainting })}
+                defaultPainting: !this.state.defaultPainting,
+                teilwidth: 1,
+                teilheight: 1,
+                gridSize: {
+                  width: Math.ceil(480 / (this.props.sector.width * 15)),
+                  height: Math.ceil(536 / (this.props.sector.height * 15)),
+                },
+              })}
             />
             Меланж
           </p>
           <div style={{
-            width: '100%', height: '93%', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`,
+            width: '480px', height: '536px', overflow: 'hidden', backgroundColor: '#7f7f7f', position: 'relative', backgroundImage: `url('${this.state.preview}')`,
           }}
-          />
+          >
+            {this.renderGrid()}
+          </div>
         </div>
         <div style={{ position: 'absolute', left: -1000 }}>
           {this.state.defaultPainting

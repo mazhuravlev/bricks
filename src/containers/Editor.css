@@ -143,3 +143,26 @@
   /* position: relative;
   top: -12px; */
 }
+
+.tile-grid-mask {
+  position: absolute;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+}
+
+.tile-grid-mask tr {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border: none;
+}
+
+.tile-grid-mask td {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border: none;
+  /* border: 1px solid black; */
+  /* box-sizing: border-box; */
+}

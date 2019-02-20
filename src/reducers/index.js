@@ -59,7 +59,7 @@ const bricksColors = handleActions({
     return { ...state, [presetId]: { colorPresetName, brickId, color } };
   },
   [actions.resetBrickColors](state) {
-    return _.mapValues(state, (item => ({ ...item, color: { } })));
+    return _.mapValues(state, (item => ({ ...item, color: { code: 'NCS S 0500 - N (белый)', rgb: '250,250,250' } })));
   },
   [actions.removeBrick](state, { payload: { brick } }) {
     return _.omitBy(state, ({ brickId }) => brickId === brick.id);

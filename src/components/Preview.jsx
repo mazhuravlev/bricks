@@ -14,7 +14,7 @@ export default function Preview({
   const gridSize = 1;
   const tileArr = new Array(gridSize * gridSize).fill(null);
   const tiles = tileArr.map((_, i) => (
-    <div key={i} className="sectorItem" style={{ ...buildSyleObj({ width: sector.width, height: sector.height }, step), border: '1px solid black' }}>
+    <div key={i} className="sectorItem" style={{ ...buildSyleObj({ width: sector.width, height: sector.height }, step) }}>
       {bricks.map(({ position, size, id }) => (
         <Brick
           key={id}
