@@ -198,7 +198,19 @@ class PaintingPanel extends Component {
               )}
           </div>
           <div className="tool-button" style={{ marginLeft: 6, backgroundImage: `url(${exportIcon})` }} onClick={this.props.exportPaintingPalettes} size="sm" />
-          <div className="tool-button random-button" style={{ marginLeft: 6, color: 'transparent' }} onClick={() => this.props.makeRandomPainting(this.state.colorList)} size="sm">i</div>
+          <div
+            className="tool-button random-button"
+            style={{
+              marginLeft: 6,
+              color: 'transparent',
+              backgroundColor: this.props.defaultPainting ? 'gray' : 'transparent',
+            }}
+            onClick={() => this.props.makeRandomPainting(this.state.colorList)}
+            size="sm"
+          >
+i
+
+          </div>
           <div className="tool-button" style={{ textAlign: 'center' }} onClick={this.addNewColor} size="sm">+</div>
         </div>
         <div style={{

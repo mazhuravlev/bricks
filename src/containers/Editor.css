@@ -166,3 +166,12 @@
   /* border: 1px solid black; */
   /* box-sizing: border-box; */
 }
+
+.tile-options-panel {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  height: 24px;
+}
