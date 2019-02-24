@@ -104,15 +104,6 @@ export const isOverSize = (size, sector) => {
   return size.height > sector.height;
 };
 
-// export function isIntersect(position, size, sector) {
-//   const conditions = [
-//     position.left < sector.left || position.top < 0,
-//     relPos.left + size.width > sector.width,
-//     relPos.top + size.height > sector.height,
-//   ];
-//   return conditions.some(item => item);
-// }
-
 export function isPair(brick1, brick2) {
   const conditions1 = [
     brick1.size.width === 1,
@@ -221,3 +212,15 @@ export const buildRandomPalleteId = randomPallete => randomPallete
     return 0;
   })
   .reduce((acc, { color, value }) => `${acc}${color}${value}`, '');
+
+export const getMirrorBrick = (brick, bricks, sector) => {
+  if (brick.size.width > brick.size.height) {
+    const sectorWdth = brick.position.left < sector.left ? sector.width : -sector.width; // Если выступает слева то + если справа -
+    // eslint-disable-next-line no-debugger
+    // debugger;
+    return Object.values(bricks).find(b => (b.position.left === (brick.position.left + sectorWdth) && b.position.top === brick.position.top));
+  }
+
+  const sectorHeight = brick.position.top < sector.top ? sector.height : -sector.height; // Если выступает слева то + если справа -
+  return Object.values(bricks).find(b => (b.position.top === (brick.position.top + sectorHeight) && b.position.left === brick.position.left));
+};

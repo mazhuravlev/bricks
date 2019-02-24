@@ -14,6 +14,7 @@ import {
   getBricksInSector,
   calculateMirrorBrick,
   isOverSize,
+  getMirrorBrick,
 } from '../helpers';
 
 function makeCursor(operation) {
@@ -132,17 +133,36 @@ class GridBricks extends Component {
     if (brick) {
       const { color, colorPresetName, bricksColors } = this.props;
       const oldColor = bricksColors[`${brick.id}-${colorPresetName}`] ? bricksColors[`${brick.id}-${colorPresetName}`].color : undefined;
+      const actions = [];
+
+      if (isOutside(brick.position, brick.size, this.props.sector)) {
+        const brickInSector = getBricksInSector([brick], this.props.sector)[0];
+        if (brickInSector) {
+          const mirrorBrick = getMirrorBrick(brick, this.props.bricks, this.props.sector);
+          if (mirrorBrick) {
+            this.props.changeBrickColor({ brickId: mirrorBrick.id, color, colorPresetName });
+            actions.push({
+              type: this.props.currentOperation.type,
+              data: {
+                brickId: mirrorBrick.id,
+                color: { old: oldColor, new: color },
+                colorPresetName,
+              },
+            });
+          }
+        }
+      }
 
       this.props.changeBrickColor({ brickId: brick.id, color, colorPresetName });
-      const action = {
+      actions.push({
         type: this.props.currentOperation.type,
         data: {
           brickId: brick.id,
           color: { old: oldColor, new: color },
           colorPresetName,
         },
-      };
-      this.props.historyPush({ operations: action });
+      });
+      this.props.historyPush({ operations: actions });
     }
   }
 
