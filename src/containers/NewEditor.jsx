@@ -280,39 +280,6 @@ class _NewEditor extends Component {
     if (!this.state.defaultPainting) {
       this.makePainingForCustomSectorSize(colorList);
     }
-    // const { bricks, bricksColors } = this.props;
-    // const colorPresetName = '1';
-
-    // const bricksInSector = getBricksInSector(bricks, this.props.sector);
-    // const outsideBricks = Object.values(bricksInSector)
-    //   .filter(({ position: { left, top }, size }) => (
-    //     isOutside(
-    //       { left: left + this.props.sector.left, top: top + this.props.sector.top },
-    //       size, this.props.sector,
-    //     )));
-
-    // const brickPairs = getBrickPairs(outsideBricks);
-
-    // const bricksInPairsIds = _.keyBy(brickPairs, 'id');
-    // const brickSets = _.chunk(brickPairs, 2)
-    //   .concat(Object.values(bricksInSector).filter(x => !(x.id in bricksInPairsIds)).map(x => [x]));
-    // const resultColorsList = makeBrickColors(brickSets, colorList);
-    // const actions = [];
-    // Object.keys(resultColorsList).forEach((id) => {
-    //   const color = resultColorsList[id];
-    //   const oldColor = bricksColors[`${id}-${colorPresetName}`] ? bricksColors[`${id}-${colorPresetName}`].color : undefined;
-    //   this.props.changeBrickColor({ brickId: id, color, colorPresetName });
-    //   actions.push({
-    //     type: actions.CHANGE_COLOR_BRICK,
-    //     data: {
-    //       brickId: id,
-    //       color: { old: oldColor, new: color },
-    //       colorPresetName,
-    //     },
-    //   });
-    // });
-
-    // this.props.historyPush({ operations: actions });
   }
 
   makePainingForCustomSectorSize = (colorList) => {
