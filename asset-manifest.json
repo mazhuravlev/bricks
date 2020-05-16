@@ -9,8 +9,8 @@
   "runtime~main.js.map": "/bricks/static/js/runtime~main.667d57c1.js.map",
   "static/media/import.svg": "/bricks/static/media/import.1badb99d.svg",
   "static/media/export.svg": "/bricks/static/media/export.301c5552.svg",
-  "static/css/1.eae19c82.chunk.css.map": "/bricks/static/css/1.eae19c82.chunk.css.map",
   "static/css/main.ce9f87d8.chunk.css.map": "/bricks/static/css/main.ce9f87d8.chunk.css.map",
+  "static/css/1.eae19c82.chunk.css.map": "/bricks/static/css/1.eae19c82.chunk.css.map",
   "index.html": "/bricks/index.html",
   "precache-manifest.22ff1384d4f21cb3264b650158027c64.js": "/bricks/precache-manifest.22ff1384d4f21cb3264b650158027c64.js",
   "service-worker.js": "/bricks/service-worker.js"
